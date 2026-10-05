@@ -9,13 +9,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
     margin:0;
-    font-family:Arial,sans-serif;
+    font-family:Arial,Tahoma,sans-serif;
     background:#f3f5f8;
     color:#172033;
 }
@@ -32,7 +30,7 @@ header h1{
 }
 
 .container{
-    max-width:1100px;
+    max-width:1150px;
     margin:30px auto;
     padding:20px;
 }
@@ -73,6 +71,10 @@ button:hover{
 
 button.delete{
     background:#dc2626;
+}
+
+button.save{
+    background:#15803d;
 }
 
 button.logout{
@@ -161,7 +163,7 @@ button.logout{
 
 .top-bar{
     display:flex;
-    justify-content:space-between;
+    justify-content:center;
     align-items:center;
     gap:15px;
     margin-bottom:25px;
@@ -173,14 +175,78 @@ button.logout{
     font-size:14px;
 }
 
+/* ================= LINEUP ================= */
+
+.lineup-team{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    border-radius:16px;
+    padding:18px;
+    margin-top:20px;
+}
+
+.lineup-team h3{
+    margin-top:0;
+    font-size:20px;
+}
+
+.lineup-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+}
+
+.lineup-player{
+    background:white;
+    border:1px solid #dbe2ea;
+    border-radius:14px;
+    padding:15px;
+}
+
+.lineup-player-title{
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.position-select{
+    margin:5px 0;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:7px;
+}
+
+.stats-grid input{
+    width:100%;
+}
+
+.selected-count{
+    background:#e0f2fe;
+    color:#075985;
+    padding:10px;
+    border-radius:10px;
+    margin:10px 0;
+    font-weight:bold;
+}
+
 @media(max-width:700px){
 
     .team-grid{
         grid-template-columns:1fr;
     }
 
+    .lineup-grid{
+        grid-template-columns:1fr;
+    }
+
     .container{
         padding:12px;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
     }
 }
 </style>
@@ -227,7 +293,7 @@ button.logout{
 
     <h1>⚽ دوري الابن الزيدوني</h1>
 
-    <div class="top-bar" style="justify-content:center;margin:10px 0 0;">
+    <div class="top-bar">
 
         <span>
             لوحة الإدارة
@@ -246,6 +312,7 @@ button.logout{
 
 
 <div class="container">
+
 
 <!-- ================= TEAMS ================= -->
 
@@ -380,8 +447,29 @@ button.logout{
 
 </div>
 
+
+<!-- ================= MATCH LINEUP ================= -->
+
+<div class="card">
+
+<h2>🎯 تشكيلة المباراة</h2>
+
+<p class="small">
+    اختر المباراة ثم اختر 6 لاعبين لكل فريق، وحدد مركز كل لاعب وتقييمه وأهدافه وأسيستاته.
+</p>
+
+<select id="lineupMatch" onchange="loadLineupForm()">
+    <option value="">اختر المباراة</option>
+</select>
+
+<div id="lineupEditor"></div>
+
+<div id="lineupMessage" class="message"></div>
+
 </div>
 
+
+</div>
 </div>
 
 
@@ -405,30 +493,30 @@ window.supabase.createClient(
 
 
 /* =====================================================
-   CHECK LOGIN
+   GLOBAL DATA
 ===================================================== */
 
-async function checkUser(){
-
-    const {
-        data: { session }
-    } = await supabaseClient.auth.getSession();
-
-    if(session){
-
-        showAdmin();
-
-    }else{
-
-        showLogin();
-
-    }
-}
+let allPlayers = [];
+let allMatches = [];
 
 
 /* =====================================================
    LOGIN
 ===================================================== */
+
+async function checkUser(){
+
+    const {
+        data:{session}
+    } = await supabaseClient.auth.getSession();
+
+    if(session){
+        showAdmin();
+    }else{
+        showLogin();
+    }
+}
+
 
 async function login(){
 
@@ -452,13 +540,11 @@ async function login(){
         return;
     }
 
-    const {
-        data,
-        error
-    } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-    });
+    const {error} =
+        await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
 
     if(error){
 
@@ -479,22 +565,15 @@ async function login(){
         true
     );
 
-    setTimeout(() => {
-        showAdmin();
-    },500);
+    setTimeout(showAdmin,500);
 }
 
-
-/* =====================================================
-   LOGOUT
-===================================================== */
 
 async function logout(){
 
     await supabaseClient.auth.signOut();
 
     showLogin();
-
 }
 
 
@@ -529,13 +608,15 @@ function showLogin(){
 
 
 /* =====================================================
-   LOAD ALL DATA
+   LOAD DATA
 ===================================================== */
 
 async function loadData(){
 
     await loadTeams();
+
     await loadPlayers();
+
     await loadMatches();
 
 }
@@ -547,16 +628,13 @@ async function loadData(){
 
 async function loadTeams(){
 
-    const {
-        data,
-        error
-    } = await supabaseClient
+    const {data,error} =
+        await supabaseClient
         .from("teams")
         .select("*")
         .order("id");
 
     if(error){
-
         console.error(error);
         return;
     }
@@ -565,9 +643,13 @@ async function loadTeams(){
         document.getElementById("teamsContainer");
 
     const selects = [
+
         document.getElementById("playerTeam"),
+
         document.getElementById("homeTeam"),
+
         document.getElementById("awayTeam")
+
     ];
 
     selects.forEach(select => {
@@ -615,7 +697,7 @@ async function loadTeams(){
                     <input
                         type="file"
                         accept="image/*"
-                        onchange="changeLogo(${team.id}, this.files[0])"
+                        onchange="changeLogo(${team.id},this.files[0])"
                     >
 
                     <button
@@ -634,7 +716,7 @@ async function loadTeams(){
 
 
 /* =====================================================
-   CHANGE TEAM LOGO
+   TEAM LOGO
 ===================================================== */
 
 async function changeLogo(id,file){
@@ -646,19 +728,18 @@ async function changeLogo(id,file){
         const logo =
             await readFile(file);
 
-        const {
-            error
-        } = await supabaseClient
+        const {error} =
+            await supabaseClient
             .from("teams")
-            .update({
-                logo:logo
-            })
+            .update({logo})
             .eq("id",id);
 
         if(error){
 
-            alert("حدث خطأ أثناء رفع الشعار.");
             console.error(error);
+
+            alert("حدث خطأ أثناء رفع الشعار.");
+
             return;
         }
 
@@ -669,42 +750,34 @@ async function changeLogo(id,file){
     }catch(error){
 
         console.error(error);
+
         alert("تعذر قراءة الصورة.");
 
     }
 }
 
 
-/* =====================================================
-   DELETE LOGO
-===================================================== */
-
 async function deleteLogo(id){
 
-    const ok =
-        confirm("هل تريد حذف شعار الفريق؟");
+    if(!confirm("هل تريد حذف شعار الفريق؟"))
+        return;
 
-    if(!ok) return;
-
-    const {
-        error
-    } = await supabaseClient
+    const {error} =
+        await supabaseClient
         .from("teams")
-        .update({
-            logo:null
-        })
+        .update({logo:null})
         .eq("id",id);
 
     if(error){
 
         console.error(error);
+
         alert("حدث خطأ.");
 
         return;
     }
 
     loadTeams();
-
 }
 
 
@@ -740,8 +813,7 @@ async function addPlayer(){
         .files[0];
 
     const message =
-        document
-        .getElementById("playerMessage");
+        document.getElementById("playerMessage");
 
 
     if(!name || !team){
@@ -784,17 +856,16 @@ async function addPlayer(){
         : null;
 
 
-    const {
-        error
-    } = await supabaseClient
+    const {error} =
+        await supabaseClient
         .from("players")
         .insert({
 
-            name:name,
-            team:team,
+            name,
+            team,
             position:position || null,
-            number:number,
-            photo:photo,
+            number,
+            photo,
             goals:0,
             assists:0
 
@@ -822,21 +893,10 @@ async function addPlayer(){
     );
 
 
-    document
-        .getElementById("playerName")
-        .value="";
-
-    document
-        .getElementById("playerPosition")
-        .value="";
-
-    document
-        .getElementById("playerNumber")
-        .value="";
-
-    document
-        .getElementById("playerPhoto")
-        .value="";
+    document.getElementById("playerName").value="";
+    document.getElementById("playerPosition").value="";
+    document.getElementById("playerNumber").value="";
+    document.getElementById("playerPhoto").value="";
 
 
     loadPlayers();
@@ -850,10 +910,8 @@ async function addPlayer(){
 
 async function loadPlayers(){
 
-    const {
-        data,
-        error
-    } = await supabaseClient
+    const {data,error} =
+        await supabaseClient
         .from("players")
         .select("*")
         .order("id");
@@ -861,8 +919,12 @@ async function loadPlayers(){
     if(error){
 
         console.error(error);
+
         return;
     }
+
+
+    allPlayers = data || [];
 
 
     const container =
@@ -915,9 +977,7 @@ async function loadPlayers(){
 
                     <br>
 
-                    <label>
-                        ⚽ الأهداف
-                    </label>
+                    <label>⚽ الأهداف</label>
 
                     <input
                         id="goals-${player.id}"
@@ -926,9 +986,7 @@ async function loadPlayers(){
                         value="${player.goals || 0}"
                     >
 
-                    <label>
-                        🎯 الأسيستات
-                    </label>
+                    <label>🎯 الأسيستات</label>
 
                     <input
                         id="assists-${player.id}"
@@ -984,15 +1042,12 @@ async function updatePlayer(id){
         );
 
 
-    const {
-        error
-    } = await supabaseClient
+    const {error} =
+        await supabaseClient
         .from("players")
         .update({
-
-            goals:goals,
-            assists:assists
-
+            goals,
+            assists
         })
         .eq("id",id);
 
@@ -1020,17 +1075,12 @@ async function updatePlayer(id){
 
 async function deletePlayer(id){
 
-    const ok =
-        confirm(
-            "هل أنت متأكد من حذف هذا اللاعب؟"
-        );
-
-    if(!ok) return;
+    if(!confirm("هل أنت متأكد من حذف هذا اللاعب؟"))
+        return;
 
 
-    const {
-        error
-    } = await supabaseClient
+    const {error} =
+        await supabaseClient
         .from("players")
         .delete()
         .eq("id",id);
@@ -1058,27 +1108,19 @@ async function deletePlayer(id){
 async function addMatch(){
 
     const home =
-        document
-        .getElementById("homeTeam")
-        .value;
+        document.getElementById("homeTeam").value;
 
     const away =
-        document
-        .getElementById("awayTeam")
-        .value;
+        document.getElementById("awayTeam").value;
 
     const homeGoals =
         Number(
-            document
-            .getElementById("homeGoals")
-            .value
+            document.getElementById("homeGoals").value
         );
 
     const awayGoals =
         Number(
-            document
-            .getElementById("awayGoals")
-            .value
+            document.getElementById("awayGoals").value
         );
 
     const round =
@@ -1092,8 +1134,7 @@ async function addMatch(){
         .value;
 
     const message =
-        document
-        .getElementById("matchMessage");
+        document.getElementById("matchMessage");
 
 
     if(!home || !away){
@@ -1120,14 +1161,13 @@ async function addMatch(){
     }
 
 
-    const {
-        error
-    } = await supabaseClient
+    const {error} =
+        await supabaseClient
         .from("matches")
         .insert({
 
-            home:home,
-            away:away,
+            home,
+            away,
             home_goals:homeGoals,
             away_goals:awayGoals,
             round:round || null,
@@ -1157,21 +1197,10 @@ async function addMatch(){
     );
 
 
-    document
-        .getElementById("homeGoals")
-        .value=0;
-
-    document
-        .getElementById("awayGoals")
-        .value=0;
-
-    document
-        .getElementById("round")
-        .value="";
-
-    document
-        .getElementById("matchDate")
-        .value="";
+    document.getElementById("homeGoals").value=0;
+    document.getElementById("awayGoals").value=0;
+    document.getElementById("round").value="";
+    document.getElementById("matchDate").value="";
 
 
     loadMatches();
@@ -1185,26 +1214,57 @@ async function addMatch(){
 
 async function loadMatches(){
 
-    const {
-        data,
-        error
-    } = await supabaseClient
+    const {data,error} =
+        await supabaseClient
         .from("matches")
         .select("*")
-        .order("match_date", {
-            ascending:false
-        });
-
+        .order("match_date",{ascending:false});
 
     if(error){
 
         console.error(error);
+
         return;
     }
 
 
+    allMatches = data || [];
+
+
     const container =
         document.getElementById("matchesContainer");
+
+
+    const lineupSelect =
+        document.getElementById("lineupMatch");
+
+
+    const oldValue =
+        lineupSelect.value;
+
+
+    lineupSelect.innerHTML =
+        `<option value="">اختر المباراة</option>`;
+
+
+    data.forEach(match => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = match.id;
+
+        option.textContent =
+            `${match.home} ${match.home_goals} - ${match.away_goals} ${match.away}`;
+
+        lineupSelect.appendChild(option);
+
+    });
+
+
+    if(data.some(m => String(m.id) === String(oldValue))){
+        lineupSelect.value = oldValue;
+    }
 
 
     if(!data.length){
@@ -1239,9 +1299,11 @@ async function loadMatches(){
 
                     <div class="small">
 
-                        ${match.round
+                        ${
+                            match.round
                             ? escapeHtml(match.round)
-                            : ""}
+                            : ""
+                        }
 
                         ${
                             match.match_date
@@ -1252,6 +1314,12 @@ async function loadMatches(){
                     </div>
 
                     <br>
+
+                    <button
+                        onclick="openLineup(${match.id})"
+                    >
+                        🎯 تعديل التشكيلة
+                    </button>
 
                     <button
                         class="delete"
@@ -1270,22 +1338,578 @@ async function loadMatches(){
 
 
 /* =====================================================
+   OPEN LINEUP
+===================================================== */
+
+function openLineup(id){
+
+    const select =
+        document.getElementById("lineupMatch");
+
+    select.value = String(id);
+
+    loadLineupForm();
+
+    document
+        .getElementById("lineupEditor")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+}
+
+
+/* =====================================================
+   LOAD LINEUP FORM
+===================================================== */
+
+async function loadLineupForm(){
+
+    const matchId =
+        document.getElementById("lineupMatch").value;
+
+    const editor =
+        document.getElementById("lineupEditor");
+
+
+    editor.innerHTML="";
+
+
+    if(!matchId)
+        return;
+
+
+    const match =
+        allMatches.find(
+            m => String(m.id) === String(matchId)
+        );
+
+
+    if(!match)
+        return;
+
+
+    const {data,error} =
+        await supabaseClient
+        .from("match_players")
+        .select("*")
+        .eq("match_id",matchId);
+
+
+    if(error){
+
+        console.error(error);
+
+        editor.innerHTML =
+            `<div class="message error" style="display:block;">
+                تعذر تحميل التشكيلة.
+            </div>`;
+
+        return;
+    }
+
+
+    const saved =
+        data || [];
+
+
+    editor.innerHTML = `
+
+        <div class="lineup-team">
+
+            <h3>
+                🟡 ${escapeHtml(match.home)}
+            </h3>
+
+            <div class="selected-count">
+                اختر 6 لاعبين بالضبط
+            </div>
+
+            <div
+                id="homeLineup"
+                class="lineup-grid"
+            ></div>
+
+        </div>
+
+
+        <div class="lineup-team">
+
+            <h3>
+                🔴 ${escapeHtml(match.away)}
+            </h3>
+
+            <div class="selected-count">
+                اختر 6 لاعبين بالضبط
+            </div>
+
+            <div
+                id="awayLineup"
+                class="lineup-grid"
+            ></div>
+
+        </div>
+
+
+        <button
+            class="save"
+            onclick="saveLineup(${match.id})"
+        >
+            💾 حفظ تشكيلة المباراة
+        </button>
+
+    `;
+
+
+    renderTeamLineup(
+        match.home,
+        "homeLineup",
+        saved
+    );
+
+
+    renderTeamLineup(
+        match.away,
+        "awayLineup",
+        saved
+    );
+
+}
+
+
+/* =====================================================
+   RENDER TEAM LINEUP
+===================================================== */
+
+function renderTeamLineup(
+    team,
+    containerId,
+    saved
+){
+
+    const container =
+        document.getElementById(containerId);
+
+
+    const players =
+        allPlayers.filter(
+            p => p.team === team
+        );
+
+
+    if(!players.length){
+
+        container.innerHTML =
+            "<p>لا يوجد لاعبين في هذا الفريق.</p>";
+
+        return;
+    }
+
+
+    const savedPlayers =
+        saved.filter(
+            s => s.team === team
+        );
+
+
+    let html="";
+
+
+    for(let i=0;i<6;i++){
+
+        const savedPlayer =
+            savedPlayers[i] || null;
+
+
+        const selectedId =
+            savedPlayer
+            ? savedPlayer.player_id
+            : "";
+
+
+        html += `
+
+            <div class="lineup-player">
+
+                <div class="lineup-player-title">
+                    لاعب ${i+1}
+                </div>
+
+                <select
+                    class="lineup-player-select"
+                    data-team="${escapeHtml(team)}"
+                >
+
+                    <option value="">
+                        اختر اللاعب
+                    </option>
+
+                    ${
+                        players.map(player => `
+
+                            <option
+                                value="${player.id}"
+                                ${String(player.id) === String(selectedId) ? "selected" : ""}
+                            >
+                                ${escapeHtml(player.name)}
+                                ${player.number ? " #" + player.number : ""}
+                            </option>
+
+                        `).join("")
+                    }
+
+                </select>
+
+
+                <select
+                    class="lineup-position-select"
+                >
+
+                    <option value="">
+                        اختر المركز
+                    </option>
+
+                    <option
+                        value="GK"
+                        ${savedPlayer?.position === "GK" ? "selected" : ""}
+                    >
+                        🧤 حارس مرمى
+                    </option>
+
+                    <option
+                        value="DEF"
+                        ${savedPlayer?.position === "DEF" ? "selected" : ""}
+                    >
+                        🛡️ دفاع
+                    </option>
+
+                    <option
+                        value="MID"
+                        ${savedPlayer?.position === "MID" ? "selected" : ""}
+                    >
+                        ⚙️ وسط
+                    </option>
+
+                    <option
+                        value="ATT"
+                        ${savedPlayer?.position === "ATT" ? "selected" : ""}
+                    >
+                        ⚡ هجوم
+                    </option>
+
+                </select>
+
+
+                <div class="stats-grid">
+
+                    <input
+                        class="lineup-rating"
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        value="${savedPlayer?.rating ?? 6.0}"
+                        placeholder="⭐ التقييم"
+                    >
+
+                    <input
+                        class="lineup-goals"
+                        type="number"
+                        min="0"
+                        value="${savedPlayer?.goals ?? 0}"
+                        placeholder="⚽ أهداف"
+                    >
+
+                    <input
+                        class="lineup-assists"
+                        type="number"
+                        min="0"
+                        value="${savedPlayer?.assists ?? 0}"
+                        placeholder="👟 أسيست"
+                    >
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+
+    container.innerHTML = html;
+
+}
+
+
+/* =====================================================
+   SAVE LINEUP
+===================================================== */
+
+async function saveLineup(matchId){
+
+    const match =
+        allMatches.find(
+            m => String(m.id) === String(matchId)
+        );
+
+
+    if(!match){
+
+        alert("المباراة غير موجودة.");
+
+        return;
+    }
+
+
+    const homeContainer =
+        document.getElementById("homeLineup");
+
+    const awayContainer =
+        document.getElementById("awayLineup");
+
+
+    const homeRows =
+        [...homeContainer.querySelectorAll(".lineup-player")];
+
+    const awayRows =
+        [...awayContainer.querySelectorAll(".lineup-player")];
+
+
+    const homeData =
+        collectLineupRows(
+            homeRows,
+            match.home
+        );
+
+
+    const awayData =
+        collectLineupRows(
+            awayRows,
+            match.away
+        );
+
+
+    if(homeData.length !== 6){
+
+        alert(
+            `يجب اختيار 6 لاعبين لفريق ${match.home}.`
+        );
+
+        return;
+    }
+
+
+    if(awayData.length !== 6){
+
+        alert(
+            `يجب اختيار 6 لاعبين لفريق ${match.away}.`
+        );
+
+        return;
+    }
+
+
+    const allData =
+        [...homeData,...awayData];
+
+
+    const playerIds =
+        allData.map(p => String(p.player_id));
+
+
+    if(new Set(playerIds).size !== playerIds.length){
+
+        alert(
+            "لا يمكنك اختيار نفس اللاعب أكثر من مرة."
+        );
+
+        return;
+    }
+
+
+    const hasGKHome =
+        homeData.some(p => p.position === "GK");
+
+    const hasGKAway =
+        awayData.some(p => p.position === "GK");
+
+
+    if(!hasGKHome || !hasGKAway){
+
+        alert(
+            "يجب أن يكون لكل فريق حارس مرمى 🧤."
+        );
+
+        return;
+    }
+
+
+    const {error:deleteError} =
+        await supabaseClient
+        .from("match_players")
+        .delete()
+        .eq("match_id",matchId);
+
+
+    if(deleteError){
+
+        console.error(deleteError);
+
+        showMessage(
+            document.getElementById("lineupMessage"),
+            "حدث خطأ أثناء تحديث التشكيلة.",
+            false
+        );
+
+        return;
+    }
+
+
+    const rows =
+        allData.map(player => ({
+
+            match_id:Number(matchId),
+
+            player_id:Number(player.player_id),
+
+            team:player.team,
+
+            position:player.position,
+
+            rating:player.rating,
+
+            goals:player.goals,
+
+            assists:player.assists
+
+        }));
+
+
+    const {error:insertError} =
+        await supabaseClient
+        .from("match_players")
+        .insert(rows);
+
+
+    if(insertError){
+
+        console.error(insertError);
+
+        showMessage(
+            document.getElementById("lineupMessage"),
+            "حدث خطأ أثناء حفظ التشكيلة: " + insertError.message,
+            false
+        );
+
+        return;
+    }
+
+
+    showMessage(
+        document.getElementById("lineupMessage"),
+        "تم حفظ تشكيلة المباراة بنجاح ✅",
+        true
+    );
+
+}
+
+
+/* =====================================================
+   COLLECT LINEUP
+===================================================== */
+
+function collectLineupRows(
+    rows,
+    team
+){
+
+    const result=[];
+
+
+    rows.forEach(row => {
+
+        const playerId =
+            row
+            .querySelector(".lineup-player-select")
+            .value;
+
+
+        const position =
+            row
+            .querySelector(".lineup-position-select")
+            .value;
+
+
+        const rating =
+            Number(
+                row
+                .querySelector(".lineup-rating")
+                .value || 6
+            );
+
+
+        const goals =
+            Number(
+                row
+                .querySelector(".lineup-goals")
+                .value || 0
+            );
+
+
+        const assists =
+            Number(
+                row
+                .querySelector(".lineup-assists")
+                .value || 0
+            );
+
+
+        if(!playerId)
+            return;
+
+
+        if(!position){
+
+            return;
+        }
+
+
+        result.push({
+
+            player_id:playerId,
+
+            team:team,
+
+            position:position,
+
+            rating:rating,
+
+            goals:goals,
+
+            assists:assists
+
+        });
+
+    });
+
+
+    return result;
+
+}
+
+
+/* =====================================================
    DELETE MATCH
 ===================================================== */
 
 async function deleteMatch(id){
 
-    const ok =
-        confirm(
-            "هل تريد حذف هذه المباراة؟"
-        );
-
-    if(!ok) return;
+    if(!confirm("هل تريد حذف هذه المباراة؟"))
+        return;
 
 
-    const {
-        error
-    } = await supabaseClient
+    const {error} =
+        await supabaseClient
         .from("matches")
         .delete()
         .eq("id",id);
@@ -1317,10 +1941,11 @@ function readFile(file){
         const reader =
             new FileReader();
 
-        reader.onload = () =>
-            resolve(reader.result);
+        reader.onload =
+            () => resolve(reader.result);
 
-        reader.onerror = reject;
+        reader.onerror =
+            reject;
 
         reader.readAsDataURL(file);
 
@@ -1333,7 +1958,11 @@ function readFile(file){
    MESSAGE
 ===================================================== */
 
-function showMessage(element,text,success){
+function showMessage(
+    element,
+    text,
+    success
+){
 
     element.textContent = text;
 
@@ -1358,6 +1987,7 @@ function escapeHtml(value){
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
+
 }
 
 
@@ -1369,13 +1999,9 @@ supabaseClient.auth.onAuthStateChange(
     (event,session) => {
 
         if(session){
-
             showAdmin();
-
         }else{
-
             showLogin();
-
         }
 
     }
