@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>دوري الابن الزيدوني</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Tahoma,sans-serif;
+    background:#f3f4f6;
+    color:#111827;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:18px 6%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+}
+
+nav{
+    display:flex;
+    gap:18px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.admin{
+    background:#2563eb;
+    padding:10px 15px;
+    border-radius:8px;
+}
+
+.hero{
+    background:linear-gradient(135deg,#111827,#1d4ed8);
+    color:white;
+    padding:70px 6%;
+}
+
+.hero h1{
+    font-size:48px;
+    margin-bottom:15px;
+}
+
+.hero p{
+    font-size:20px;
+    color:#dbeafe;
+}
+
+.container{
+    width:88%;
+    max-width:1200px;
+    margin:40px auto;
+}
+
+.section{
+    margin-bottom:50px;
+}
+
+.section-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.section-title h2{
+    font-size:28px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.team-card{
+    text-align:center;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.team-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+}
+
+.team-logo{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    background:#e5e7eb;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:auto;
+    font-size:50px;
+    overflow:hidden;
+}
+
+.team-logo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.team-card h3{
+    margin:15px 0 8px;
+    font-size:21px;
+}
+
+.team-card p{
+    color:#6b7280;
+}
+
+.table-container{
+    background:white;
+    border-radius:18px;
+    overflow:auto;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:700px;
+}
+
+th,td{
+    padding:16px;
+    text-align:center;
+    border-bottom:1px solid #e5e7eb;
+}
+
+th{
+    background:#111827;
+    color:white;
+}
+
+tr:hover{
+    background:#f9fafb;
+}
+
+.match{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    text-align:center;
+}
+
+.team{
+    flex:1;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.score{
+    font-size:28px;
+    font-weight:bold;
+    padding:0 20px;
+}
+
+.match-info{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:8px;
+}
+
+.player{
+    text-align:center;
+    transition:.2s;
+    cursor:pointer;
+}
+
+.player:hover{
+    transform:translateY(-5px);
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.player-photo{
+    width:120px;
+    height:120px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#e5e7eb;
+    margin:auto;
+    display:block;
+}
+
+.player-name{
+    font-size:21px;
+    font-weight:bold;
+    margin-top:15px;
+}
+
+.player-team{
+    color:#2563eb;
+    margin-top:7px;
+}
+
+.player-position{
+    color:#6b7280;
+    margin-top:5px;
+}
+
+.rank{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.rank-number{
+    font-size:25px;
+    font-weight:bold;
+    width:35px;
+}
+
+.rank-photo{
+    width:55px;
+    height:55px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#e5e7eb;
+}
+
+.rank-info{
+    flex:1;
+}
+
+.rank-info strong{
+    display:block;
+    font-size:17px;
+}
+
+.rank-info span{
+    color:#6b7280;
+    font-size:14px;
+}
+
+.rank-value{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+}
+
+.stat{
+    background:white;
+    padding:30px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.stat h3{
+    color:#6b7280;
+    margin-bottom:10px;
+}
+
+.stat strong{
+    font-size:35px;
+}
+
+.loading{
+    text-align:center;
+    padding:30px;
+    color:#6b7280;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+}
+
+footer{
+    background:#111827;
+    color:white;
+    text-align:center;
+    padding:30px;
+    margin-top:60px;
+}
+
+@media(max-width:700px){
+
+    header{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    nav{
+        justify-content:center;
+    }
+
+    .hero h1{
+        font-size:34px;
+    }
+
+    .hero p{
+        font-size:17px;
+    }
+
+    .match{
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .score{
+        padding:5px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🏆 دوري الابن الزيدوني
+</div>
+
+<nav>
+
+<a href="#home">الرئيسية</a>
+<a href="#matches">المباريات</a>
+<a href="#ranking">الترتيب</a>
+<a href="#scorers">الهدافون</a>
+<a href="#assists">الأسيستات</a>
+<a href="#players">اللاعبون</a>
+
+<a href="admin.html" class="admin">
+⚙️ الإدارة
+</a>
+
+</nav>
+
+</header>
+
+<section class="hero" id="home">
+
+<h1>
+دوري الابن الزيدوني
+</h1>
+
+<p>
+بطولة كرة القدم الأسبوعية 🏆
+</p>
+
+</section>
+
+<div class="container">
+
+<section class="section">
+
+<div class="section-title">
+<h2>⚽ الفرق</h2>
+</div>
+
+<div class="grid" id="teams">
+<div class="loading">جاري تحميل الفرق...</div>
+</div>
+
+</section>
+
+<section class="section" id="ranking">
+
+<div class="section-title">
+<h2>🏆 ترتيب الدوري</h2>
+</div>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>الفريق</th>
+<th>لعب</th>
+<th>فوز</th>
+<th>تعادل</th>
+<th>خسارة</th>
+<th>له</th>
+<th>عليه</th>
+<th>النقاط</th>
+
+</tr>
+
+</thead>
+
+<tbody id="rankingTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section class="section" id="matches">
+
+<div class="section-title">
+<h2>📅 آخر المباريات</h2>
+</div>
+
+<div class="grid" id="matchesList">
+<div class="loading">جاري تحميل المباريات...</div>
+</div>
+
+</section>
+
+<section class="section" id="scorers">
+
+<div class="section-title">
+<h2>🥅 الهدافون</h2>
+</div>
+
+<div class="grid" id="scorersList">
+<div class="loading">جاري تحميل الهدافين...</div>
+</div>
+
+</section>
+
+<section class="section" id="assists">
+
+<div class="section-title">
+<h2>🎯 أفضل الممررين</h2>
+</div>
+
+<div class="grid" id="assistsList">
+<div class="loading">جاري تحميل الأسيستات...</div>
+</div>
+
+</section>
+
+<section class="section" id="players">
+
+<div class="section-title">
+<h2>👥 اللاعبون</h2>
+</div>
+
+<div class="grid" id="playersList">
+<div class="loading">جاري تحميل اللاعبين...</div>
+</div>
+
+</section>
+
+<section class="section">
+
+<div class="section-title">
+<h2>📊 إحصائيات الدوري</h2>
+</div>
+
+<div class="stats" id="stats"></div>
+
+</section>
+
+</div>
+
+<footer>
+دوري الابن الزيدوني © 2026
+</footer>
+
+<script>
+
+/* ==========================================
+   SUPABASE
+========================================== */
+
+const SUPABASE_URL =
+"https://dtxexuaverridpntgwkj.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* ==========================================
+   DATA
+========================================== */
+
+let teams = [];
+let players = [];
+let matches = [];
+
+
+/* ==========================================
+   LOAD DATA
+========================================== */
+
+async function loadData(){
+
+    try{
+
+        const [
+            teamsResult,
+            playersResult,
+            matchesResult
+        ] = await Promise.all([
+
+            supabaseClient
+                .from("teams")
+                .select("*")
+                .order("id"),
+
+            supabaseClient
+                .from("players")
+                .select("*")
+                .order("id"),
+
+            supabaseClient
+                .from("matches")
+                .select("*")
+                .order("match_date", {
+                    ascending:false
+                })
+
+        ]);
+
+
+        if(teamsResult.error)
+            throw teamsResult.error;
+
+        if(playersResult.error)
+            throw playersResult.error;
+
+        if(matchesResult.error)
+            throw matchesResult.error;
+
+
+        teams =
+            teamsResult.data || [];
+
+        players =
+            playersResult.data || [];
+
+        matches =
+            matchesResult.data || [];
+
+
+        showTeams();
+
+        createRanking();
+
+        showMatches();
+
+        showGoals();
+
+        showAssists();
+
+        showPlayers();
+
+        showStats();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById("teams").innerHTML = `
+        
+        <div class="error">
+        
+        ❌ حدث خطأ أثناء الاتصال بقاعدة البيانات.
+        
+        <br><br>
+        
+        ${error.message}
+        
+        </div>
+        
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   TEAM LOGO
+========================================== */
+
+function getTeamLogo(team){
+
+    const found =
+        teams.find(t => t.name === team);
+
+    return found?.logo || null;
+
+}
+
+
+/* ==========================================
+   SHOW TEAMS
+========================================== */
+
+function showTeams(){
+
+    const box =
+        document.getElementById("teams");
+
+    box.innerHTML = "";
+
+
+    if(teams.length === 0){
+
+        box.innerHTML = `
+        
+        <div class="card">
+        
+        لا توجد فرق حتى الآن.
+        
+        </div>
+        
+        `;
+
+        return;
+    }
+
+
+    teams.forEach(team => {
+
+        const logo =
+            getTeamLogo(team.name);
+
+
+        const logoHTML = logo
+
+        ? `
+        <img
+        src="${logo}"
+        alt="${team.name}"
+        >
+        `
+
+        : `⚽`;
+
+
+        box.innerHTML += `
+
+        <div
+        class="card team-card"
+        onclick="openTeam('${escapeAttribute(team.name)}')"
+        >
+
+        <div class="team-logo">
+
+        ${logoHTML}
+
+        </div>
+
+        <h3>
+
+        ${team.name}
+
+        </h3>
+
+        <p>
+
+        اضغط لعرض صفحة الفريق
+
+        </p>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ==========================================
+   ESCAPE
+========================================== */
+
+function escapeAttribute(text){
+
+    return String(text)
+        .replace(/\\/g,"\\\\")
+        .replace(/'/g,"\\'");
+
+}
+
+
+/* ==========================================
+   OPEN TEAM
+========================================== */
+
+function openTeam(team){
+
+    window.location.href =
+        "team.html?team=" +
+        encodeURIComponent(team);
+
+}
+
+
+/* ==========================================
+   RANKING
+========================================== */
+
+function createRanking(){
+
+    const data = {};
+
+
+    teams.forEach(team => {
+
+        data[team.name] = {
+
+            played:0,
+            wins:0,
+            draws:0,
+            losses:0,
+            gf:0,
+            ga:0,
+            points:0
+
+        };
+
+    });
+
+
+    matches.forEach(match => {
+
+        if(!data[match.home])
+            return;
+
+        if(!data[match.away])
+            return;
+
+
+        const homeGoals =
+            Number(match.home_goals) || 0;
+
+        const awayGoals =
+            Number(match.away_goals) || 0;
+
+
+        data[match.home].played++;
+
+        data[match.away].played++;
+
+
+        data[match.home].gf +=
+            homeGoals;
+
+        data[match.home].ga +=
+            awayGoals;
+
+
+        data[match.away].gf +=
+            awayGoals;
+
+        data[match.away].ga +=
+            homeGoals;
+
+
+        if(homeGoals > awayGoals){
+
+            data[match.home].wins++;
+
+            data[match.home].points += 3;
+
+            data[match.away].losses++;
+
+        }
+
+        else if(homeGoals < awayGoals){
+
+            data[match.away].wins++;
+
+            data[match.away].points += 3;
+
+            data[match.home].losses++;
+
+        }
+
+        else{
+
+            data[match.home].draws++;
+
+            data[match.away].draws++;
+
+            data[match.home].points++;
+
+            data[match.away].points++;
+
+        }
+
+    });
+
+
+    const ranking =
+        Object.entries(data)
+        .sort((a,b) => {
+
+            if(
+                b[1].points !==
+                a[1].points
+            ){
+
+                return
+                    b[1].points -
+                    a[1].points;
+
+            }
+
+
+            const gdA =
+                a[1].gf - a[1].ga;
+
+            const gdB =
+                b[1].gf - b[1].ga;
+
+
+            if(gdB !== gdA)
+                return gdB - gdA;
+
+
+            return b[1].gf - a[1].gf;
+
+        });
+
+
+    const table =
+        document.getElementById(
+            "rankingTable"
+        );
+
+    table.innerHTML = "";
+
+
+    ranking.forEach(
+        (item,index) => {
+
+            const team =
+                item[0];
+
+            const d =
+                item[1];
+
+
+            table.innerHTML += `
+
+            <tr>
+
+            <td>
+            ${index + 1}
+            </td>
+
+            <td>
+            <strong>
+            ${team}
+            </strong>
+            </td>
+
+            <td>
+            ${d.played}
+            </td>
+
+            <td>
+            ${d.wins}
+            </td>
+
+            <td>
+            ${d.draws}
+            </td>
+
+            <td>
+            ${d.losses}
+            </td>
+
+            <td>
+            ${d.gf}
+            </td>
+
+            <td>
+            ${d.ga}
+            </td>
+
+            <td>
+            <strong>
+            ${d.points}
+            </strong>
+            </td>
+
+            </tr>
+
+            `;
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   SHOW MATCHES
+========================================== */
+
+function showMatches(){
+
+    const box =
+        document.getElementById(
+            "matchesList"
+        );
+
+    box.innerHTML = "";
+
+
+    if(matches.length === 0){
+
+        box.innerHTML = `
+        
+        <div class="card">
+        
+        لا توجد مباريات حتى الآن.
+        
+        </div>
+        
+        `;
+
+        return;
+
+    }
+
+
+    matches.forEach(match => {
+
+        const round =
+            match.round
+            ? "الجولة " + match.round
+            : "مباراة";
+
+
+        const date =
+            match.match_date
+            ? `<br>${match.match_date}`
+            : "";
+
+
+        box.innerHTML += `
+
+        <div class="card">
+
+        <div class="match">
+
+        <div class="team">
+
+        ${match.home}
+
+        </div>
+
+
+        <div>
+
+        <div class="score">
+
+        ${match.home_goals}
+        -
+        ${match.away_goals}
+
+        </div>
+
+
+        <div class="match-info">
+
+        ${round}
+        ${date}
+
+        </div>
+
+        </div>
+
+
+        <div class="team">
+
+        ${match.away}
+
+        </div>
+
+        </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ==========================================
+   PLAYER IMAGE
+========================================== */
+
+function getPlayerImage(player){
+
+    if(player.photo){
+
+        return `
+
+        <img
+        class="rank-photo"
+        src="${player.photo}"
+        alt="${player.name}"
+        >
+
+        `;
+
+    }
+
+
+    return `
+
+    <div
+    class="rank-photo"
+    style="
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+    ">
+
+    👤
+
+    </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   GOALS
+========================================== */
+
+function showGoals(){
+
+    const box =
+        document.getElementById(
+            "scorersList"
+        );
+
+    box.innerHTML = "";
+
+
+    const sorted =
+        [...players].sort(
+            (a,b) =>
+                (Number(b.goals) || 0)
+                -
+                (Number(a.goals) || 0)
+        );
+
+
+    if(sorted.length === 0){
+
+        box.innerHTML = `
+        
+        <div class="card">
+        لا يوجد لاعبون حتى الآن.
+        </div>
+        
+        `;
+
+        return;
+
+    }
+
+
+    sorted.forEach(
+        (player,index) => {
+
+            box.innerHTML += `
+
+            <div
+            class="card"
+            onclick="openPlayer(${player.id})"
+            style="cursor:pointer"
+            >
+
+            <div class="rank">
+
+            <div class="rank-number">
+            ${index + 1}
+            </div>
+
+            ${getPlayerImage(player)}
+
+            <div class="rank-info">
+
+            <strong>
+            ${player.name}
+            </strong>
+
+            <span>
+            ${player.team}
+            </span>
+
+            </div>
+
+            <div class="rank-value">
+
+            ${player.goals || 0}
+            ⚽
+
+            </div>
+
+            </div>
+
+            </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   ASSISTS
+========================================== */
+
+function showAssists(){
+
+    const box =
+        document.getElementById(
+            "assistsList"
+        );
+
+    box.innerHTML = "";
+
+
+    const sorted =
+        [...players].sort(
+            (a,b) =>
+                (Number(b.assists) || 0)
+                -
+                (Number(a.assists) || 0)
+        );
+
+
+    if(sorted.length === 0){
+
+        box.innerHTML = `
+        
+        <div class="card">
+        لا يوجد لاعبون حتى الآن.
+        </div>
+        
+        `;
+
+        return;
+
+    }
+
+
+    sorted.forEach(
+        (player,index) => {
+
+            box.innerHTML += `
+
+            <div
+            class="card"
+            onclick="openPlayer(${player.id})"
+            style="cursor:pointer"
+            >
+
+            <div class="rank">
+
+            <div class="rank-number">
+            ${index + 1}
+            </div>
+
+            ${getPlayerImage(player)}
+
+            <div class="rank-info">
+
+            <strong>
+            ${player.name}
+            </strong>
+
+            <span>
+            ${player.team}
+            </span>
+
+            </div>
+
+            <div class="rank-value">
+
+            ${player.assists || 0}
+            🎯
+
+            </div>
+
+            </div>
+
+            </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   SHOW PLAYERS
+========================================== */
+
+function showPlayers(){
+
+    const box =
+        document.getElementById(
+            "playersList"
+        );
+
+    box.innerHTML = "";
+
+
+    if(players.length === 0){
+
+        box.innerHTML = `
+        
+        <div class="card">
+        
+        لا يوجد لاعبون حتى الآن.
+        
+        <br><br>
+        
+        اذهب إلى الإدارة لإضافة اللاعبين.
+        
+        </div>
+        
+        `;
+
+        return;
+
+    }
+
+
+    players.forEach(player => {
+
+        let image;
+
+
+        if(player.photo){
+
+            image = `
+
+            <img
+            class="player-photo"
+            src="${player.photo}"
+            alt="${player.name}"
+            >
+
+            `;
+
+        }
+
+        else{
+
+            image = `
+
+            <div
+            class="player-photo"
+            style="
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:50px;
+            ">
+
+            👤
+
+            </div>
+
+            `;
+
+        }
+
+
+        box.innerHTML += `
+
+        <div
+        class="card player"
+        onclick="openPlayer(${player.id})"
+        >
+
+        ${image}
+
+        <div class="player-name">
+        ${player.name}
+        </div>
+
+        <div class="player-team">
+        ${player.team}
+        </div>
+
+        <div class="player-position">
+        ${player.position || "مركز غير محدد"}
+        </div>
+
+        <br>
+
+        <small>
+
+        رقم القميص:
+        ${player.number || "—"}
+
+        </small>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ==========================================
+   OPEN PLAYER
+========================================== */
+
+function openPlayer(id){
+
+    window.location.href =
+        "player.html?id=" + id;
+
+}
+
+
+/* ==========================================
+   STATS
+========================================== */
+
+function showStats(){
+
+    const box =
+        document.getElementById(
+            "stats"
+        );
+
+
+    let totalGoals = 0;
+
+
+    matches.forEach(match => {
+
+        totalGoals +=
+            Number(match.home_goals) || 0;
+
+        totalGoals +=
+            Number(match.away_goals) || 0;
+
+    });
+
+
+    box.innerHTML = `
+
+    <div class="stat">
+
+    <h3>🏟️ المباريات</h3>
+
+    <strong>
+    ${matches.length}
+    </strong>
+
+    </div>
+
+
+    <div class="stat">
+
+    <h3>⚽ الأهداف</h3>
+
+    <strong>
+    ${totalGoals}
+    </strong>
+
+    </div>
+
+
+    <div class="stat">
+
+    <h3>👥 اللاعبون</h3>
+
+    <strong>
+    ${players.length}
+    </strong>
+
+    </div>
+
+
+    <div class="stat">
+
+    <h3>🏆 الفرق</h3>
+
+    <strong>
+    ${teams.length}
+    </strong>
+
+    </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadData();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الفريق | دوري الابن الزيدوني</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f5f8;
+    color:#172033;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    max-width:1100px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.team-header{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.team-logo{
+    width:150px;
+    height:150px;
+    object-fit:contain;
+    margin-bottom:15px;
+}
+
+.team-name{
+    font-size:34px;
+    font-weight:bold;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:10px;
+    margin-top:25px;
+}
+
+.stat{
+    background:#111827;
+    color:white;
+    border-radius:12px;
+    padding:15px 8px;
+}
+
+.stat span{
+    display:block;
+    font-size:14px;
+    margin-bottom:7px;
+}
+
+.stat strong{
+    font-size:24px;
+}
+
+.section{
+    background:white;
+    margin-top:25px;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+.section h2{
+    margin-top:0;
+}
+
+.players{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.player{
+    background:#f8fafc;
+    border-radius:15px;
+    padding:15px;
+    text-align:center;
+    text-decoration:none;
+    color:#172033;
+}
+
+.player img{
+    width:100px;
+    height:100px;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+.player h3{
+    margin:10px 0 5px;
+}
+
+.player p{
+    color:#6b7280;
+    margin:5px;
+}
+
+.match{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    margin-bottom:10px;
+    background:#f8fafc;
+    border-radius:12px;
+}
+
+.score{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.win{
+    border-right:5px solid #16a34a;
+}
+
+.draw{
+    border-right:5px solid #eab308;
+}
+
+.loss{
+    border-right:5px solid #dc2626;
+}
+
+.back{
+    display:inline-block;
+    margin-top:25px;
+    padding:12px 25px;
+    background:#111827;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+}
+
+.loading{
+    text-align:center;
+    font-size:22px;
+}
+
+.error{
+    color:#dc2626;
+    text-align:center;
+    font-size:20px;
+}
+
+@media(max-width:900px){
+    .stats{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .players{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .players{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .team-name{
+        font-size:25px;
+    }
+
+    .match{
+        font-size:14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>دوري الابن الزيدوني</h1>
+</header>
+
+<div class="container">
+
+    <div id="loading" class="loading">
+        جاري تحميل بيانات الفريق...
+    </div>
+
+    <div id="content" style="display:none;"></div>
+
+</div>
+
+<script>
+const SUPABASE_URL =
+"https://dtxexuaverridpntgwkj.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+async function loadTeam(){
+
+    const params = new URLSearchParams(window.location.search);
+
+    const teamName = params.get("team");
+
+    if(!teamName){
+        showError("لم يتم تحديد الفريق.");
+        return;
+    }
+
+    const [
+        teamResult,
+        playersResult,
+        matchesResult
+    ] = await Promise.all([
+
+        supabaseClient
+        .from("teams")
+        .select("*")
+        .eq("name", teamName)
+        .single(),
+
+        supabaseClient
+        .from("players")
+        .select("*")
+        .eq("team", teamName)
+        .order("number", {ascending:true}),
+
+        supabaseClient
+        .from("matches")
+        .select("*")
+        .or(`home.eq.${teamName},away.eq.${teamName}`)
+        .order("match_date", {ascending:false})
+    ]);
+
+    if(teamResult.error){
+        console.error(teamResult.error);
+        showError("لم يتم العثور على الفريق.");
+        return;
+    }
+
+    if(playersResult.error){
+        console.error(playersResult.error);
+        showError("حدث خطأ في تحميل اللاعبين.");
+        return;
+    }
+
+    if(matchesResult.error){
+        console.error(matchesResult.error);
+        showError("حدث خطأ في تحميل المباريات.");
+        return;
+    }
+
+    const team = teamResult.data;
+    const players = playersResult.data || [];
+    const matches = matchesResult.data || [];
+
+    calculateStats(teamName, matches, players);
+
+    renderTeam(
+        team,
+        players,
+        matches,
+        teamName
+    );
+}
+
+function calculateStats(teamName, matches){
+
+    let played = 0;
+    let wins = 0;
+    let draws = 0;
+    let losses = 0;
+    let gf = 0;
+    let ga = 0;
+
+    matches.forEach(match => {
+
+        const homeGoals = Number(match.home_goals || 0);
+        const awayGoals = Number(match.away_goals || 0);
+
+        played++;
+
+        if(match.home === teamName){
+
+            gf += homeGoals;
+            ga += awayGoals;
+
+            if(homeGoals > awayGoals){
+                wins++;
+            }else if(homeGoals === awayGoals){
+                draws++;
+            }else{
+                losses++;
+            }
+
+        }else{
+
+            gf += awayGoals;
+            ga += homeGoals;
+
+            if(awayGoals > homeGoals){
+                wins++;
+            }else if(awayGoals === homeGoals){
+                draws++;
+            }else{
+                losses++;
+            }
+        }
+    });
+
+    const points =
+        wins * 3 + draws;
+
+    window.teamStats = {
+        played,
+        wins,
+        draws,
+        losses,
+        gf,
+        ga,
+        gd:gf-ga,
+        points
+    };
+}
+
+function renderTeam(team, players, matches, teamName){
+
+    document.title =
+        teamName + " | دوري الابن الزيدوني";
+
+    document.getElementById("loading").style.display = "none";
+
+    const content =
+        document.getElementById("content");
+
+    content.style.display = "block";
+
+    const stats = window.teamStats;
+
+    const logo =
+        team.logo ||
+        "https://via.placeholder.com/150?text=TEAM";
+
+    content.innerHTML = `
+
+        <div class="team-header">
+
+            <img
+                class="team-logo"
+                src="${logo}"
+                alt="${escapeHtml(teamName)}"
+            >
+
+            <div class="team-name">
+                ${escapeHtml(teamName)}
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <span>لعب</span>
+                    <strong>${stats.played}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>فوز</span>
+                    <strong>${stats.wins}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>تعادل</span>
+                    <strong>${stats.draws}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>خسارة</span>
+                    <strong>${stats.losses}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>له</span>
+                    <strong>${stats.gf}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>عليه</span>
+                    <strong>${stats.ga}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>النقاط</span>
+                    <strong>${stats.points}</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h2>👥 لاعبو الفريق</h2>
+
+            <div class="players">
+
+                ${
+                    players.length
+                    ? players.map(player => {
+
+                        const photo =
+                            player.photo ||
+                            "https://via.placeholder.com/100?text=PLAYER";
+
+                        return `
+
+                            <a
+                                class="player"
+                                href="player.html?id=${player.id}"
+                            >
+
+                                <img
+                                    src="${photo}"
+                                    alt="${escapeHtml(player.name)}"
+                                >
+
+                                <h3>
+                                    ${escapeHtml(player.name)}
+                                </h3>
+
+                                <p>
+                                    ${escapeHtml(player.position || "غير محدد")}
+                                </p>
+
+                                <p>
+                                    #${player.number ?? "-"}
+                                </p>
+
+                            </a>
+
+                        `;
+
+                    }).join("")
+                    :
+                    "<p>لا يوجد لاعبين حتى الآن.</p>"
+                }
+
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <h2>⚽ مباريات الفريق</h2>
+
+            ${
+                matches.length
+                ? matches.map(match => {
+
+                    const homeGoals =
+                        Number(match.home_goals || 0);
+
+                    const awayGoals =
+                        Number(match.away_goals || 0);
+
+                    let resultClass = "";
+
+                    const teamIsHome =
+                        match.home === teamName;
+
+                    const teamGoals =
+                        teamIsHome
+                        ? homeGoals
+                        : awayGoals;
+
+                    const opponentGoals =
+                        teamIsHome
+                        ? awayGoals
+                        : homeGoals;
+
+                    if(teamGoals > opponentGoals){
+                        resultClass = "win";
+                    }else if(teamGoals === opponentGoals){
+                        resultClass = "draw";
+                    }else{
+                        resultClass = "loss";
+                    }
+
+                    return `
+
+                        <div class="match ${resultClass}">
+
+                            <div>
+                                ${escapeHtml(match.home)}
+                            </div>
+
+                            <div class="score">
+                                ${homeGoals}
+                                -
+                                ${awayGoals}
+                            </div>
+
+                            <div>
+                                ${escapeHtml(match.away)}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }).join("")
+                :
+                "<p>لا توجد مباريات حتى الآن.</p>"
+            }
+
+        </div>
+
+        <a class="back" href="index.html">
+            ← العودة إلى الدوري
+        </a>
+    `;
+}
+
+function showError(message){
+
+    document.getElementById("loading").style.display = "none";
+
+    const content =
+        document.getElementById("content");
+
+    content.style.display = "block";
+
+    content.innerHTML = `
+        <div class="error">
+            ${message}
+            <br><br>
+
+            <a class="back" href="index.html">
+                ← العودة إلى الدوري
+            </a>
+        </div>
+    `;
+}
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+loadTeam();
+</script>
+
+</body>
+</html>

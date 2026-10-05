@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>لوحة الإدارة | دوري الابن الزيدوني</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f5f8;
+    color:#172033;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+header h1{
+    margin:0 0 10px;
+}
+
+.container{
+    max-width:1100px;
+    margin:30px auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.07);
+}
+
+h2{
+    margin-top:0;
+}
+
+input,
+select,
+button{
+    width:100%;
+    padding:12px;
+    margin:7px 0;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-size:15px;
+}
+
+button{
+    background:#111827;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+button.delete{
+    background:#dc2626;
+}
+
+button.logout{
+    background:#dc2626;
+    max-width:180px;
+}
+
+.login{
+    max-width:450px;
+    margin:80px auto;
+}
+
+.login h1{
+    text-align:center;
+}
+
+.message{
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
+    display:none;
+}
+
+.success{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.hidden{
+    display:none !important;
+}
+
+.team-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.team-box{
+    background:#f8fafc;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.team-logo{
+    width:120px;
+    height:120px;
+    object-fit:contain;
+    display:block;
+    margin:10px auto;
+}
+
+.player-row,
+.match-row{
+    background:#f8fafc;
+    border-radius:12px;
+    padding:15px;
+    margin:10px 0;
+}
+
+.player-photo{
+    width:70px;
+    height:70px;
+    object-fit:cover;
+    border-radius:50%;
+    vertical-align:middle;
+    margin-left:10px;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.actions button{
+    width:auto;
+    min-width:100px;
+}
+
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+}
+
+.small{
+    color:#6b7280;
+    font-size:14px;
+}
+
+@media(max-width:700px){
+
+    .team-grid{
+        grid-template-columns:1fr;
+    }
+
+    .container{
+        padding:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN ================= -->
+
+<div id="loginPage" class="login card">
+
+    <h1>🔐 لوحة الإدارة</h1>
+
+    <p class="small" style="text-align:center;">
+        دوري الابن الزيدوني
+    </p>
+
+    <input
+        id="email"
+        type="email"
+        placeholder="البريد الإلكتروني"
+    >
+
+    <input
+        id="password"
+        type="password"
+        placeholder="كلمة السر"
+    >
+
+    <button onclick="login()">
+        تسجيل الدخول
+    </button>
+
+    <div id="loginMessage" class="message"></div>
+
+</div>
+
+
+<!-- ================= ADMIN ================= -->
+
+<div id="adminPage" class="hidden">
+
+<header>
+
+    <h1>⚽ دوري الابن الزيدوني</h1>
+
+    <div class="top-bar" style="justify-content:center;margin:10px 0 0;">
+
+        <span>
+            لوحة الإدارة
+        </span>
+
+        <button
+            class="logout"
+            onclick="logout()"
+        >
+            تسجيل الخروج
+        </button>
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+<!-- ================= TEAMS ================= -->
+
+<div class="card">
+
+<h2>🏆 الفرق</h2>
+
+<div id="teamsContainer" class="team-grid"></div>
+
+</div>
+
+
+<!-- ================= ADD PLAYER ================= -->
+
+<div class="card">
+
+<h2>👤 إضافة لاعب</h2>
+
+<input
+    id="playerName"
+    type="text"
+    placeholder="اسم اللاعب"
+>
+
+<select id="playerTeam">
+    <option value="">اختر الفريق</option>
+</select>
+
+<input
+    id="playerPosition"
+    type="text"
+    placeholder="المركز مثال: ST / CM / GK"
+>
+
+<input
+    id="playerNumber"
+    type="number"
+    placeholder="رقم القميص"
+>
+
+<label>
+    صورة اللاعب
+</label>
+
+<input
+    id="playerPhoto"
+    type="file"
+    accept="image/*"
+>
+
+<button onclick="addPlayer()">
+    إضافة اللاعب
+</button>
+
+<div id="playerMessage" class="message"></div>
+
+</div>
+
+
+<!-- ================= PLAYERS ================= -->
+
+<div class="card">
+
+<h2>👥 اللاعبين</h2>
+
+<div id="playersContainer">
+    جاري التحميل...
+</div>
+
+</div>
+
+
+<!-- ================= ADD MATCH ================= -->
+
+<div class="card">
+
+<h2>⚽ إضافة مباراة</h2>
+
+<select id="homeTeam">
+    <option value="">الفريق المضيف</option>
+</select>
+
+<select id="awayTeam">
+    <option value="">الفريق الضيف</option>
+</select>
+
+<input
+    id="homeGoals"
+    type="number"
+    min="0"
+    value="0"
+    placeholder="أهداف المضيف"
+>
+
+<input
+    id="awayGoals"
+    type="number"
+    min="0"
+    value="0"
+    placeholder="أهداف الضيف"
+>
+
+<input
+    id="round"
+    type="text"
+    placeholder="الجولة مثال: الجولة 1"
+>
+
+<input
+    id="matchDate"
+    type="date"
+>
+
+<button onclick="addMatch()">
+    إضافة المباراة
+</button>
+
+<div id="matchMessage" class="message"></div>
+
+</div>
+
+
+<!-- ================= MATCHES ================= -->
+
+<div class="card">
+
+<h2>📅 المباريات</h2>
+
+<div id="matchesContainer">
+    جاري التحميل...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+"https://dtxexuaverridpntgwkj.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =====================================================
+   CHECK LOGIN
+===================================================== */
+
+async function checkUser(){
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    if(session){
+
+        showAdmin();
+
+    }else{
+
+        showLogin();
+
+    }
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+async function login(){
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const message =
+        document.getElementById("loginMessage");
+
+    if(!email || !password){
+
+        showMessage(
+            message,
+            "اكتب البريد الإلكتروني وكلمة السر.",
+            false
+        );
+
+        return;
+    }
+
+    const {
+        data,
+        error
+    } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if(error){
+
+        console.error(error);
+
+        showMessage(
+            message,
+            "البريد الإلكتروني أو كلمة السر غير صحيحة.",
+            false
+        );
+
+        return;
+    }
+
+    showMessage(
+        message,
+        "تم تسجيل الدخول بنجاح ✅",
+        true
+    );
+
+    setTimeout(() => {
+        showAdmin();
+    },500);
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    showLogin();
+
+}
+
+
+/* =====================================================
+   SHOW / HIDE
+===================================================== */
+
+function showAdmin(){
+
+    document
+        .getElementById("loginPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("adminPage")
+        .classList.remove("hidden");
+
+    loadData();
+}
+
+
+function showLogin(){
+
+    document
+        .getElementById("adminPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginPage")
+        .classList.remove("hidden");
+}
+
+
+/* =====================================================
+   LOAD ALL DATA
+===================================================== */
+
+async function loadData(){
+
+    await loadTeams();
+    await loadPlayers();
+    await loadMatches();
+
+}
+
+
+/* =====================================================
+   TEAMS
+===================================================== */
+
+async function loadTeams(){
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("teams")
+        .select("*")
+        .order("id");
+
+    if(error){
+
+        console.error(error);
+        return;
+    }
+
+    const container =
+        document.getElementById("teamsContainer");
+
+    const selects = [
+        document.getElementById("playerTeam"),
+        document.getElementById("homeTeam"),
+        document.getElementById("awayTeam")
+    ];
+
+    selects.forEach(select => {
+
+        const firstOption =
+            select.options[0].outerHTML;
+
+        select.innerHTML = firstOption;
+
+        data.forEach(team => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = team.name;
+            option.textContent = team.name;
+
+            select.appendChild(option);
+
+        });
+
+    });
+
+
+    container.innerHTML =
+        data.map(team => {
+
+            const logo =
+                team.logo ||
+                "https://via.placeholder.com/120?text=TEAM";
+
+            return `
+
+                <div class="team-box">
+
+                    <h3>
+                        ${escapeHtml(team.name)}
+                    </h3>
+
+                    <img
+                        class="team-logo"
+                        src="${logo}"
+                    >
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onchange="changeLogo(${team.id}, this.files[0])"
+                    >
+
+                    <button
+                        onclick="deleteLogo(${team.id})"
+                    >
+                        حذف الشعار
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =====================================================
+   CHANGE TEAM LOGO
+===================================================== */
+
+async function changeLogo(id,file){
+
+    if(!file) return;
+
+    try{
+
+        const logo =
+            await readFile(file);
+
+        const {
+            error
+        } = await supabaseClient
+            .from("teams")
+            .update({
+                logo:logo
+            })
+            .eq("id",id);
+
+        if(error){
+
+            alert("حدث خطأ أثناء رفع الشعار.");
+            console.error(error);
+            return;
+        }
+
+        alert("تم تحديث شعار الفريق ✅");
+
+        loadTeams();
+
+    }catch(error){
+
+        console.error(error);
+        alert("تعذر قراءة الصورة.");
+
+    }
+}
+
+
+/* =====================================================
+   DELETE LOGO
+===================================================== */
+
+async function deleteLogo(id){
+
+    const ok =
+        confirm("هل تريد حذف شعار الفريق؟");
+
+    if(!ok) return;
+
+    const {
+        error
+    } = await supabaseClient
+        .from("teams")
+        .update({
+            logo:null
+        })
+        .eq("id",id);
+
+    if(error){
+
+        console.error(error);
+        alert("حدث خطأ.");
+
+        return;
+    }
+
+    loadTeams();
+
+}
+
+
+/* =====================================================
+   ADD PLAYER
+===================================================== */
+
+async function addPlayer(){
+
+    const name =
+        document
+        .getElementById("playerName")
+        .value.trim();
+
+    const team =
+        document
+        .getElementById("playerTeam")
+        .value;
+
+    const position =
+        document
+        .getElementById("playerPosition")
+        .value.trim();
+
+    const numberValue =
+        document
+        .getElementById("playerNumber")
+        .value;
+
+    const photoFile =
+        document
+        .getElementById("playerPhoto")
+        .files[0];
+
+    const message =
+        document
+        .getElementById("playerMessage");
+
+
+    if(!name || !team){
+
+        showMessage(
+            message,
+            "اكتب اسم اللاعب واختر الفريق.",
+            false
+        );
+
+        return;
+    }
+
+
+    let photo = null;
+
+    if(photoFile){
+
+        try{
+
+            photo =
+                await readFile(photoFile);
+
+        }catch(error){
+
+            showMessage(
+                message,
+                "تعذر قراءة صورة اللاعب.",
+                false
+            );
+
+            return;
+        }
+    }
+
+
+    const number =
+        numberValue
+        ? Number(numberValue)
+        : null;
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("players")
+        .insert({
+
+            name:name,
+            team:team,
+            position:position || null,
+            number:number,
+            photo:photo,
+            goals:0,
+            assists:0
+
+        });
+
+
+    if(error){
+
+        console.error(error);
+
+        showMessage(
+            message,
+            "حدث خطأ أثناء إضافة اللاعب.",
+            false
+        );
+
+        return;
+    }
+
+
+    showMessage(
+        message,
+        "تمت إضافة اللاعب بنجاح ✅",
+        true
+    );
+
+
+    document
+        .getElementById("playerName")
+        .value="";
+
+    document
+        .getElementById("playerPosition")
+        .value="";
+
+    document
+        .getElementById("playerNumber")
+        .value="";
+
+    document
+        .getElementById("playerPhoto")
+        .value="";
+
+
+    loadPlayers();
+
+}
+
+
+/* =====================================================
+   LOAD PLAYERS
+===================================================== */
+
+async function loadPlayers(){
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("players")
+        .select("*")
+        .order("id");
+
+    if(error){
+
+        console.error(error);
+        return;
+    }
+
+
+    const container =
+        document.getElementById("playersContainer");
+
+
+    if(!data.length){
+
+        container.innerHTML =
+            "<p>لا يوجد لاعبين.</p>";
+
+        return;
+    }
+
+
+    container.innerHTML =
+        data.map(player => {
+
+            const photo =
+                player.photo ||
+                "https://via.placeholder.com/70?text=PLAYER";
+
+            return `
+
+                <div class="player-row">
+
+                    <img
+                        class="player-photo"
+                        src="${photo}"
+                    >
+
+                    <strong>
+                        ${escapeHtml(player.name)}
+                    </strong>
+
+                    <div class="small">
+                        الفريق:
+                        ${escapeHtml(player.team)}
+                    </div>
+
+                    <div class="small">
+                        المركز:
+                        ${escapeHtml(player.position || "-")}
+                    </div>
+
+                    <div class="small">
+                        الرقم:
+                        ${player.number ?? "-"}
+                    </div>
+
+                    <br>
+
+                    <label>
+                        ⚽ الأهداف
+                    </label>
+
+                    <input
+                        id="goals-${player.id}"
+                        type="number"
+                        min="0"
+                        value="${player.goals || 0}"
+                    >
+
+                    <label>
+                        🎯 الأسيستات
+                    </label>
+
+                    <input
+                        id="assists-${player.id}"
+                        type="number"
+                        min="0"
+                        value="${player.assists || 0}"
+                    >
+
+                    <div class="actions">
+
+                        <button
+                            onclick="updatePlayer(${player.id})"
+                        >
+                            حفظ الإحصائيات
+                        </button>
+
+                        <button
+                            class="delete"
+                            onclick="deletePlayer(${player.id})"
+                        >
+                            حذف اللاعب
+                        </button>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =====================================================
+   UPDATE PLAYER
+===================================================== */
+
+async function updatePlayer(id){
+
+    const goals =
+        Number(
+            document
+            .getElementById(`goals-${id}`)
+            .value
+        );
+
+    const assists =
+        Number(
+            document
+            .getElementById(`assists-${id}`)
+            .value
+        );
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("players")
+        .update({
+
+            goals:goals,
+            assists:assists
+
+        })
+        .eq("id",id);
+
+
+    if(error){
+
+        console.error(error);
+
+        alert("حدث خطأ أثناء حفظ الإحصائيات.");
+
+        return;
+    }
+
+
+    alert("تم تحديث الإحصائيات ✅");
+
+    loadPlayers();
+
+}
+
+
+/* =====================================================
+   DELETE PLAYER
+===================================================== */
+
+async function deletePlayer(id){
+
+    const ok =
+        confirm(
+            "هل أنت متأكد من حذف هذا اللاعب؟"
+        );
+
+    if(!ok) return;
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("players")
+        .delete()
+        .eq("id",id);
+
+
+    if(error){
+
+        console.error(error);
+
+        alert("حدث خطأ أثناء حذف اللاعب.");
+
+        return;
+    }
+
+
+    loadPlayers();
+
+}
+
+
+/* =====================================================
+   ADD MATCH
+===================================================== */
+
+async function addMatch(){
+
+    const home =
+        document
+        .getElementById("homeTeam")
+        .value;
+
+    const away =
+        document
+        .getElementById("awayTeam")
+        .value;
+
+    const homeGoals =
+        Number(
+            document
+            .getElementById("homeGoals")
+            .value
+        );
+
+    const awayGoals =
+        Number(
+            document
+            .getElementById("awayGoals")
+            .value
+        );
+
+    const round =
+        document
+        .getElementById("round")
+        .value.trim();
+
+    const matchDate =
+        document
+        .getElementById("matchDate")
+        .value;
+
+    const message =
+        document
+        .getElementById("matchMessage");
+
+
+    if(!home || !away){
+
+        showMessage(
+            message,
+            "اختر الفريقين.",
+            false
+        );
+
+        return;
+    }
+
+
+    if(home === away){
+
+        showMessage(
+            message,
+            "لا يمكن أن يلعب الفريق ضد نفسه.",
+            false
+        );
+
+        return;
+    }
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("matches")
+        .insert({
+
+            home:home,
+            away:away,
+            home_goals:homeGoals,
+            away_goals:awayGoals,
+            round:round || null,
+            match_date:matchDate || null
+
+        });
+
+
+    if(error){
+
+        console.error(error);
+
+        showMessage(
+            message,
+            "حدث خطأ أثناء إضافة المباراة: " + error.message,
+            false
+        );
+
+        return;
+    }
+
+
+    showMessage(
+        message,
+        "تمت إضافة المباراة بنجاح ✅",
+        true
+    );
+
+
+    document
+        .getElementById("homeGoals")
+        .value=0;
+
+    document
+        .getElementById("awayGoals")
+        .value=0;
+
+    document
+        .getElementById("round")
+        .value="";
+
+    document
+        .getElementById("matchDate")
+        .value="";
+
+
+    loadMatches();
+
+}
+
+
+/* =====================================================
+   LOAD MATCHES
+===================================================== */
+
+async function loadMatches(){
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+        .from("matches")
+        .select("*")
+        .order("match_date", {
+            ascending:false
+        });
+
+
+    if(error){
+
+        console.error(error);
+        return;
+    }
+
+
+    const container =
+        document.getElementById("matchesContainer");
+
+
+    if(!data.length){
+
+        container.innerHTML =
+            "<p>لا توجد مباريات.</p>";
+
+        return;
+    }
+
+
+    container.innerHTML =
+        data.map(match => {
+
+            return `
+
+                <div class="match-row">
+
+                    <strong>
+                        ${escapeHtml(match.home)}
+                    </strong>
+
+                    <span>
+                        ${match.home_goals}
+                        -
+                        ${match.away_goals}
+                    </span>
+
+                    <strong>
+                        ${escapeHtml(match.away)}
+                    </strong>
+
+                    <div class="small">
+
+                        ${match.round
+                            ? escapeHtml(match.round)
+                            : ""}
+
+                        ${
+                            match.match_date
+                            ? " | " + match.match_date
+                            : ""
+                        }
+
+                    </div>
+
+                    <br>
+
+                    <button
+                        class="delete"
+                        onclick="deleteMatch(${match.id})"
+                    >
+                        حذف المباراة
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =====================================================
+   DELETE MATCH
+===================================================== */
+
+async function deleteMatch(id){
+
+    const ok =
+        confirm(
+            "هل تريد حذف هذه المباراة؟"
+        );
+
+    if(!ok) return;
+
+
+    const {
+        error
+    } = await supabaseClient
+        .from("matches")
+        .delete()
+        .eq("id",id);
+
+
+    if(error){
+
+        console.error(error);
+
+        alert("حدث خطأ أثناء حذف المباراة.");
+
+        return;
+    }
+
+
+    loadMatches();
+
+}
+
+
+/* =====================================================
+   FILE TO BASE64
+===================================================== */
+
+function readFile(file){
+
+    return new Promise((resolve,reject) => {
+
+        const reader =
+            new FileReader();
+
+        reader.onload = () =>
+            resolve(reader.result);
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+function showMessage(element,text,success){
+
+    element.textContent = text;
+
+    element.className =
+        "message " +
+        (success ? "success" : "error");
+
+    element.style.display = "block";
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+supabaseClient.auth.onAuthStateChange(
+    (event,session) => {
+
+        if(session){
+
+            showAdmin();
+
+        }else{
+
+            showLogin();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   START
+===================================================== */
+
+checkUser();
+
+</script>
+
+</body>
+</html>

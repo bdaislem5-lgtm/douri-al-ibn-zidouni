@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بيانات اللاعب</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f5f8;
+    color:#172033;
+}
+
+header{
+    background:#111827;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+header h1{
+    margin:0;
+}
+
+.container{
+    max-width:900px;
+    margin:35px auto;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+.player-photo{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:50%;
+    border:5px solid #e5e7eb;
+    margin-bottom:20px;
+}
+
+.player-name{
+    font-size:32px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+.team{
+    font-size:20px;
+    color:#555;
+    margin-bottom:25px;
+}
+
+.info{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+    margin-top:25px;
+}
+
+.box{
+    background:#f8fafc;
+    border-radius:15px;
+    padding:20px;
+}
+
+.box span{
+    display:block;
+    color:#6b7280;
+    margin-bottom:8px;
+}
+
+.box strong{
+    font-size:25px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-top:20px;
+}
+
+.stat{
+    background:#111827;
+    color:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+.stat strong{
+    display:block;
+    font-size:30px;
+}
+
+.back{
+    display:inline-block;
+    margin-top:25px;
+    padding:12px 25px;
+    background:#111827;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+}
+
+.loading{
+    text-align:center;
+    font-size:22px;
+}
+
+.error{
+    color:#dc2626;
+    font-size:20px;
+}
+
+@media(max-width:600px){
+    .info,
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .player-name{
+        font-size:25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>دوري الابن الزيدوني</h1>
+</header>
+
+<div class="container">
+
+    <div id="loading" class="loading">
+        جاري تحميل بيانات اللاعب...
+    </div>
+
+    <div id="playerCard" style="display:none;"></div>
+
+</div>
+
+<script>
+const SUPABASE_URL =
+"https://dtxexuaverridpntgwkj.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+async function loadPlayer(){
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if(!id){
+        showError("لم يتم تحديد اللاعب.");
+        return;
+    }
+
+    const { data: player, error } =
+        await supabaseClient
+        .from("players")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if(error || !player){
+        console.error(error);
+        showError("لم يتم العثور على اللاعب.");
+        return;
+    }
+
+    document.title = player.name + " | دوري الابن الزيدوني";
+
+    const goals = Number(player.goals || 0);
+    const assists = Number(player.assists || 0);
+    const contributions = goals + assists;
+
+    const photo = player.photo ||
+        "https://via.placeholder.com/180?text=PLAYER";
+
+    document.getElementById("loading").style.display = "none";
+
+    const card = document.getElementById("playerCard");
+
+    card.style.display = "block";
+
+    card.innerHTML = `
+        <div class="card">
+
+            <img
+                class="player-photo"
+                src="${photo}"
+                alt="${escapeHtml(player.name)}"
+            >
+
+            <div class="player-name">
+                ${escapeHtml(player.name)}
+            </div>
+
+            <div class="team">
+                ${escapeHtml(player.team)}
+            </div>
+
+            <div class="info">
+
+                <div class="box">
+                    <span>المركز</span>
+                    <strong>
+                        ${escapeHtml(player.position || "غير محدد")}
+                    </strong>
+                </div>
+
+                <div class="box">
+                    <span>رقم القميص</span>
+                    <strong>
+                        ${player.number ?? "-"}
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <span>الأهداف</span>
+                    <strong>${goals}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>الأسيستات</span>
+                    <strong>${assists}</strong>
+                </div>
+
+                <div class="stat">
+                    <span>المساهمات</span>
+                    <strong>${contributions}</strong>
+                </div>
+
+            </div>
+
+            <a class="back" href="index.html">
+                ← العودة إلى الدوري
+            </a>
+
+        </div>
+    `;
+}
+
+function showError(message){
+
+    document.getElementById("loading").style.display = "none";
+
+    document.getElementById("playerCard").style.display = "block";
+
+    document.getElementById("playerCard").innerHTML = `
+        <div class="card">
+            <div class="error">${message}</div>
+
+            <a class="back" href="index.html">
+                ← العودة إلى الدوري
+            </a>
+        </div>
+    `;
+}
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+loadPlayer();
+</script>
+
+</body>
+</html>
