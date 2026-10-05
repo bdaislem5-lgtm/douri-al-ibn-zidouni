@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>تفاصيل المباراة | دوري الابن الزيدوني</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Tahoma,sans-serif;
+    background:#07111f;
+    color:white;
+}
+
+header{
+    background:#0b1728;
+    padding:18px;
+    text-align:center;
+    border-bottom:1px solid #1c3048;
+}
+
+header h1{
+    margin:0;
+    font-size:25px;
+}
+
+.back{
+    display:inline-block;
+    margin-top:10px;
+    color:#8ab4ff;
+    text-decoration:none;
+}
+
+.container{
+    width:min(1100px,94%);
+    margin:25px auto;
+}
+
+.match-card{
+    background:#0d1b2d;
+    border:1px solid #1e3652;
+    border-radius:18px;
+    padding:22px;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.match-info{
+    color:#9fb0c5;
+    margin-bottom:15px;
+}
+
+.teams{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:40px;
+}
+
+.team{
+    min-width:150px;
+}
+
+.team-name{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.score{
+    font-size:42px;
+    font-weight:bold;
+    margin:0 20px;
+}
+
+.pitch-wrap{
+    width:100%;
+    overflow:hidden;
+}
+
+.pitch{
+    position:relative;
+    width:100%;
+    max-width:900px;
+    height:620px;
+    margin:auto;
+    border-radius:22px;
+    overflow:hidden;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #16713e 0px,
+            #16713e 70px,
+            #196f3f 70px,
+            #196f3f 140px
+        );
+
+    border:5px solid white;
+}
+
+/* خطوط الملعب */
+
+.pitch::before{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    top:50%;
+    height:3px;
+    background:white;
+    transform:translateY(-50%);
+}
+
+.circle{
+    position:absolute;
+    width:140px;
+    height:140px;
+    border:3px solid white;
+    border-radius:50%;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+.center-dot{
+    position:absolute;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:white;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+}
+
+.box-top,
+.box-bottom{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:260px;
+    height:95px;
+    border:3px solid white;
+}
+
+.box-top{
+    top:-3px;
+    border-top:none;
+}
+
+.box-bottom{
+    bottom:-3px;
+    border-bottom:none;
+}
+
+.goal-top,
+.goal-bottom{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:90px;
+    height:25px;
+    border:3px solid white;
+}
+
+.goal-top{
+    top:-3px;
+}
+
+.goal-bottom{
+    bottom:-3px;
+}
+
+/* اللاعب */
+
+.player{
+    position:absolute;
+    transform:translate(-50%,-50%);
+    width:90px;
+    text-align:center;
+    z-index:5;
+}
+
+.player-photo{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid white;
+    background:#15263c;
+}
+
+.player-name{
+    margin-top:4px;
+    font-size:12px;
+    font-weight:bold;
+    background:rgba(0,0,0,.65);
+    padding:3px 5px;
+    border-radius:6px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.rating{
+    display:inline-block;
+    margin-top:3px;
+    background:#f5c542;
+    color:#111;
+    font-weight:bold;
+    padding:2px 6px;
+    border-radius:5px;
+    font-size:12px;
+}
+
+.events{
+    margin-top:3px;
+    font-size:14px;
+    min-height:18px;
+}
+
+.section-title{
+    text-align:center;
+    margin:30px 0 15px;
+    font-size:23px;
+}
+
+.players-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:12px;
+}
+
+.player-card{
+    background:#0d1b2d;
+    border:1px solid #1e3652;
+    border-radius:14px;
+    padding:12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.player-card img{
+    width:55px;
+    height:55px;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+.player-data{
+    flex:1;
+}
+
+.player-data strong{
+    display:block;
+    margin-bottom:5px;
+}
+
+.stats{
+    color:#b9c6d6;
+    font-size:13px;
+}
+
+.loading{
+    text-align:center;
+    padding:50px;
+    color:#9fb0c5;
+}
+
+.error{
+    background:#401b22;
+    border:1px solid #7d303c;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+}
+
+@media(max-width:650px){
+
+    .pitch{
+        height:520px;
+    }
+
+    .team-name{
+        font-size:17px;
+    }
+
+    .score{
+        font-size:32px;
+        margin:0 10px;
+    }
+
+    .teams{
+        gap:8px;
+    }
+
+    .player{
+        width:70px;
+    }
+
+    .player-photo{
+        width:40px;
+        height:40px;
+    }
+
+    .player-name{
+        font-size:10px;
+    }
+
+    .rating{
+        font-size:10px;
+    }
+
+    .box-top,
+    .box-bottom{
+        width:190px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>⚽ تفاصيل المباراة</h1>
+    <a class="back" href="index.html">← العودة إلى الدوري</a>
+</header>
+
+<div class="container">
+
+    <div id="loading" class="loading">
+        جاري تحميل المباراة...
+    </div>
+
+    <div id="content" style="display:none;">
+
+        <div class="match-card">
+
+            <div id="matchInfo" class="match-info"></div>
+
+            <div class="teams">
+
+                <div class="team">
+                    <div id="homeName" class="team-name"></div>
+                </div>
+
+                <div id="score" class="score">
+                    0 - 0
+                </div>
+
+                <div class="team">
+                    <div id="awayName" class="team-name"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="pitch-wrap">
+
+            <div class="pitch" id="pitch">
+
+                <div class="circle"></div>
+                <div class="center-dot"></div>
+
+                <div class="box-top"></div>
+                <div class="box-bottom"></div>
+
+                <div class="goal-top"></div>
+                <div class="goal-bottom"></div>
+
+            </div>
+
+        </div>
+
+        <h2 class="section-title">👥 لاعبو المباراة</h2>
+
+        <div id="playersList" class="players-list"></div>
+
+    </div>
+
+    <div id="error" class="error" style="display:none;"></div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+"https://dtxexuaverridpntgwkj.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+
+const supabaseClient =
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+// ID المباراة من الرابط
+const params = new URLSearchParams(window.location.search);
+const matchId = params.get("id");
+
+
+// عناصر الصفحة
+const loading =
+document.getElementById("loading");
+
+const content =
+document.getElementById("content");
+
+const errorBox =
+document.getElementById("error");
+
+const pitch =
+document.getElementById("pitch");
+
+
+// تحميل المباراة
+async function loadMatch(){
+
+    if(!matchId){
+
+        showError("لم يتم تحديد المباراة.");
+
+        return;
+    }
+
+    const { data: match, error: matchError } =
+    await supabaseClient
+        .from("matches")
+        .select("*")
+        .eq("id", matchId)
+        .single();
+
+
+    if(matchError){
+
+        console.error(matchError);
+
+        showError("تعذر تحميل المباراة.");
+
+        return;
+    }
+
+
+    document.getElementById("homeName").textContent =
+        match.home;
+
+    document.getElementById("awayName").textContent =
+        match.away;
+
+    document.getElementById("score").textContent =
+        `${match.home_goals} - ${match.away_goals}`;
+
+
+    let info = "";
+
+    if(match.round){
+        info += match.round;
+    }
+
+    if(match.match_date){
+
+        if(info) info += " • ";
+
+        info += match.match_date;
+    }
+
+    document.getElementById("matchInfo").textContent =
+        info;
+
+
+    // تحميل لاعبي المباراة
+    const { data: matchPlayers, error: playersError } =
+    await supabaseClient
+        .from("match_players")
+        .select(`
+            *,
+            players (
+                id,
+                name,
+                photo,
+                number,
+                position
+            )
+        `)
+        .eq("match_id", matchId);
+
+
+    if(playersError){
+
+        console.error(playersError);
+
+        showError(
+            "تم تحميل المباراة لكن تعذر تحميل تشكيلة اللاعبين."
+        );
+
+        return;
+    }
+
+
+    loading.style.display = "none";
+    content.style.display = "block";
+
+
+    drawPlayers(matchPlayers || [], match.home, match.away);
+}
+
+
+// رسم اللاعبين
+function drawPlayers(players, homeTeam, awayTeam){
+
+    const homePlayers =
+        players.filter(p => p.team === homeTeam);
+
+    const awayPlayers =
+        players.filter(p => p.team === awayTeam);
+
+
+    // 6 لاعبين لكل فريق
+    const homePositions = [
+
+        {x:50,y:94},
+
+        {x:22,y:78},
+        {x:40,y:78},
+        {x:60,y:78},
+        {x:78,y:78},
+
+        {x:50,y:63}
+
+    ];
+
+
+    const awayPositions = [
+
+        {x:50,y:6},
+
+        {x:22,y:22},
+        {x:40,y:22},
+        {x:60,y:22},
+        {x:78,y:22},
+
+        {x:50,y:37}
+
+    ];
+
+
+    homePlayers
+        .slice(0,6)
+        .forEach((player,index)=>{
+
+            createPlayer(
+                player,
+                homePositions[index]
+            );
+
+        });
+
+
+    awayPlayers
+        .slice(0,6)
+        .forEach((player,index)=>{
+
+            createPlayer(
+                player,
+                awayPositions[index]
+            );
+
+        });
+
+
+    renderPlayersList(players);
+}
+
+
+// إنشاء لاعب على الملعب
+function createPlayer(data, position){
+
+    const player =
+        data.players || {};
+
+
+    const div =
+        document.createElement("div");
+
+    div.className = "player";
+
+    div.style.left =
+        position.x + "%";
+
+    div.style.top =
+        position.y + "%";
+
+
+    let photoHTML = "";
+
+    if(player.photo){
+
+        photoHTML =
+        `<img
+            class="player-photo"
+            src="${player.photo}"
+            alt="${escapeHtml(player.name || "لاعب")}"
+        >`;
+
+    }else{
+
+        const letter =
+            (player.name || "؟").charAt(0);
+
+        photoHTML =
+        `<div
+            class="player-photo"
+            style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:22px;
+                font-weight:bold;
+            "
+        >${escapeHtml(letter)}</div>`;
+
+    }
+
+
+    let events = "";
+
+    if(Number(data.goals) > 0){
+
+        events +=
+        "⚽".repeat(
+            Math.min(Number(data.goals),5)
+        );
+
+    }
+
+    if(Number(data.assists) > 0){
+
+        events +=
+        " 👟".repeat(
+            Math.min(Number(data.assists),5)
+        );
+
+    }
+
+
+    div.innerHTML = `
+
+        ${photoHTML}
+
+        <div class="player-name">
+            ${escapeHtml(player.name || "لاعب")}
+        </div>
+
+        <div class="rating">
+            ⭐ ${Number(data.rating || 0).toFixed(1)}
+        </div>
+
+        <div class="events">
+            ${events}
+        </div>
+
+    `;
+
+
+    pitch.appendChild(div);
+}
+
+
+// قائمة اللاعبين
+function renderPlayersList(players){
+
+    const list =
+        document.getElementById("playersList");
+
+    list.innerHTML = "";
+
+
+    players.forEach(data=>{
+
+        const player =
+            data.players || {};
+
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "player-card";
+
+
+        let photo = "";
+
+        if(player.photo){
+
+            photo =
+            `<img
+                src="${player.photo}"
+                alt="${escapeHtml(player.name || "")}"
+            >`;
+
+        }else{
+
+            photo =
+            `<img
+                src="https://placehold.co/100x100?text=${encodeURIComponent(
+                    (player.name || "?").charAt(0)
+                )}"
+                alt=""
+            >`;
+
+        }
+
+
+        card.innerHTML = `
+
+            ${photo}
+
+            <div class="player-data">
+
+                <strong>
+                    ${escapeHtml(player.name || "لاعب")}
+                </strong>
+
+                <div class="stats">
+
+                    ⭐ التقييم:
+                    <b>${Number(data.rating || 0).toFixed(1)}</b>
+
+                    &nbsp; | &nbsp;
+
+                    ⚽ ${Number(data.goals || 0)}
+
+                    &nbsp; | &nbsp;
+
+                    👟 ${Number(data.assists || 0)}
+
+                </div>
+
+            </div>
+        `;
+
+
+        list.appendChild(card);
+
+    });
+}
+
+
+// رسالة الخطأ
+function showError(message){
+
+    loading.style.display = "none";
+
+    errorBox.style.display = "block";
+
+    errorBox.textContent = message;
+}
+
+
+// حماية النصوص
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+loadMatch();
+
+</script>
+
+</body>
+</html>
