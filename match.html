@@ -9,9 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{
-    box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
     margin:0;
@@ -171,27 +169,22 @@ header h1{
     border:3px solid white;
 }
 
-.goal-top{
-    top:-3px;
-}
-
-.goal-bottom{
-    bottom:-3px;
-}
+.goal-top{top:-3px}
+.goal-bottom{bottom:-3px}
 
 /* اللاعب */
 
 .player{
     position:absolute;
     transform:translate(-50%,-50%);
-    width:90px;
+    width:100px;
     text-align:center;
     z-index:5;
 }
 
 .player-photo{
-    width:48px;
-    height:48px;
+    width:50px;
+    height:50px;
     border-radius:50%;
     object-fit:cover;
     border:3px solid white;
@@ -202,7 +195,7 @@ header h1{
     margin-top:4px;
     font-size:12px;
     font-weight:bold;
-    background:rgba(0,0,0,.65);
+    background:rgba(0,0,0,.7);
     padding:3px 5px;
     border-radius:6px;
     white-space:nowrap;
@@ -226,6 +219,17 @@ header h1{
     font-size:14px;
     min-height:18px;
 }
+
+/* المركز */
+
+.position-label{
+    display:block;
+    font-size:10px;
+    margin-top:2px;
+    color:#d8e4f0;
+}
+
+/* قائمة اللاعبين */
 
 .section-title{
     text-align:center;
@@ -304,7 +308,7 @@ header h1{
     }
 
     .player{
-        width:70px;
+        width:75px;
     }
 
     .player-photo{
@@ -406,13 +410,12 @@ window.supabase.createClient(
     SUPABASE_KEY
 );
 
+const params =
+new URLSearchParams(window.location.search);
 
-// ID المباراة من الرابط
-const params = new URLSearchParams(window.location.search);
-const matchId = params.get("id");
+const matchId =
+params.get("id");
 
-
-// عناصر الصفحة
 const loading =
 document.getElementById("loading");
 
@@ -426,33 +429,28 @@ const pitch =
 document.getElementById("pitch");
 
 
-// تحميل المباراة
 async function loadMatch(){
 
     if(!matchId){
 
         showError("لم يتم تحديد المباراة.");
-
         return;
     }
 
-    const { data: match, error: matchError } =
+    const {data:match,error:matchError} =
     await supabaseClient
         .from("matches")
         .select("*")
-        .eq("id", matchId)
+        .eq("id",matchId)
         .single();
-
 
     if(matchError){
 
         console.error(matchError);
 
         showError("تعذر تحميل المباراة.");
-
         return;
     }
-
 
     document.getElementById("homeName").textContent =
         match.home;
@@ -462,7 +460,6 @@ async function loadMatch(){
 
     document.getElementById("score").textContent =
         `${match.home_goals} - ${match.away_goals}`;
-
 
     let info = "";
 
@@ -481,8 +478,7 @@ async function loadMatch(){
         info;
 
 
-    // تحميل لاعبي المباراة
-    const { data: matchPlayers, error: playersError } =
+    const {data:matchPlayers,error:playersError} =
     await supabaseClient
         .from("match_players")
         .select(`
@@ -495,7 +491,7 @@ async function loadMatch(){
                 position
             )
         `)
-        .eq("match_id", matchId);
+        .eq("match_id",matchId);
 
 
     if(playersError){
@@ -509,17 +505,140 @@ async function loadMatch(){
         return;
     }
 
-
     loading.style.display = "none";
     content.style.display = "block";
 
-
-    drawPlayers(matchPlayers || [], match.home, match.away);
+    drawPlayers(
+        matchPlayers || [],
+        match.home,
+        match.away
+    );
 }
 
 
-// رسم اللاعبين
-function drawPlayers(players, homeTeam, awayTeam){
+/* تحديد مكان اللاعب حسب المركز */
+
+function getPosition(team, position){
+
+    const isHome =
+        team === "home";
+
+    const p =
+        String(position || "").toUpperCase();
+
+
+    /*
+        الفريق السفلي = Home
+        الفريق العلوي = Away
+    */
+
+    if(isHome){
+
+        if(p === "GK")
+            return {x:50,y:92};
+
+        if(p === "DEF")
+            return getDefensePosition("home");
+
+        if(p === "MID")
+            return getMidfieldPosition("home");
+
+        if(p === "ATT")
+            return getAttackPosition("home");
+
+        return {x:50,y:75};
+    }
+
+
+    if(p === "GK")
+        return {x:50,y:8};
+
+    if(p === "DEF")
+        return getDefensePosition("away");
+
+    if(p === "MID")
+        return getMidfieldPosition("away");
+
+    if(p === "ATT")
+        return getAttackPosition("away");
+
+    return {x:50,y:25};
+}
+
+
+/* عدادات المراكز */
+
+let positionCounters = {
+    home:{
+        DEF:0,
+        MID:0,
+        ATT:0
+    },
+    away:{
+        DEF:0,
+        MID:0,
+        ATT:0
+    }
+};
+
+
+function getDefensePosition(team){
+
+    const i =
+        positionCounters[team].DEF++;
+
+    const positions = [
+        {x:22,y:76},
+        {x:40,y:80},
+        {x:60,y:80},
+        {x:78,y:76}
+    ];
+
+    return positions[i % positions.length];
+}
+
+
+function getMidfieldPosition(team){
+
+    const i =
+        positionCounters[team].MID++;
+
+    const positions = [
+        {x:25,y:58},
+        {x:50,y:62},
+        {x:75,y:58}
+    ];
+
+    return positions[i % positions.length];
+}
+
+
+function getAttackPosition(team){
+
+    const i =
+        positionCounters[team].ATT++;
+
+    const positions = [
+        {x:35,y:43},
+        {x:65,y:43}
+    ];
+
+    return positions[i % positions.length];
+}
+
+
+/* رسم اللاعبين */
+
+function drawPlayers(players,homeTeam,awayTeam){
+
+    positionCounters.home.DEF = 0;
+    positionCounters.home.MID = 0;
+    positionCounters.home.ATT = 0;
+
+    positionCounters.away.DEF = 0;
+    positionCounters.away.MID = 0;
+    positionCounters.away.ATT = 0;
+
 
     const homePlayers =
         players.filter(p => p.team === homeTeam);
@@ -528,42 +647,19 @@ function drawPlayers(players, homeTeam, awayTeam){
         players.filter(p => p.team === awayTeam);
 
 
-    // 6 لاعبين لكل فريق
-    const homePositions = [
-
-        {x:50,y:94},
-
-        {x:22,y:78},
-        {x:40,y:78},
-        {x:60,y:78},
-        {x:78,y:78},
-
-        {x:50,y:63}
-
-    ];
-
-
-    const awayPositions = [
-
-        {x:50,y:6},
-
-        {x:22,y:22},
-        {x:40,y:22},
-        {x:60,y:22},
-        {x:78,y:22},
-
-        {x:50,y:37}
-
-    ];
-
-
     homePlayers
         .slice(0,6)
-        .forEach((player,index)=>{
+        .forEach(data => {
+
+            const position =
+                getPosition(
+                    "home",
+                    data.position
+                );
 
             createPlayer(
-                player,
-                homePositions[index]
+                data,
+                position
             );
 
         });
@@ -571,11 +667,17 @@ function drawPlayers(players, homeTeam, awayTeam){
 
     awayPlayers
         .slice(0,6)
-        .forEach((player,index)=>{
+        .forEach(data => {
+
+            const position =
+                getPosition(
+                    "away",
+                    data.position
+                );
 
             createPlayer(
-                player,
-                awayPositions[index]
+                data,
+                position
             );
 
         });
@@ -585,8 +687,9 @@ function drawPlayers(players, homeTeam, awayTeam){
 }
 
 
-// إنشاء لاعب على الملعب
-function createPlayer(data, position){
+/* إنشاء لاعب */
+
+function createPlayer(data,position){
 
     const player =
         data.players || {};
@@ -595,7 +698,9 @@ function createPlayer(data, position){
     const div =
         document.createElement("div");
 
-    div.className = "player";
+    div.className =
+        "player";
+
 
     div.style.left =
         position.x + "%";
@@ -606,12 +711,13 @@ function createPlayer(data, position){
 
     let photoHTML = "";
 
+
     if(player.photo){
 
         photoHTML =
         `<img
             class="player-photo"
-            src="${player.photo}"
+            src="${escapeHtml(player.photo)}"
             alt="${escapeHtml(player.name || "لاعب")}"
         >`;
 
@@ -630,30 +736,45 @@ function createPlayer(data, position){
                 font-size:22px;
                 font-weight:bold;
             "
-        >${escapeHtml(letter)}</div>`;
-
+        >
+            ${escapeHtml(letter)}
+        </div>`;
     }
 
 
     let events = "";
 
+
     if(Number(data.goals) > 0){
 
         events +=
-        "⚽".repeat(
-            Math.min(Number(data.goals),5)
-        );
-
+            "⚽".repeat(
+                Math.min(Number(data.goals),5)
+            );
     }
+
 
     if(Number(data.assists) > 0){
 
         events +=
-        " 👟".repeat(
-            Math.min(Number(data.assists),5)
-        );
-
+            " 👟".repeat(
+                Math.min(Number(data.assists),5)
+            );
     }
+
+
+    const positionNames = {
+        GK:"🧤 حارس",
+        DEF:"🛡️ دفاع",
+        MID:"⚙️ وسط",
+        ATT:"⚡ هجوم"
+    };
+
+
+    const positionText =
+        positionNames[
+            String(data.position || "").toUpperCase()
+        ] || "";
 
 
     div.innerHTML = `
@@ -668,6 +789,10 @@ function createPlayer(data, position){
             ⭐ ${Number(data.rating || 0).toFixed(1)}
         </div>
 
+        <div class="position-label">
+            ${positionText}
+        </div>
+
         <div class="events">
             ${events}
         </div>
@@ -679,7 +804,8 @@ function createPlayer(data, position){
 }
 
 
-// قائمة اللاعبين
+/* قائمة اللاعبين */
+
 function renderPlayersList(players){
 
     const list =
@@ -688,7 +814,7 @@ function renderPlayersList(players){
     list.innerHTML = "";
 
 
-    players.forEach(data=>{
+    players.forEach(data => {
 
         const player =
             data.players || {};
@@ -703,11 +829,12 @@ function renderPlayersList(players){
 
         let photo = "";
 
+
         if(player.photo){
 
             photo =
             `<img
-                src="${player.photo}"
+                src="${escapeHtml(player.photo)}"
                 alt="${escapeHtml(player.name || "")}"
             >`;
 
@@ -720,8 +847,21 @@ function renderPlayersList(players){
                 )}"
                 alt=""
             >`;
-
         }
+
+
+        const positionNames = {
+            GK:"🧤 حارس",
+            DEF:"🛡️ دفاع",
+            MID:"⚙️ وسط",
+            ATT:"⚡ هجوم"
+        };
+
+
+        const positionText =
+            positionNames[
+                String(data.position || "").toUpperCase()
+            ] || "غير محدد";
 
 
         card.innerHTML = `
@@ -736,8 +876,14 @@ function renderPlayersList(players){
 
                 <div class="stats">
 
-                    ⭐ التقييم:
-                    <b>${Number(data.rating || 0).toFixed(1)}</b>
+                    ${positionText}
+
+                    &nbsp; | &nbsp;
+
+                    ⭐
+                    <b>
+                        ${Number(data.rating || 0).toFixed(1)}
+                    </b>
 
                     &nbsp; | &nbsp;
 
@@ -759,18 +905,23 @@ function renderPlayersList(players){
 }
 
 
-// رسالة الخطأ
+/* الخطأ */
+
 function showError(message){
 
-    loading.style.display = "none";
+    loading.style.display =
+        "none";
 
-    errorBox.style.display = "block";
+    errorBox.style.display =
+        "block";
 
-    errorBox.textContent = message;
+    errorBox.textContent =
+        message;
 }
 
 
-// حماية النصوص
+/* حماية النص */
+
 function escapeHtml(value){
 
     return String(value)
