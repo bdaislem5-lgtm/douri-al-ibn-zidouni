@@ -1,58 +1,65 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>تفاصيل المباراة | دوري الابن الزيدوني</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
+
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
     font-family:Arial,Tahoma,sans-serif;
-    background:#07111f;
-    color:white;
+    background:#f1f5f9;
+    color:#172033;
 }
 
 header{
-    background:#0b1728;
-    padding:18px;
+    background:#111827;
+    color:white;
+    padding:25px 15px;
     text-align:center;
-    border-bottom:1px solid #1c3048;
 }
 
 header h1{
     margin:0;
-    font-size:25px;
-}
-
-.back{
-    display:inline-block;
-    margin-top:10px;
-    color:#8ab4ff;
-    text-decoration:none;
 }
 
 .container{
-    width:min(1100px,94%);
-    margin:25px auto;
+    max-width:1100px;
+    margin:30px auto;
+    padding:15px;
 }
 
-.match-card{
-    background:#0d1b2d;
-    border:1px solid #1e3652;
-    border-radius:18px;
-    padding:22px;
-    text-align:center;
+.card{
+    background:white;
+    border-radius:20px;
+    padding:25px;
     margin-bottom:25px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
 }
 
-.match-info{
-    color:#9fb0c5;
+/* ================= MATCH ================= */
+
+.match-header{
+    text-align:center;
+}
+
+.match-round{
+    color:#64748b;
     margin-bottom:15px;
 }
 
@@ -64,7 +71,16 @@ header h1{
 }
 
 .team{
-    min-width:150px;
+    min-width:180px;
+    text-align:center;
+}
+
+.team-logo{
+    width:100px;
+    height:100px;
+    object-fit:contain;
+    display:block;
+    margin:10px auto;
 }
 
 .team-name{
@@ -75,223 +91,333 @@ header h1{
 .score{
     font-size:42px;
     font-weight:bold;
-    margin:0 20px;
+    margin:10px;
 }
 
-.pitch-wrap{
-    width:100%;
-    overflow:hidden;
+.vs{
+    font-size:28px;
+    font-weight:bold;
+    color:#64748b;
+}
+
+.not-started{
+    background:#eff6ff;
+    color:#1d4ed8;
+    padding:15px;
+    border-radius:12px;
+    margin-top:20px;
+    font-weight:bold;
+}
+
+.match-date{
+    margin-top:12px;
+    color:#475569;
+}
+
+/* ================= PITCH ================= */
+
+.pitch-title{
+    text-align:center;
+    margin-bottom:15px;
 }
 
 .pitch{
     position:relative;
     width:100%;
-    max-width:900px;
-    height:620px;
-    margin:auto;
-    border-radius:22px;
-    overflow:hidden;
+    max-width:850px;
+    aspect-ratio:1.5 / 1;
+    margin:20px auto;
 
     background:
         repeating-linear-gradient(
             90deg,
-            #16713e 0px,
-            #16713e 70px,
-            #196f3f 70px,
-            #196f3f 140px
+            #16803a 0px,
+            #16803a 55px,
+            #1b8f43 55px,
+            #1b8f43 110px
         );
 
-    border:5px solid white;
-}
+    border:4px solid white;
+    border-radius:8px;
 
-/* خطوط الملعب */
-
-.pitch::before{
-    content:"";
-    position:absolute;
-    left:0;
-    right:0;
-    top:50%;
-    height:3px;
-    background:white;
-    transform:translateY(-50%);
-}
-
-.circle{
-    position:absolute;
-    width:140px;
-    height:140px;
-    border:3px solid white;
-    border-radius:50%;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-}
-
-.center-dot{
-    position:absolute;
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:white;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-}
-
-.box-top,
-.box-bottom{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    width:260px;
-    height:95px;
-    border:3px solid white;
-}
-
-.box-top{
-    top:-3px;
-    border-top:none;
-}
-
-.box-bottom{
-    bottom:-3px;
-    border-bottom:none;
-}
-
-.goal-top,
-.goal-bottom{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    width:90px;
-    height:25px;
-    border:3px solid white;
-}
-
-.goal-top{top:-3px}
-.goal-bottom{bottom:-3px}
-
-/* اللاعب */
-
-.player{
-    position:absolute;
-    transform:translate(-50%,-50%);
-    width:100px;
-    text-align:center;
-    z-index:5;
-}
-
-.player-photo{
-    width:50px;
-    height:50px;
-    border-radius:50%;
-    object-fit:cover;
-    border:3px solid white;
-    background:#15263c;
-}
-
-.player-name{
-    margin-top:4px;
-    font-size:12px;
-    font-weight:bold;
-    background:rgba(0,0,0,.7);
-    padding:3px 5px;
-    border-radius:6px;
-    white-space:nowrap;
     overflow:hidden;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.25);
+}
+
+/* منتصف الملعب */
+
+.pitch-midline{
+    position:absolute;
+    left:50%;
+    top:0;
+    bottom:0;
+    width:3px;
+    background:white;
+    transform:translateX(-50%);
+}
+
+/* دائرة المنتصف */
+
+.pitch-center-circle{
+    position:absolute;
+
+    width:120px;
+    height:120px;
+
+    border:3px solid white;
+    border-radius:50%;
+
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%);
+}
+
+/* نقطة المنتصف */
+
+.pitch-center-dot{
+    position:absolute;
+
+    width:8px;
+    height:8px;
+
+    background:white;
+    border-radius:50%;
+
+    left:50%;
+    top:50%;
+
+    transform:
+        translate(-50%,-50%);
+}
+
+/* منطقة الجزاء */
+
+.pitch-penalty{
+    position:absolute;
+
+    left:50%;
+
+    width:34%;
+    height:23%;
+
+    border:3px solid white;
+
+    transform:
+        translateX(-50%);
+}
+
+.pitch-penalty.top{
+    top:-2px;
+}
+
+.pitch-penalty.bottom{
+    bottom:-2px;
+}
+
+/* منطقة المرمى */
+
+.pitch-goal-area{
+    position:absolute;
+
+    left:50%;
+
+    width:16%;
+    height:10%;
+
+    border:3px solid white;
+
+    transform:
+        translateX(-50%);
+}
+
+.pitch-goal-area.top{
+    top:-2px;
+}
+
+.pitch-goal-area.bottom{
+    bottom:-2px;
+}
+
+/* المرمى */
+
+.pitch-goal{
+    position:absolute;
+
+    left:50%;
+
+    width:12%;
+    height:3%;
+
+    border:3px solid white;
+
+    transform:
+        translateX(-50%);
+}
+
+.pitch-goal.top{
+    top:0;
+}
+
+.pitch-goal.bottom{
+    bottom:0;
+}
+
+/* ================= PLAYERS ================= */
+
+.pitch-player{
+    position:absolute;
+
+    width:82px;
+
+    text-align:center;
+
+    transform:
+        translate(-50%,-50%);
+
+    z-index:10;
+}
+
+.pitch-player img{
+    width:56px;
+    height:56px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:3px solid white;
+
+    background:white;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,.45);
+}
+
+.pitch-player-name{
+    background:rgba(0,0,0,.78);
+
+    color:white;
+
+    border-radius:6px;
+
+    padding:3px 5px;
+
+    margin-top:3px;
+
+    font-size:12px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
     text-overflow:ellipsis;
 }
 
-.rating{
-    display:inline-block;
-    margin-top:3px;
-    background:#f5c542;
-    color:#111;
+.pitch-player-number{
+    position:absolute;
+
+    top:-4px;
+    right:6px;
+
+    background:#111827;
+    color:white;
+
+    width:22px;
+    height:22px;
+
+    line-height:22px;
+
+    border-radius:50%;
+
+    font-size:11px;
     font-weight:bold;
-    padding:2px 6px;
-    border-radius:5px;
-    font-size:12px;
 }
 
-.events{
-    margin-top:3px;
-    font-size:14px;
-    min-height:18px;
-}
-
-/* المركز */
-
-.position-label{
-    display:block;
+.pitch-position{
+    color:white;
     font-size:10px;
     margin-top:2px;
-    color:#d8e4f0;
 }
 
-/* قائمة اللاعبين */
+/* ================= PLAYER STATS ================= */
 
-.section-title{
-    text-align:center;
-    margin:30px 0 15px;
-    font-size:23px;
-}
-
-.players-list{
+.players-grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:12px;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:15px;
 }
 
 .player-card{
-    background:#0d1b2d;
-    border:1px solid #1e3652;
-    border-radius:14px;
-    padding:12px;
+    background:#f8fafc;
+
+    border-radius:15px;
+
+    padding:15px;
+
     display:flex;
+
     align-items:center;
+
     gap:12px;
 }
 
 .player-card img{
-    width:55px;
-    height:55px;
+    width:60px;
+    height:60px;
+
     object-fit:cover;
+
     border-radius:50%;
 }
 
-.player-data{
+.player-info{
     flex:1;
 }
 
-.player-data strong{
-    display:block;
-    margin-bottom:5px;
+.player-name{
+    font-weight:bold;
 }
 
-.stats{
-    color:#b9c6d6;
+.player-stat{
     font-size:13px;
+    color:#64748b;
+    margin-top:3px;
 }
 
-.loading{
-    text-align:center;
-    padding:50px;
-    color:#9fb0c5;
+.badges{
+    margin-top:5px;
 }
 
-.error{
-    background:#401b22;
-    border:1px solid #7d303c;
-    padding:20px;
-    border-radius:12px;
-    text-align:center;
+.goal-badge{
+    color:#15803d;
 }
 
-@media(max-width:650px){
+.assist-badge{
+    color:#2563eb;
+}
 
-    .pitch{
-        height:520px;
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+    .teams{
+        gap:10px;
+    }
+
+    .team{
+        min-width:120px;
+    }
+
+    .team-logo{
+        width:75px;
+        height:75px;
     }
 
     .team-name{
@@ -299,110 +425,178 @@ header h1{
     }
 
     .score{
-        font-size:32px;
-        margin:0 10px;
+        font-size:30px;
     }
 
-    .teams{
-        gap:8px;
+    .players-grid{
+        grid-template-columns:1fr;
     }
 
-    .player{
-        width:75px;
+    .pitch-player{
+        width:65px;
     }
 
-    .player-photo{
-        width:40px;
-        height:40px;
+    .pitch-player img{
+        width:45px;
+        height:45px;
     }
 
-    .player-name{
+    .pitch-player-name{
         font-size:10px;
     }
 
-    .rating{
-        font-size:10px;
+    .pitch-center-circle{
+        width:80px;
+        height:80px;
     }
 
-    .box-top,
-    .box-bottom{
-        width:190px;
-    }
 }
+
 </style>
+
 </head>
 
 <body>
 
 <header>
-    <h1>⚽ تفاصيل المباراة</h1>
-    <a class="back" href="index.html">← العودة إلى الدوري</a>
+
+    <h1>⚽ دوري الابن الزيدوني</h1>
+
 </header>
+
 
 <div class="container">
 
-    <div id="loading" class="loading">
-        جاري تحميل المباراة...
-    </div>
 
-    <div id="content" style="display:none;">
+<!-- ================= MATCH INFO ================= -->
 
-        <div class="match-card">
+<div
+    id="matchInfo"
+    class="card"
+>
 
-            <div id="matchInfo" class="match-info"></div>
-
-            <div class="teams">
-
-                <div class="team">
-                    <div id="homeName" class="team-name"></div>
-                </div>
-
-                <div id="score" class="score">
-                    0 - 0
-                </div>
-
-                <div class="team">
-                    <div id="awayName" class="team-name"></div>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="pitch-wrap">
-
-            <div class="pitch" id="pitch">
-
-                <div class="circle"></div>
-                <div class="center-dot"></div>
-
-                <div class="box-top"></div>
-                <div class="box-bottom"></div>
-
-                <div class="goal-top"></div>
-                <div class="goal-bottom"></div>
-
-            </div>
-
-        </div>
-
-        <h2 class="section-title">👥 لاعبو المباراة</h2>
-
-        <div id="playersList" class="players-list"></div>
-
-    </div>
-
-    <div id="error" class="error" style="display:none;"></div>
+    جاري تحميل المباراة...
 
 </div>
 
+
+<!-- ================= EXPECTED LINEUP ================= -->
+
+<div
+    id="expectedSection"
+    class="card"
+    style="display:none;"
+>
+
+    <h2 class="pitch-title">
+        🎯 التشكيلة المتوقعة
+    </h2>
+
+    <div
+        id="expectedPitch"
+        class="pitch"
+    >
+
+        <div class="pitch-midline"></div>
+
+        <div class="pitch-center-circle"></div>
+
+        <div class="pitch-center-dot"></div>
+
+        <div class="pitch-penalty top"></div>
+
+        <div class="pitch-penalty bottom"></div>
+
+        <div class="pitch-goal-area top"></div>
+
+        <div class="pitch-goal-area bottom"></div>
+
+        <div class="pitch-goal top"></div>
+
+        <div class="pitch-goal bottom"></div>
+
+        <div id="expectedPlayers"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= ACTUAL LINEUP ================= -->
+
+<div
+    id="actualSection"
+    class="card"
+    style="display:none;"
+>
+
+    <h2 class="pitch-title">
+        ⚽ تشكيلة المباراة
+    </h2>
+
+    <div
+        id="actualPitch"
+        class="pitch"
+    >
+
+        <div class="pitch-midline"></div>
+
+        <div class="pitch-center-circle"></div>
+
+        <div class="pitch-center-dot"></div>
+
+        <div class="pitch-penalty top"></div>
+
+        <div class="pitch-penalty bottom"></div>
+
+        <div class="pitch-goal-area top"></div>
+
+        <div class="pitch-goal-area bottom"></div>
+
+        <div class="pitch-goal top"></div>
+
+        <div class="pitch-goal bottom"></div>
+
+        <div id="actualPlayers"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= PLAYER RATINGS ================= -->
+
+<div
+    id="ratingsSection"
+    class="card"
+    style="display:none;"
+>
+
+    <h2>
+        ⭐ تقييمات اللاعبين
+    </h2>
+
+    <div
+        id="ratings"
+        class="players-grid"
+    ></div>
+
+</div>
+
+</div>
+
+
 <script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
 
 const SUPABASE_URL =
 "https://dtxexuaverridpntgwkj.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+"sb_publishable_7lxTHAsOFz2Ljsq6pb4Mw_9a2xutP3";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -410,517 +604,670 @@ window.supabase.createClient(
     SUPABASE_KEY
 );
 
+
+/* =====================================================
+   GET MATCH ID
+===================================================== */
+
 const params =
-new URLSearchParams(window.location.search);
+new URLSearchParams(
+    window.location.search
+);
 
 const matchId =
 params.get("id");
 
-const loading =
-document.getElementById("loading");
 
-const content =
-document.getElementById("content");
-
-const errorBox =
-document.getElementById("error");
-
-const pitch =
-document.getElementById("pitch");
-
+/* =====================================================
+   LOAD MATCH
+===================================================== */
 
 async function loadMatch(){
 
     if(!matchId){
 
-        showError("لم يتم تحديد المباراة.");
+        document.getElementById(
+            "matchInfo"
+        ).innerHTML = `
+
+            <h2>
+                ❌ لم يتم تحديد المباراة
+            </h2>
+
+        `;
+
         return;
     }
 
-    const {data:match,error:matchError} =
-    await supabaseClient
+
+    const {data:match,error} =
+        await supabaseClient
         .from("matches")
         .select("*")
         .eq("id",matchId)
         .single();
 
-    if(matchError){
 
-        console.error(matchError);
+    if(error || !match){
 
-        showError("تعذر تحميل المباراة.");
+        console.error(error);
+
+        document.getElementById(
+            "matchInfo"
+        ).innerHTML = `
+
+            <h2>
+                ❌ المباراة غير موجودة
+            </h2>
+
+        `;
+
         return;
     }
 
-    document.getElementById("homeName").textContent =
-        match.home;
 
-    document.getElementById("awayName").textContent =
-        match.away;
+    await renderMatch(match);
 
-    document.getElementById("score").textContent =
-        `${match.home_goals} - ${match.away_goals}`;
-
-    let info = "";
-
-    if(match.round){
-        info += match.round;
-    }
-
-    if(match.match_date){
-
-        if(info) info += " • ";
-
-        info += match.match_date;
-    }
-
-    document.getElementById("matchInfo").textContent =
-        info;
+}
 
 
-    const {data:matchPlayers,error:playersError} =
-    await supabaseClient
-        .from("match_players")
-        .select(`
-            *,
-            players (
-                id,
-                name,
-                photo,
-                number,
-                position
-            )
-        `)
-        .eq("match_id",matchId);
+/* =====================================================
+   RENDER MATCH
+===================================================== */
+
+async function renderMatch(match){
+
+    const {data:teams} =
+        await supabaseClient
+        .from("teams")
+        .select("*");
 
 
-    if(playersError){
-
-        console.error(playersError);
-
-        showError(
-            "تم تحميل المباراة لكن تعذر تحميل تشكيلة اللاعبين."
+    const homeTeam =
+        teams?.find(
+            team =>
+            team.name === match.home
         );
 
-        return;
-    }
 
-    loading.style.display = "none";
-    content.style.display = "block";
+    const awayTeam =
+        teams?.find(
+            team =>
+            team.name === match.away
+        );
 
-    drawPlayers(
-        matchPlayers || [],
-        match.home,
-        match.away
-    );
-}
 
+    const homeLogo =
+        homeTeam?.logo ||
+        "https://via.placeholder.com/100?text=HOME";
 
-/* تحديد مكان اللاعب حسب المركز */
 
-function getPosition(team, position){
+    const awayLogo =
+        awayTeam?.logo ||
+        "https://via.placeholder.com/100?text=AWAY";
 
-    const isHome =
-        team === "home";
 
-    const p =
-        String(position || "").toUpperCase();
+    const future =
+        isFutureMatch(match);
 
 
-    /*
-        الفريق السفلي = Home
-        الفريق العلوي = Away
-    */
+    document.getElementById(
+        "matchInfo"
+    ).innerHTML = `
 
-    if(isHome){
+        <div class="match-header">
 
-        if(p === "GK")
-            return {x:50,y:92};
+            ${
+                match.round
+                ? `
+                    <div class="match-round">
+                        ${escapeHtml(match.round)}
+                    </div>
+                  `
+                : ""
+            }
 
-        if(p === "DEF")
-            return getDefensePosition("home");
 
-        if(p === "MID")
-            return getMidfieldPosition("home");
+            <div class="teams">
 
-        if(p === "ATT")
-            return getAttackPosition("home");
+                <div class="team">
 
-        return {x:50,y:75};
-    }
+                    <img
+                        class="team-logo"
+                        src="${homeLogo}"
+                    >
 
+                    <div class="team-name">
+                        ${escapeHtml(match.home)}
+                    </div>
 
-    if(p === "GK")
-        return {x:50,y:8};
+                </div>
 
-    if(p === "DEF")
-        return getDefensePosition("away");
 
-    if(p === "MID")
-        return getMidfieldPosition("away");
+                <div>
 
-    if(p === "ATT")
-        return getAttackPosition("away");
+                    ${
+                        future
 
-    return {x:50,y:25};
-}
+                        ? `
+                            <div class="vs">
+                                VS
+                            </div>
+                          `
 
+                        : `
+                            <div class="score">
+                                ${match.home_goals}
+                                -
+                                ${match.away_goals}
+                            </div>
+                          `
+                    }
 
-/* عدادات المراكز */
+                </div>
 
-let positionCounters = {
-    home:{
-        DEF:0,
-        MID:0,
-        ATT:0
-    },
-    away:{
-        DEF:0,
-        MID:0,
-        ATT:0
-    }
-};
 
+                <div class="team">
 
-function getDefensePosition(team){
+                    <img
+                        class="team-logo"
+                        src="${awayLogo}"
+                    >
 
-    const i =
-        positionCounters[team].DEF++;
+                    <div class="team-name">
+                        ${escapeHtml(match.away)}
+                    </div>
 
-    const positions = [
-        {x:22,y:76},
-        {x:40,y:80},
-        {x:60,y:80},
-        {x:78,y:76}
-    ];
+                </div>
 
-    return positions[i % positions.length];
-}
+            </div>
 
 
-function getMidfieldPosition(team){
+            ${
+                future
 
-    const i =
-        positionCounters[team].MID++;
+                ? `
+                    <div class="not-started">
+                        ⏳ لم تبدأ المباراة بعد
+                    </div>
+                  `
+                : ""
+            }
+
+
+            ${
+                match.match_date ||
+                match.match_time
+
+                ? `
+                    <div class="match-date">
+
+                        ${
+                            match.match_date
+                            ? "📅 " +
+                              match.match_date
+                            : ""
+                        }
+
+                        ${
+                            match.match_time
+                            ? " &nbsp; 🕐 " +
+                              match.match_time
+                            : ""
+                        }
+
+                    </div>
+                  `
+                : ""
+            }
 
-    const positions = [
-        {x:25,y:58},
-        {x:50,y:62},
-        {x:75,y:58}
-    ];
-
-    return positions[i % positions.length];
-}
-
-
-function getAttackPosition(team){
-
-    const i =
-        positionCounters[team].ATT++;
-
-    const positions = [
-        {x:35,y:43},
-        {x:65,y:43}
-    ];
-
-    return positions[i % positions.length];
-}
-
-
-/* رسم اللاعبين */
-
-function drawPlayers(players,homeTeam,awayTeam){
-
-    positionCounters.home.DEF = 0;
-    positionCounters.home.MID = 0;
-    positionCounters.home.ATT = 0;
-
-    positionCounters.away.DEF = 0;
-    positionCounters.away.MID = 0;
-    positionCounters.away.ATT = 0;
-
-
-    const homePlayers =
-        players.filter(p => p.team === homeTeam);
-
-    const awayPlayers =
-        players.filter(p => p.team === awayTeam);
-
-
-    homePlayers
-        .slice(0,6)
-        .forEach(data => {
-
-            const position =
-                getPosition(
-                    "home",
-                    data.position
-                );
-
-            createPlayer(
-                data,
-                position
-            );
-
-        });
-
-
-    awayPlayers
-        .slice(0,6)
-        .forEach(data => {
-
-            const position =
-                getPosition(
-                    "away",
-                    data.position
-                );
-
-            createPlayer(
-                data,
-                position
-            );
-
-        });
-
-
-    renderPlayersList(players);
-}
-
-
-/* إنشاء لاعب */
-
-function createPlayer(data,position){
-
-    const player =
-        data.players || {};
-
-
-    const div =
-        document.createElement("div");
-
-    div.className =
-        "player";
-
-
-    div.style.left =
-        position.x + "%";
-
-    div.style.top =
-        position.y + "%";
-
-
-    let photoHTML = "";
-
-
-    if(player.photo){
-
-        photoHTML =
-        `<img
-            class="player-photo"
-            src="${escapeHtml(player.photo)}"
-            alt="${escapeHtml(player.name || "لاعب")}"
-        >`;
-
-    }else{
-
-        const letter =
-            (player.name || "؟").charAt(0);
-
-        photoHTML =
-        `<div
-            class="player-photo"
-            style="
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                font-size:22px;
-                font-weight:bold;
-            "
-        >
-            ${escapeHtml(letter)}
-        </div>`;
-    }
-
-
-    let events = "";
-
-
-    if(Number(data.goals) > 0){
-
-        events +=
-            "⚽".repeat(
-                Math.min(Number(data.goals),5)
-            );
-    }
-
-
-    if(Number(data.assists) > 0){
-
-        events +=
-            " 👟".repeat(
-                Math.min(Number(data.assists),5)
-            );
-    }
-
-
-    const positionNames = {
-        GK:"🧤 حارس",
-        DEF:"🛡️ دفاع",
-        MID:"⚙️ وسط",
-        ATT:"⚡ هجوم"
-    };
-
-
-    const positionText =
-        positionNames[
-            String(data.position || "").toUpperCase()
-        ] || "";
-
-
-    div.innerHTML = `
-
-        ${photoHTML}
-
-        <div class="player-name">
-            ${escapeHtml(player.name || "لاعب")}
-        </div>
-
-        <div class="rating">
-            ⭐ ${Number(data.rating || 0).toFixed(1)}
-        </div>
-
-        <div class="position-label">
-            ${positionText}
-        </div>
-
-        <div class="events">
-            ${events}
         </div>
 
     `;
 
 
-    pitch.appendChild(div);
+    /* التشكيلة المتوقعة */
+
+    await loadExpectedLineup(
+        match
+    );
+
+
+    /* التشكيلة الفعلية */
+
+    await loadActualLineup(
+        match
+    );
+
 }
 
 
-/* قائمة اللاعبين */
+/* =====================================================
+   EXPECTED LINEUP
+===================================================== */
 
-function renderPlayersList(players){
+async function loadExpectedLineup(match){
 
-    const list =
-        document.getElementById("playersList");
-
-    list.innerHTML = "";
-
-
-    players.forEach(data => {
-
-        const player =
-            data.players || {};
-
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "player-card";
+    const {data,error} =
+        await supabaseClient
+        .from("expected_lineups")
+        .select("*")
+        .eq(
+            "match_id",
+            match.id
+        );
 
 
-        let photo = "";
+    if(error){
+
+        console.error(error);
+        return;
+    }
 
 
-        if(player.photo){
-
-            photo =
-            `<img
-                src="${escapeHtml(player.photo)}"
-                alt="${escapeHtml(player.name || "")}"
-            >`;
-
-        }else{
-
-            photo =
-            `<img
-                src="https://placehold.co/100x100?text=${encodeURIComponent(
-                    (player.name || "?").charAt(0)
-                )}"
-                alt=""
-            >`;
-        }
+    if(!data || !data.length)
+        return;
 
 
-        const positionNames = {
-            GK:"🧤 حارس",
-            DEF:"🛡️ دفاع",
-            MID:"⚙️ وسط",
-            ATT:"⚡ هجوم"
-        };
-
-
-        const positionText =
-            positionNames[
-                String(data.position || "").toUpperCase()
-            ] || "غير محدد";
-
-
-        card.innerHTML = `
-
-            ${photo}
-
-            <div class="player-data">
-
-                <strong>
-                    ${escapeHtml(player.name || "لاعب")}
-                </strong>
-
-                <div class="stats">
-
-                    ${positionText}
-
-                    &nbsp; | &nbsp;
-
-                    ⭐
-                    <b>
-                        ${Number(data.rating || 0).toFixed(1)}
-                    </b>
-
-                    &nbsp; | &nbsp;
-
-                    ⚽ ${Number(data.goals || 0)}
-
-                    &nbsp; | &nbsp;
-
-                    👟 ${Number(data.assists || 0)}
-
-                </div>
-
-            </div>
-        `;
-
-
-        list.appendChild(card);
-
-    });
-}
-
-
-/* الخطأ */
-
-function showError(message){
-
-    loading.style.display =
-        "none";
-
-    errorBox.style.display =
+    document.getElementById(
+        "expectedSection"
+    ).style.display =
         "block";
 
-    errorBox.textContent =
-        message;
+
+    const playerIds =
+        data.map(
+            row =>
+            row.player_id
+        );
+
+
+    const {data:players} =
+        await supabaseClient
+        .from("players")
+        .select("*")
+        .in(
+            "id",
+            playerIds
+        );
+
+
+    if(!players)
+        return;
+
+
+    const container =
+        document.getElementById(
+            "expectedPlayers"
+        );
+
+
+    container.innerHTML =
+        data.map(
+            row => {
+
+                const player =
+                    players.find(
+                        p =>
+                        String(p.id) ===
+                        String(row.player_id)
+                    );
+
+
+                if(!player)
+                    return "";
+
+
+                return createPitchPlayer(
+                    player,
+                    row
+                );
+
+            }
+        ).join("");
+
 }
 
 
-/* حماية النص */
+/* =====================================================
+   ACTUAL LINEUP
+===================================================== */
+
+async function loadActualLineup(match){
+
+    const {data,error} =
+        await supabaseClient
+        .from("match_players")
+        .select("*")
+        .eq(
+            "match_id",
+            match.id
+        );
+
+
+    if(error){
+
+        console.error(error);
+        return;
+    }
+
+
+    if(!data || !data.length)
+        return;
+
+
+    document.getElementById(
+        "actualSection"
+    ).style.display =
+        "block";
+
+
+    const playerIds =
+        data.map(
+            row =>
+            row.player_id
+        );
+
+
+    const {data:players} =
+        await supabaseClient
+        .from("players")
+        .select("*")
+        .in(
+            "id",
+            playerIds
+        );
+
+
+    if(!players)
+        return;
+
+
+    const container =
+        document.getElementById(
+            "actualPlayers"
+        );
+
+
+    container.innerHTML =
+        data.map(
+            row => {
+
+                const player =
+                    players.find(
+                        p =>
+                        String(p.id) ===
+                        String(row.player_id)
+                    );
+
+
+                if(!player)
+                    return "";
+
+
+                return createPitchPlayer(
+                    player,
+                    row
+                );
+
+            }
+        ).join("");
+
+
+    renderRatings(
+        data,
+        players
+    );
+
+}
+
+
+/* =====================================================
+   CREATE PLAYER
+===================================================== */
+
+function createPitchPlayer(
+    player,
+    row
+){
+
+    const x =
+        Number(row.x) || 50;
+
+    const y =
+        Number(row.y) || 50;
+
+
+    const photo =
+        player.photo ||
+        "https://via.placeholder.com/55?text=PLAYER";
+
+
+    const positionIcons = {
+
+        GK:"🧤",
+
+        DEF:"🛡️",
+
+        MID:"⚙️",
+
+        ATT:"⚡"
+
+    };
+
+
+    const icon =
+        positionIcons[
+            row.position
+        ] || "";
+
+
+    const goalIcon =
+        Number(row.goals) > 0
+        ? " ⚽"
+        : "";
+
+
+    const assistIcon =
+        Number(row.assists) > 0
+        ? " 👟"
+        : "";
+
+
+    return `
+
+        <div
+            class="pitch-player"
+            style="
+                left:${x}%;
+                top:${y}%;
+            "
+        >
+
+            ${
+                player.number
+                ? `
+                    <div class="pitch-player-number">
+                        ${player.number}
+                    </div>
+                  `
+                : ""
+            }
+
+
+            <img
+                src="${photo}"
+                alt="${escapeHtml(player.name)}"
+            >
+
+
+            <div class="pitch-player-name">
+
+                ${escapeHtml(player.name)}
+
+                ${goalIcon}
+                ${assistIcon}
+
+            </div>
+
+
+            <div class="pitch-position">
+
+                ${icon}
+                ${row.position || ""}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   RATINGS
+===================================================== */
+
+function renderRatings(
+    rows,
+    players
+){
+
+    const section =
+        document.getElementById(
+            "ratingsSection"
+        );
+
+
+    const container =
+        document.getElementById(
+            "ratings"
+        );
+
+
+    section.style.display =
+        "block";
+
+
+    container.innerHTML =
+        rows
+        .sort(
+            (a,b) =>
+            Number(b.rating || 0) -
+            Number(a.rating || 0)
+        )
+        .map(
+            row => {
+
+                const player =
+                    players.find(
+                        p =>
+                        String(p.id) ===
+                        String(row.player_id)
+                    );
+
+
+                if(!player)
+                    return "";
+
+
+                const photo =
+                    player.photo ||
+                    "https://via.placeholder.com/60?text=P";
+
+
+                return `
+
+                    <div class="player-card">
+
+                        <img
+                            src="${photo}"
+                        >
+
+                        <div class="player-info">
+
+                            <div class="player-name">
+
+                                ${escapeHtml(player.name)}
+
+                            </div>
+
+                            <div class="player-stat">
+
+                                ⭐ التقييم:
+                                <strong>
+                                    ${Number(row.rating || 0).toFixed(1)}
+                                </strong>
+
+                            </div>
+
+                            <div class="badges">
+
+                                ${
+                                    Number(row.goals) > 0
+                                    ? `
+                                        <span class="goal-badge">
+                                            ⚽ ${row.goals} هدف
+                                        </span>
+                                      `
+                                    : ""
+                                }
+
+                                ${
+                                    Number(row.assists) > 0
+                                    ? `
+                                        <span class="assist-badge">
+                                            👟 ${row.assists} أسيست
+                                        </span>
+                                      `
+                                    : ""
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+/* =====================================================
+   FUTURE
+===================================================== */
+
+function isFutureMatch(match){
+
+    if(!match.match_date)
+        return false;
+
+
+    const time =
+        match.match_time ||
+        "23:59";
+
+
+    const date =
+        new Date(
+            `${match.match_date}T${time}`
+        );
+
+
+    return date > new Date();
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
 
 function escapeHtml(value){
 
@@ -930,8 +1277,13 @@ function escapeHtml(value){
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
+
 }
 
+
+/* =====================================================
+   START
+===================================================== */
 
 loadMatch();
 
