@@ -52,7 +52,6 @@ header h1{
     box-shadow:0 8px 25px rgba(0,0,0,.08);
 }
 
-
 /* ================= MATCH ================= */
 
 .match-header{
@@ -110,24 +109,12 @@ header h1{
     font-weight:bold;
 }
 
-.finished{
-    background:#f0fdf4;
-    color:#15803d;
-    padding:12px;
-    border-radius:12px;
-    margin-top:20px;
-    font-weight:bold;
-}
-
 .match-date{
     margin-top:12px;
     color:#475569;
 }
 
-
-/* =====================================================
-   PITCH - NEW DESIGN ONLY
-===================================================== */
+/* ================= PITCH ================= */
 
 .pitch-title{
     text-align:center;
@@ -135,399 +122,135 @@ header h1{
 }
 
 .pitch{
-
     position:relative;
-
     width:100%;
-    max-width:850px;
+    max-width:900px;
+    aspect-ratio:105 / 68;
+    margin:24px auto;
 
-    /*
-       نفس نظام اللاعبين القديم
-       لكن الملعب أصبح أكثر احترافية
-    */
-    aspect-ratio:1.5 / 1;
-
-    margin:20px auto;
-
-    overflow:hidden;
-
-    border:5px solid white;
-
-    border-radius:10px;
-
-    /*
-       عشب طبيعي + خطوط قص العشب
-    */
+    /* أبعاد ملعب كرة القدم الحقيقي: 105 × 68 */
     background:
         repeating-linear-gradient(
             90deg,
-            #087f3f 0px,
-            #087f3f 55px,
-            #0d8c45 55px,
-            #0d8c45 110px
+            #167a38 0%,
+            #167a38 8.333%,
+            #1b8740 8.333%,
+            #1b8740 16.666%
         );
+
+    border:3px solid #ffffff;
+    border-radius:4px;
+    overflow:hidden;
 
     box-shadow:
-        0 12px 35px rgba(0,0,0,.28),
-        inset 0 0 30px rgba(0,0,0,.12);
-
+        0 12px 35px rgba(0,0,0,.28);
 }
 
-
-/* ================= OUTER LINE ================= */
-
-.pitch::before{
-
-    content:"";
-
-    position:absolute;
-
-    left:2%;
-    right:2%;
-
-    top:3%;
-    bottom:3%;
-
-    border:3px solid white;
-
-    pointer-events:none;
-
-}
-
-
-/* ================= CENTER LINE ================= */
+/* خط منتصف الملعب */
 
 .pitch-midline{
-
     position:absolute;
-
-    top:3%;
-    bottom:3%;
-
     left:50%;
-
-    width:3px;
-
-    background:white;
-
+    top:0;
+    bottom:0;
+    width:2px;
+    background:#fff;
     transform:translateX(-50%);
-
-    z-index:1;
-
+    z-index:2;
 }
 
-
-/* ================= CENTER CIRCLE ================= */
+/* دائرة المنتصف — قطرها الحقيقي 18.3م */
 
 .pitch-center-circle{
-
     position:absolute;
-
-    width:125px;
-    height:125px;
-
-    border:3px solid white;
-
+    width:26.91%;
+    aspect-ratio:1;
+    border:2px solid #fff;
     border-radius:50%;
-
     left:50%;
     top:50%;
-
-    transform:
-        translate(-50%,-50%);
-
-    z-index:1;
-
+    transform:translate(-50%,-50%);
+    z-index:2;
 }
-
-
-/* ================= CENTER DOT ================= */
 
 .pitch-center-dot{
-
     position:absolute;
-
-    width:9px;
-    height:9px;
-
-    background:white;
-
+    width:7px;
+    aspect-ratio:1;
+    background:#fff;
     border-radius:50%;
-
     left:50%;
     top:50%;
-
-    transform:
-        translate(-50%,-50%);
-
-    z-index:2;
-
+    transform:translate(-50%,-50%);
+    z-index:3;
 }
 
-
-/* ================= PENALTY AREA ================= */
+/* منطقة الجزاء — 16.5م عمق × 40.3م عرض */
 
 .pitch-penalty{
-
     position:absolute;
-
-    top:50%;
-
-    width:25%;
-    height:42%;
-
-    border:3px solid white;
-
-    transform:translateY(-50%);
-
-    z-index:1;
-
+    left:50%;
+    width:59.26%;
+    height:15.71%;
+    border:2px solid #fff;
+    transform:translateX(-50%);
+    z-index:2;
 }
-
-
-/* LEFT PENALTY */
 
 .pitch-penalty.top{
-
-    left:2%;
-
+    top:-2px;
 }
-
-
-/* RIGHT PENALTY */
 
 .pitch-penalty.bottom{
-
-    right:2%;
-
+    bottom:-2px;
 }
 
-
-/* ================= GOAL AREA ================= */
+/* منطقة المرمى — 5.5م عمق × 18.32م عرض */
 
 .pitch-goal-area{
-
     position:absolute;
-
-    top:50%;
-
-    width:11%;
-    height:21%;
-
-    border:3px solid white;
-
-    transform:translateY(-50%);
-
-    z-index:1;
-
+    left:50%;
+    width:26.94%;
+    height:5.24%;
+    border:2px solid #fff;
+    transform:translateX(-50%);
+    z-index:2;
 }
-
-
-/* LEFT GOAL AREA */
 
 .pitch-goal-area.top{
-
-    left:2%;
-
+    top:-2px;
 }
-
-
-/* RIGHT GOAL AREA */
 
 .pitch-goal-area.bottom{
-
-    right:2%;
-
+    bottom:-2px;
 }
 
-
-/* ================= GOALS ================= */
+/* المرمى — 7.32م عرض */
 
 .pitch-goal{
-
     position:absolute;
-
-    top:50%;
-
-    width:3%;
-    height:13%;
-
-    border:3px solid white;
-
-    transform:translateY(-50%);
-
-    background:
-        repeating-linear-gradient(
-            45deg,
-            rgba(255,255,255,.18),
-            rgba(255,255,255,.18) 3px,
-            transparent 3px,
-            transparent 7px
-        );
-
+    left:50%;
+    width:10.76%;
+    height:3.1%;
+    border:2px solid #fff;
+    transform:translateX(-50%);
     z-index:2;
-
 }
-
-
-/* LEFT GOAL */
 
 .pitch-goal.top{
-
-    left:0;
-
+    top:0;
 }
-
-
-/* RIGHT GOAL */
 
 .pitch-goal.bottom{
-
-    right:0;
-
+    bottom:0;
 }
-
-
-/* ================= PENALTY SPOTS ================= */
-
-.pitch-penalty-dot{
-
-    position:absolute;
-
-    width:8px;
-    height:8px;
-
-    background:white;
-
-    border-radius:50%;
-
-    top:50%;
-
-    transform:translateY(-50%);
-
-    z-index:2;
-
-}
-
-
-.pitch-penalty-dot.top{
-
-    left:18%;
-
-}
-
-
-.pitch-penalty-dot.bottom{
-
-    right:18%;
-
-}
-
-
-/* ================= PENALTY ARCS ================= */
-
-.pitch-penalty-arc{
-
-    position:absolute;
-
-    width:90px;
-    height:90px;
-
-    border:3px solid white;
-
-    border-radius:50%;
-
-    top:50%;
-
-    transform:translateY(-50%);
-
-    z-index:1;
-
-}
-
-
-.pitch-penalty-arc.top{
-
-    left:13%;
-
-}
-
-
-.pitch-penalty-arc.bottom{
-
-    right:13%;
-
-}
-
-
-/* ================= CORNER ARCS ================= */
-
-.pitch-corner{
-
-    position:absolute;
-
-    width:30px;
-    height:30px;
-
-    border:3px solid white;
-
-    border-radius:50%;
-
-    z-index:2;
-
-}
-
-
-.pitch-corner.tl{
-
-    top:3%;
-    left:2%;
-
-    border-left-color:transparent;
-    border-top-color:transparent;
-
-}
-
-
-.pitch-corner.bl{
-
-    bottom:3%;
-    left:2%;
-
-    border-left-color:transparent;
-    border-bottom-color:transparent;
-
-}
-
-
-.pitch-corner.tr{
-
-    top:3%;
-    right:2%;
-
-    border-right-color:transparent;
-    border-top-color:transparent;
-
-}
-
-
-.pitch-corner.br{
-
-    bottom:3%;
-    right:2%;
-
-    border-right-color:transparent;
-    border-bottom-color:transparent;
-
-}
-
 
 /* ================= PLAYERS ================= */
 
 .pitch-player{
     position:absolute;
 
-    width:82px;
+    width:78px;
 
     text-align:center;
 
@@ -538,8 +261,8 @@ header h1{
 }
 
 .pitch-player img{
-    width:56px;
-    height:56px;
+    width:54px;
+    height:54px;
 
     object-fit:cover;
 
@@ -599,7 +322,6 @@ header h1{
     margin-top:2px;
 }
 
-
 /* ================= PLAYER STATS ================= */
 
 .players-grid{
@@ -654,13 +376,11 @@ header h1{
 
 .goal-badge{
     color:#15803d;
-    margin-left:8px;
 }
 
 .assist-badge{
     color:#2563eb;
 }
-
 
 /* ================= MOBILE ================= */
 
@@ -691,13 +411,18 @@ header h1{
         grid-template-columns:1fr;
     }
 
+    .pitch{
+        width:100%;
+        max-width:none;
+    }
+
     .pitch-player{
-        width:65px;
+        width:60px;
     }
 
     .pitch-player img{
-        width:45px;
-        height:45px;
+        width:42px;
+        height:42px;
     }
 
     .pitch-player-name{
@@ -707,16 +432,6 @@ header h1{
     .pitch-center-circle{
         width:80px;
         height:80px;
-    }
-
-    .pitch-penalty-arc{
-        width:55px;
-        height:55px;
-    }
-
-    .pitch-corner{
-        width:20px;
-        height:20px;
     }
 
 }
@@ -784,22 +499,6 @@ header h1{
 
         <div class="pitch-goal bottom"></div>
 
-        <div class="pitch-penalty-dot top"></div>
-
-        <div class="pitch-penalty-dot bottom"></div>
-
-        <div class="pitch-penalty-arc top"></div>
-
-        <div class="pitch-penalty-arc bottom"></div>
-
-        <div class="pitch-corner tl"></div>
-
-        <div class="pitch-corner bl"></div>
-
-        <div class="pitch-corner tr"></div>
-
-        <div class="pitch-corner br"></div>
-
         <div id="expectedPlayers"></div>
 
     </div>
@@ -842,22 +541,6 @@ header h1{
 
         <div class="pitch-goal bottom"></div>
 
-        <div class="pitch-penalty-dot top"></div>
-
-        <div class="pitch-penalty-dot bottom"></div>
-
-        <div class="pitch-penalty-arc top"></div>
-
-        <div class="pitch-penalty-arc bottom"></div>
-
-        <div class="pitch-corner tl"></div>
-
-        <div class="pitch-corner bl"></div>
-
-        <div class="pitch-corner tr"></div>
-
-        <div class="pitch-corner br"></div>
-
         <div id="actualPlayers"></div>
 
     </div>
@@ -884,12 +567,10 @@ header h1{
 
 </div>
 
-
 </div>
 
 
 <script>
-
 
 /* =====================================================
    SUPABASE
@@ -980,15 +661,10 @@ async function loadMatch(){
 
 async function renderMatch(match){
 
-    const {data:teams,error:teamsError} =
+    const {data:teams} =
         await supabaseClient
         .from("teams")
         .select("*");
-
-
-    if(teamsError){
-        console.error(teamsError);
-    }
 
 
     const homeTeam =
@@ -1006,29 +682,17 @@ async function renderMatch(match){
 
 
     const homeLogo =
-        homeTeam?.logo || "";
+        homeTeam?.logo ||
+        "https://via.placeholder.com/100?text=HOME";
 
 
     const awayLogo =
-        awayTeam?.logo || "";
+        awayTeam?.logo ||
+        "https://via.placeholder.com/100?text=AWAY";
 
 
-    /*
-       IMPORTANT:
-       The match state is controlled
-       by played, NOT by the date.
-    */
-
-    const played =
-        match.played === true;
-
-
-    const homeGoals =
-        Number(match.home_goals) || 0;
-
-
-    const awayGoals =
-        Number(match.away_goals) || 0;
+    const future =
+        match.played !== true;
 
 
     document.getElementById(
@@ -1041,7 +705,7 @@ async function renderMatch(match){
                 match.round
                 ? `
                     <div class="match-round">
-                        الجولة ${escapeHtml(match.round)}
+                        ${escapeHtml(match.round)}
                     </div>
                   `
                 : ""
@@ -1052,29 +716,10 @@ async function renderMatch(match){
 
                 <div class="team">
 
-                    ${
-                        homeLogo
-                        ? `
-                            <img
-                                class="team-logo"
-                                src="${homeLogo}"
-                                alt="${escapeHtml(match.home)}"
-                            >
-                          `
-                        : `
-                            <div
-                                class="team-logo"
-                                style="
-                                    display:flex;
-                                    align-items:center;
-                                    justify-content:center;
-                                    font-size:50px;
-                                "
-                            >
-                                ⚽
-                            </div>
-                          `
-                    }
+                    <img
+                        class="team-logo"
+                        src="${homeLogo}"
+                    >
 
                     <div class="team-name">
                         ${escapeHtml(match.home)}
@@ -1086,19 +731,19 @@ async function renderMatch(match){
                 <div>
 
                     ${
-                        played
+                        future
 
                         ? `
-                            <div class="score">
-                                ${homeGoals}
-                                -
-                                ${awayGoals}
+                            <div class="vs">
+                                VS
                             </div>
                           `
 
                         : `
-                            <div class="vs">
-                                VS
+                            <div class="score">
+                                ${match.home_goals}
+                                -
+                                ${match.away_goals}
                             </div>
                           `
                     }
@@ -1108,29 +753,10 @@ async function renderMatch(match){
 
                 <div class="team">
 
-                    ${
-                        awayLogo
-                        ? `
-                            <img
-                                class="team-logo"
-                                src="${awayLogo}"
-                                alt="${escapeHtml(match.away)}"
-                            >
-                          `
-                        : `
-                            <div
-                                class="team-logo"
-                                style="
-                                    display:flex;
-                                    align-items:center;
-                                    justify-content:center;
-                                    font-size:50px;
-                                "
-                            >
-                                ⚽
-                            </div>
-                          `
-                    }
+                    <img
+                        class="team-logo"
+                        src="${awayLogo}"
+                    >
 
                     <div class="team-name">
                         ${escapeHtml(match.away)}
@@ -1142,19 +768,14 @@ async function renderMatch(match){
 
 
             ${
-                played
+                future
 
                 ? `
-                    <div class="finished">
-                        ✅ انتهت المباراة
-                    </div>
-                  `
-
-                : `
                     <div class="not-started">
                         ⏳ لم تبدأ المباراة بعد
                     </div>
                   `
+                : ""
             }
 
 
@@ -1175,7 +796,7 @@ async function renderMatch(match){
                         ${
                             match.match_time
                             ? " &nbsp; 🕐 " +
-                              formatTime(match.match_time)
+                              match.match_time
                             : ""
                         }
 
@@ -1191,16 +812,20 @@ async function renderMatch(match){
 
     /* التشكيلة المتوقعة */
 
-    await loadExpectedLineup(
-        match
-    );
+    if(match.played !== true){
+
+        await loadExpectedLineup(match);
+
+    }
 
 
     /* التشكيلة الفعلية */
 
-    await loadActualLineup(
-        match
-    );
+    if(match.played === true){
+
+        await loadActualLineup(match);
+
+    }
 
 }
 
@@ -1283,8 +908,7 @@ async function loadExpectedLineup(match){
 
                 return createPitchPlayer(
                     player,
-                    row,
-                    false
+                    row
                 );
 
             }
@@ -1371,8 +995,7 @@ async function loadActualLineup(match){
 
                 return createPitchPlayer(
                     player,
-                    row,
-                    true
+                    row
                 );
 
             }
@@ -1393,8 +1016,7 @@ async function loadActualLineup(match){
 
 function createPitchPlayer(
     player,
-    row,
-    actual
+    row
 ){
 
     const x =
@@ -1405,7 +1027,8 @@ function createPitchPlayer(
 
 
     const photo =
-        player.photo || "";
+        player.photo ||
+        "https://via.placeholder.com/55?text=PLAYER";
 
 
     const positionIcons = {
@@ -1427,22 +1050,15 @@ function createPitchPlayer(
         ] || "";
 
 
-    /*
-       Goals and assists are shown
-       only for actual match players.
-    */
-
     const goalIcon =
-        actual &&
         Number(row.goals) > 0
-        ? ` ⚽ ${Number(row.goals)}`
+        ? " ⚽"
         : "";
 
 
     const assistIcon =
-        actual &&
         Number(row.assists) > 0
-        ? ` 👟 ${Number(row.assists)}`
+        ? " 👟"
         : "";
 
 
@@ -1460,39 +1076,17 @@ function createPitchPlayer(
                 player.number
                 ? `
                     <div class="pitch-player-number">
-                        ${escapeHtml(player.number)}
+                        ${player.number}
                     </div>
                   `
                 : ""
             }
 
 
-            ${
-                photo
-                ? `
-                    <img
-                        src="${photo}"
-                        alt="${escapeHtml(player.name)}"
-                    >
-                  `
-                : `
-                    <div
-                        style="
-                            width:56px;
-                            height:56px;
-                            border-radius:50%;
-                            border:3px solid white;
-                            background:#e5e7eb;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            font-size:25px;
-                        "
-                    >
-                        👤
-                    </div>
-                  `
-            }
+            <img
+                src="${photo}"
+                alt="${escapeHtml(player.name)}"
+            >
 
 
             <div class="pitch-player-name">
@@ -1500,7 +1094,6 @@ function createPitchPlayer(
                 ${escapeHtml(player.name)}
 
                 ${goalIcon}
-
                 ${assistIcon}
 
             </div>
@@ -1509,8 +1102,7 @@ function createPitchPlayer(
             <div class="pitch-position">
 
                 ${icon}
-
-                ${escapeHtml(row.position || "")}
+                ${row.position || ""}
 
             </div>
 
@@ -1569,39 +1161,17 @@ function renderRatings(
 
 
                 const photo =
-                    player.photo || "";
+                    player.photo ||
+                    "https://via.placeholder.com/60?text=P";
 
 
                 return `
 
                     <div class="player-card">
 
-                        ${
-                            photo
-                            ? `
-                                <img
-                                    src="${photo}"
-                                    alt="${escapeHtml(player.name)}"
-                                >
-                              `
-                            : `
-                                <div
-                                    style="
-                                        width:60px;
-                                        height:60px;
-                                        border-radius:50%;
-                                        background:#e5e7eb;
-                                        display:flex;
-                                        align-items:center;
-                                        justify-content:center;
-                                        font-size:25px;
-                                    "
-                                >
-                                    👤
-                                </div>
-                              `
-                        }
-
+                        <img
+                            src="${photo}"
+                        >
 
                         <div class="player-info">
 
@@ -1611,17 +1181,14 @@ function renderRatings(
 
                             </div>
 
-
                             <div class="player-stat">
 
                                 ⭐ التقييم:
-
                                 <strong>
                                     ${Number(row.rating || 0).toFixed(1)}
                                 </strong>
 
                             </div>
-
 
                             <div class="badges">
 
@@ -1629,18 +1196,17 @@ function renderRatings(
                                     Number(row.goals) > 0
                                     ? `
                                         <span class="goal-badge">
-                                            ⚽ ${Number(row.goals)} هدف
+                                            ⚽ ${row.goals} هدف
                                         </span>
                                       `
                                     : ""
                                 }
 
-
                                 ${
                                     Number(row.assists) > 0
                                     ? `
                                         <span class="assist-badge">
-                                            👟 ${Number(row.assists)} أسيست
+                                            👟 ${row.assists} أسيست
                                         </span>
                                       `
                                     : ""
@@ -1662,7 +1228,7 @@ function renderRatings(
 
 
 /* =====================================================
-   FORMAT DATE
+   DATE
 ===================================================== */
 
 function formatDate(date){
@@ -1673,10 +1239,8 @@ function formatDate(date){
     const parts =
         String(date).split("-");
 
-
     if(parts.length !== 3)
         return escapeHtml(date);
-
 
     return `${parts[2]}/${parts[1]}/${parts[0]}`;
 
@@ -1684,15 +1248,27 @@ function formatDate(date){
 
 
 /* =====================================================
-   FORMAT TIME
+   FUTURE
 ===================================================== */
 
-function formatTime(time){
+function isFutureMatch(match){
 
-    if(!time)
-        return "";
+    if(!match.match_date)
+        return false;
 
-    return String(time).slice(0,5);
+
+    const time =
+        match.match_time ||
+        "23:59";
+
+
+    const date =
+        new Date(
+            `${match.match_date}T${time}`
+        );
+
+
+    return date > new Date();
 
 }
 
@@ -1703,7 +1279,7 @@ function formatTime(time){
 
 function escapeHtml(value){
 
-    return String(value ?? "")
+    return String(value)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
