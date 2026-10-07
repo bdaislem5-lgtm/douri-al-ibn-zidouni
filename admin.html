@@ -232,6 +232,27 @@ button.logout{
     color:#92400e;
 }
 
+.expected-save-area{
+    margin-top:20px;
+    padding:16px;
+    border:2px solid #15803d;
+    background:#f0fdf4;
+    border-radius:16px;
+}
+
+.expected-save-area-title{
+    font-weight:bold;
+    color:#166534;
+    margin-bottom:8px;
+}
+
+.expected-save-area .save{
+    margin-top:8px;
+    font-size:16px;
+    font-weight:bold;
+}
+
+
 .match-time{
     font-weight:bold;
     color:#2563eb;
@@ -2224,12 +2245,24 @@ async function loadExpectedLineupForm(){
         </div>
 
 
-        <button
-            class="save"
-            onclick="saveExpectedLineup(${match.id})"
-        >
-            💾 حفظ التشكيلة المتوقعة
-        </button>
+        <div class="expected-save-area">
+
+            <div class="expected-save-area-title">
+                💾 حفظ التشكيلة المتوقعة
+            </div>
+
+            <div class="small">
+                سيتم حفظ اللاعبين + المراكز + أماكنهم على الملعب في Supabase.
+            </div>
+
+            <button
+                class="save"
+                onclick="saveExpectedLineup(${match.id})"
+            >
+                💾 حفظ التشكيلة والملعب
+            </button>
+
+        </div>
 
 
         <div class="pitch-section">
@@ -2477,6 +2510,7 @@ async function saveExpectedLineup(matchId){
 
     const homeContainer = document.getElementById("expectedHomeLineup");
     const awayContainer = document.getElementById("expectedAwayLineup");
+    const message = document.getElementById("expectedLineupMessage");
 
     if(!homeContainer || !awayContainer){
         alert("افتح التشكيلة المتوقعة أولًا.");
@@ -2511,19 +2545,29 @@ async function saveExpectedLineup(matchId){
         return;
     }
 
-    if(!homeData.some(p => p.position === "GK") ||
-       !awayData.some(p => p.position === "GK")){
+    if(
+        !homeData.some(p => p.position === "GK") ||
+        !awayData.some(p => p.position === "GK")
+    ){
         alert("يجب أن يكون لكل فريق حارس مرمى 🧤.");
         return;
     }
 
-    document.querySelectorAll("#expectedPitchPlayers .pitch-player").forEach(element => {
+    // حفظ أماكن اللاعبين الحالية على الملعب
+    document.querySelectorAll(
+        "#expectedPitchPlayers .pitch-player"
+    ).forEach(element => {
+
         const found = allData.find(
             p => String(p.player_id) === String(element.dataset.playerId)
         );
+
         if(found){
-            found.x = Number(element.dataset.x) || 50;
-            found.y = Number(element.dataset.y) || 50;
+            found.x = Number(element.dataset.x);
+            found.y = Number(element.dataset.y);
+
+            if(!Number.isFinite(found.x)) found.x = 50;
+            if(!Number.isFinite(found.y)) found.y = 50;
         }
     });
 
@@ -2536,9 +2580,13 @@ async function saveExpectedLineup(matchId){
         y: Number.isFinite(Number(player.y)) ? Number(player.y) : 50
     }));
 
-    const message = document.getElementById("expectedLineupMessage");
+    showMessage(
+        message,
+        "جاري حفظ التشكيلة والملعب...",
+        true
+    );
 
-    // حذف التشكيلة القديمة أولًا
+    // حذف القديمة
     const {error: deleteError} = await supabaseClient
         .from("expected_lineups")
         .delete()
@@ -2546,42 +2594,77 @@ async function saveExpectedLineup(matchId){
 
     if(deleteError){
         console.error("DELETE expected_lineups:", deleteError);
-        showMessage(message, "فشل حذف التشكيلة القديمة: " + deleteError.message, false);
+
+        showMessage(
+            message,
+            "فشل حذف التشكيلة القديمة: " + deleteError.message,
+            false
+        );
+
         return;
     }
 
-    // حفظ التشكيلة الجديدة
+    // إدخال الجديدة
     const {error: insertError} = await supabaseClient
         .from("expected_lineups")
         .insert(rows);
 
     if(insertError){
         console.error("INSERT expected_lineups:", insertError);
-        showMessage(message, "فشل حفظ التشكيلة: " + insertError.message, false);
+
+        showMessage(
+            message,
+            "فشل حفظ التشكيلة: " + insertError.message,
+            false
+        );
+
         return;
     }
 
-    // التحقق من أن البيانات أصبحت فعلًا في قاعدة البيانات
-    const {data: verifyData, error: verifyError} = await supabaseClient
+    // التحقق من قاعدة البيانات
+    const {data: verifyData, error: verifyError} =
+        await supabaseClient
         .from("expected_lineups")
         .select("*")
         .eq("match_id", Number(matchId));
 
     if(verifyError){
         console.error("VERIFY expected_lineups:", verifyError);
-        showMessage(message, "تم الحفظ لكن تعذر التحقق: " + verifyError.message, false);
+
+        showMessage(
+            message,
+            "تم الإرسال لكن تعذر التحقق من الحفظ: " +
+            verifyError.message,
+            false
+        );
+
         return;
     }
 
     if(!verifyData || verifyData.length !== 12){
-        console.error("Expected 12 rows, got:", verifyData);
-        showMessage(message, "لم يتم حفظ التشكيلة كاملة. الموجود: " + (verifyData?.length || 0) + " لاعبًا.", false);
+        console.error(
+            "Expected 12 expected_lineups rows, got:",
+            verifyData
+        );
+
+        showMessage(
+            message,
+            "لم تحفظ التشكيلة كاملة. الموجود في قاعدة البيانات: " +
+            (verifyData ? verifyData.length : 0) +
+            " لاعبًا من أصل 12.",
+            false
+        );
+
         return;
     }
 
-    showMessage(message, "تم حفظ التشكيلة المتوقعة بنجاح وبقيت في قاعدة البيانات ✅", true);
+    showMessage(
+        message,
+        "✅ تم حفظ التشكيلة المتوقعة والملعب بنجاح",
+        true
+    );
 
-    // إعادة تحميلها من Supabase للتأكد أن العرض نفسه يعتمد على البيانات المحفوظة
+    // إعادة تحميلها من Supabase حتى نتأكد أن البيانات المعروضة هي المحفوظة فعلاً
     await loadExpectedLineupForm();
 }
 
