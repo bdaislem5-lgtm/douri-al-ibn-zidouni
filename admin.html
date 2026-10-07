@@ -25,7 +25,9 @@ header{
     text-align:center;
 }
 
-header h1{margin:0 0 10px}
+header h1{
+    margin:0 0 10px;
+}
 
 .container{
     max-width:1150px;
@@ -41,7 +43,9 @@ header h1{margin:0 0 10px}
     box-shadow:0 8px 25px rgba(0,0,0,.07);
 }
 
-h2{margin-top:0}
+h2{
+    margin-top:0;
+}
 
 input,select,button{
     width:100%;
@@ -59,11 +63,21 @@ button{
     cursor:pointer;
 }
 
-button:hover{opacity:.9}
+button:hover{
+    opacity:.9;
+}
 
-button.delete{background:#dc2626}
-button.save{background:#15803d}
-button.finish{background:#2563eb}
+button.delete{
+    background:#dc2626;
+}
+
+button.save{
+    background:#15803d;
+}
+
+button.finish{
+    background:#2563eb;
+}
 
 button.logout{
     background:#dc2626;
@@ -75,7 +89,9 @@ button.logout{
     margin:80px auto;
 }
 
-.login h1{text-align:center}
+.login h1{
+    text-align:center;
+}
 
 .message{
     padding:12px;
@@ -94,7 +110,9 @@ button.logout{
     color:#991b1b;
 }
 
-.hidden{display:none!important}
+.hidden{
+    display:none!important;
+}
 
 .team-grid{
     display:grid;
@@ -117,7 +135,8 @@ button.logout{
     margin:10px auto;
 }
 
-.player-row,.match-row{
+.player-row,
+.match-row{
     background:#f8fafc;
     border-radius:12px;
     padding:15px;
@@ -209,7 +228,9 @@ button.logout{
     background:#fffbeb;
 }
 
-.expected-title{color:#92400e}
+.expected-title{
+    color:#92400e;
+}
 
 .match-time{
     font-weight:bold;
@@ -218,7 +239,9 @@ button.logout{
 
 /* ================= PITCH ================= */
 
-.pitch-section{margin-top:25px}
+.pitch-section{
+    margin-top:25px;
+}
 
 .pitch-help{
     background:#ecfdf5;
@@ -291,8 +314,13 @@ button.logout{
     transform:translateX(-50%);
 }
 
-.pitch-penalty.top{top:-2px}
-.pitch-penalty.bottom{bottom:-2px}
+.pitch-penalty.top{
+    top:-2px;
+}
+
+.pitch-penalty.bottom{
+    bottom:-2px;
+}
 
 .pitch-goal-area{
     position:absolute;
@@ -303,8 +331,13 @@ button.logout{
     transform:translateX(-50%);
 }
 
-.pitch-goal-area.top{top:-2px}
-.pitch-goal-area.bottom{bottom:-2px}
+.pitch-goal-area.top{
+    top:-2px;
+}
+
+.pitch-goal-area.bottom{
+    bottom:-2px;
+}
 
 .pitch-goal{
     position:absolute;
@@ -315,8 +348,13 @@ button.logout{
     transform:translateX(-50%);
 }
 
-.pitch-goal.top{top:0}
-.pitch-goal.bottom{bottom:0}
+.pitch-goal.top{
+    top:0;
+}
+
+.pitch-goal.bottom{
+    bottom:0;
+}
 
 .pitch-player{
     position:absolute;
@@ -329,7 +367,9 @@ button.logout{
     touch-action:none;
 }
 
-.pitch-player:active{cursor:grabbing}
+.pitch-player:active{
+    cursor:grabbing;
+}
 
 .pitch-player img{
     width:55px;
@@ -381,16 +421,36 @@ button.logout{
 }
 
 @media(max-width:700px){
-    .team-grid{grid-template-columns:1fr}
-    .lineup-grid{grid-template-columns:1fr}
-    .container{padding:12px}
-    .stats-grid{grid-template-columns:1fr}
-    .pitch-player{width:65px}
+
+    .team-grid{
+        grid-template-columns:1fr;
+    }
+
+    .lineup-grid{
+        grid-template-columns:1fr;
+    }
+
+    .container{
+        padding:12px;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .pitch-player{
+        width:65px;
+    }
+
     .pitch-player img{
         width:45px;
         height:45px;
     }
-    .pitch-player-name{font-size:10px}
+
+    .pitch-player-name{
+        font-size:10px;
+    }
+
     .pitch-center-circle{
         width:80px;
         height:80px;
@@ -401,7 +461,7 @@ button.logout{
 
 <body>
 
-<!-- LOGIN -->
+<!-- ================= LOGIN ================= -->
 
 <div id="loginPage" class="login card">
 
@@ -411,18 +471,28 @@ button.logout{
         دوري الابن الزيدوني
     </p>
 
-    <input id="email" type="email" placeholder="البريد الإلكتروني">
+    <input
+        id="email"
+        type="email"
+        placeholder="البريد الإلكتروني"
+    >
 
-    <input id="password" type="password" placeholder="كلمة السر">
+    <input
+        id="password"
+        type="password"
+        placeholder="كلمة السر"
+    >
 
-    <button onclick="login()">تسجيل الدخول</button>
+    <button onclick="login()">
+        تسجيل الدخول
+    </button>
 
     <div id="loginMessage" class="message"></div>
 
 </div>
 
 
-<!-- ADMIN -->
+<!-- ================= ADMIN ================= -->
 
 <div id="adminPage" class="hidden">
 
@@ -434,7 +504,10 @@ button.logout{
 
         <span>لوحة الإدارة</span>
 
-        <button class="logout" onclick="logout()">
+        <button
+            class="logout"
+            onclick="logout()"
+        >
             تسجيل الخروج
         </button>
 
@@ -445,169 +518,208 @@ button.logout{
 
 <div class="container">
 
-<!-- TEAMS -->
+<!-- ================= TEAMS ================= -->
 
 <div class="card">
 
-<h2>🏆 الفرق</h2>
+    <h2>🏆 الفرق</h2>
 
-<div id="teamsContainer" class="team-grid"></div>
+    <div
+        id="teamsContainer"
+        class="team-grid"
+    ></div>
 
 </div>
 
 
-<!-- ADD PLAYER -->
+<!-- ================= ADD PLAYER ================= -->
 
 <div class="card">
 
-<h2>👤 إضافة لاعب</h2>
+    <h2>👤 إضافة لاعب</h2>
 
-<input id="playerName" type="text" placeholder="اسم اللاعب">
+    <input
+        id="playerName"
+        type="text"
+        placeholder="اسم اللاعب"
+    >
 
-<select id="playerTeam">
-    <option value="">اختر الفريق</option>
-</select>
+    <select id="playerTeam">
+        <option value="">اختر الفريق</option>
+    </select>
 
-<input
-    id="playerPosition"
-    type="text"
-    placeholder="المركز مثال: ST / CM / GK"
->
+    <input
+        id="playerPosition"
+        type="text"
+        placeholder="المركز مثال: ST / CM / GK"
+    >
 
-<input
-    id="playerNumber"
-    type="number"
-    placeholder="رقم القميص"
->
+    <input
+        id="playerNumber"
+        type="number"
+        placeholder="رقم القميص"
+    >
 
-<label>صورة اللاعب</label>
+    <label>صورة اللاعب</label>
 
-<input id="playerPhoto" type="file" accept="image/*">
+    <input
+        id="playerPhoto"
+        type="file"
+        accept="image/*"
+    >
 
-<button onclick="addPlayer()">إضافة اللاعب</button>
+    <button onclick="addPlayer()">
+        إضافة اللاعب
+    </button>
 
-<div id="playerMessage" class="message"></div>
+    <div
+        id="playerMessage"
+        class="message"
+    ></div>
 
 </div>
 
 
-<!-- PLAYERS -->
+<!-- ================= PLAYERS ================= -->
 
 <div class="card">
 
-<h2>👥 اللاعبين</h2>
+    <h2>👥 اللاعبين</h2>
 
-<div id="playersContainer">جاري التحميل...</div>
+    <div id="playersContainer">
+        جاري التحميل...
+    </div>
 
 </div>
 
 
-<!-- ADD MATCH -->
+<!-- ================= ADD MATCH ================= -->
 
 <div class="card">
 
-<h2>⚽ إضافة مباراة</h2>
+    <h2>⚽ إضافة مباراة</h2>
 
-<select id="homeTeam">
-    <option value="">الفريق المضيف</option>
-</select>
+    <select id="homeTeam">
+        <option value="">الفريق المضيف</option>
+    </select>
 
-<select id="awayTeam">
-    <option value="">الفريق الضيف</option>
-</select>
+    <select id="awayTeam">
+        <option value="">الفريق الضيف</option>
+    </select>
 
-<input
-    id="homeGoals"
-    type="number"
-    min="0"
-    value="0"
-    placeholder="أهداف المضيف"
-/>
+    <input
+        id="homeGoals"
+        type="number"
+        min="0"
+        value="0"
+        placeholder="أهداف المضيف"
+    >
 
-<input
-    id="awayGoals"
-    type="number"
-    min="0"
-    value="0"
-    placeholder="أهداف الضيف"
-/>
+    <input
+        id="awayGoals"
+        type="number"
+        min="0"
+        value="0"
+        placeholder="أهداف الضيف"
+    >
 
-<input
-    id="round"
-    type="text"
-    placeholder="الجولة مثال: الجولة 1"
->
+    <input
+        id="round"
+        type="text"
+        placeholder="الجولة مثال: الجولة 1"
+    >
 
-<label>📅 تاريخ المباراة</label>
+    <label>📅 تاريخ المباراة</label>
 
-<input id="matchDate" type="date">
+    <input
+        id="matchDate"
+        type="date"
+    >
 
-<label>🕐 توقيت المباراة</label>
+    <label>🕐 توقيت المباراة</label>
 
-<input id="matchTime" type="time">
+    <input
+        id="matchTime"
+        type="time"
+    >
 
-<button onclick="addMatch()">
-    إضافة المباراة
-</button>
+    <button onclick="addMatch()">
+        إضافة المباراة
+    </button>
 
-<div id="matchMessage" class="message"></div>
+    <div
+        id="matchMessage"
+        class="message"
+    ></div>
 
 </div>
 
 
-<!-- MATCHES -->
+<!-- ================= MATCHES ================= -->
 
 <div class="card">
 
-<h2>📅 المباريات</h2>
+    <h2>📅 المباريات</h2>
 
-<div id="matchesContainer">
-    جاري التحميل...
+    <div id="matchesContainer">
+        جاري التحميل...
+    </div>
+
 </div>
 
-</div>
 
-
-<!-- EXPECTED -->
+<!-- ================= EXPECTED ================= -->
 
 <div class="card expected-box">
 
-<h2 class="expected-title">
-    🎯 التشكيلة المتوقعة
-</h2>
+    <h2 class="expected-title">
+        🎯 التشكيلة المتوقعة
+    </h2>
 
-<p class="small">
-    اختر المباراة، اختر اللاعبين، ثم اسحب كل لاعب وضعه في المكان الذي تريده على الملعب.
-</p>
+    <p class="small">
+        اختر المباراة، اختر اللاعبين، ثم اسحب كل لاعب وضعه في المكان الذي تريده على الملعب.
+    </p>
 
-<select id="expectedMatch" onchange="loadExpectedLineupForm()">
-    <option value="">اختر المباراة</option>
-</select>
+    <select
+        id="expectedMatch"
+        onchange="loadExpectedLineupForm()"
+    >
+        <option value="">اختر المباراة</option>
+    </select>
 
-<div id="expectedLineupEditor"></div>
+    <div id="expectedLineupEditor"></div>
 
-<div id="expectedLineupMessage" class="message"></div>
+    <div
+        id="expectedLineupMessage"
+        class="message"
+    ></div>
 
 </div>
 
 
-<!-- ACTUAL -->
+<!-- ================= ACTUAL ================= -->
 
 <div class="card">
 
-<h2>⚽ تشكيلة المباراة الفعلية</h2>
+    <h2>⚽ تشكيلة المباراة الفعلية</h2>
 
-<p class="small">
-    اختر المباراة، اختر 6 لاعبين لكل فريق، ثم ضعهم يدويًا في الأماكن التي تريدها على الملعب.
-</p>
+    <p class="small">
+        اختر المباراة، اختر 6 لاعبين لكل فريق، ثم ضعهم يدويًا في الأماكن التي تريدها على الملعب.
+    </p>
 
-<select id="lineupMatch" onchange="loadLineupForm()">
-    <option value="">اختر المباراة</option>
-</select>
+    <select
+        id="lineupMatch"
+        onchange="loadLineupForm()"
+    >
+        <option value="">اختر المباراة</option>
+    </select>
 
-<div id="lineupEditor"></div>
+    <div id="lineupEditor"></div>
 
-<div id="lineupMessage" class="message"></div>
+    <div
+        id="lineupMessage"
+        class="message"
+    ></div>
 
 </div>
 
@@ -624,8 +736,13 @@ button.logout{
 const SUPABASE_URL =
 "https://dtxexuaverridpntgwkj.supabase.co";
 
+/*
+   هذا هو Publishable Key الصحيح
+   لا تستخدم Secret Key هنا
+*/
+
 const SUPABASE_KEY =
-"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+"sb_publishable_7lxTHAsOFz2Ljsq6pb4Mw_9a2xutP3";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -650,7 +767,8 @@ async function checkUser(){
 
     const {
         data:{session}
-    } = await supabaseClient.auth.getSession();
+    } =
+    await supabaseClient.auth.getSession();
 
     if(session){
         showAdmin();
@@ -663,13 +781,20 @@ async function checkUser(){
 async function login(){
 
     const email =
-        document.getElementById("email").value.trim();
+        document
+        .getElementById("email")
+        .value
+        .trim();
 
     const password =
-        document.getElementById("password").value;
+        document
+        .getElementById("password")
+        .value;
 
     const message =
-        document.getElementById("loginMessage");
+        document
+        .getElementById("loginMessage");
+
 
     if(!email || !password){
 
@@ -682,11 +807,15 @@ async function login(){
         return;
     }
 
+
     const {error} =
         await supabaseClient.auth.signInWithPassword({
+
             email,
             password
+
         });
+
 
     if(error){
 
@@ -701,13 +830,19 @@ async function login(){
         return;
     }
 
+
     showMessage(
         message,
         "تم تسجيل الدخول بنجاح ✅",
         true
     );
 
-    setTimeout(showAdmin,500);
+
+    setTimeout(
+        showAdmin,
+        500
+    );
+
 }
 
 
@@ -716,6 +851,7 @@ async function logout(){
     await supabaseClient.auth.signOut();
 
     showLogin();
+
 }
 
 
@@ -729,11 +865,14 @@ function showAdmin(){
         .getElementById("loginPage")
         .classList.add("hidden");
 
+
     document
         .getElementById("adminPage")
         .classList.remove("hidden");
 
+
     loadData();
+
 }
 
 
@@ -743,9 +882,11 @@ function showLogin(){
         .getElementById("adminPage")
         .classList.add("hidden");
 
+
     document
         .getElementById("loginPage")
         .classList.remove("hidden");
+
 }
 
 
@@ -756,7 +897,9 @@ function showLogin(){
 async function loadData(){
 
     await loadTeams();
+
     await loadPlayers();
+
     await loadMatches();
 
 }
@@ -774,41 +917,54 @@ async function loadTeams(){
         .select("*")
         .order("id");
 
+
     if(error){
 
         console.error(error);
+
         return;
     }
 
+
     const container =
-        document.getElementById("teamsContainer");
+        document
+        .getElementById("teamsContainer");
+
 
     const selects = [
 
         document.getElementById("playerTeam"),
+
         document.getElementById("homeTeam"),
+
         document.getElementById("awayTeam")
 
     ];
+
 
     selects.forEach(select => {
 
         const firstOption =
             select.options[0].outerHTML;
 
+
         select.innerHTML =
             firstOption;
+
 
         data.forEach(team => {
 
             const option =
                 document.createElement("option");
 
+
             option.value =
                 team.name;
 
+
             option.textContent =
                 team.name;
+
 
             select.appendChild(option);
 
@@ -824,6 +980,7 @@ async function loadTeams(){
                 team.logo ||
                 "https://via.placeholder.com/120?text=TEAM";
 
+
             return `
 
                 <div class="team-box">
@@ -835,6 +992,7 @@ async function loadTeams(){
                     <img
                         class="team-logo"
                         src="${logo}"
+                        alt="${escapeHtml(team.name)}"
                     >
 
                     <input
@@ -867,11 +1025,15 @@ async function loadTeams(){
 
 async function changeLogo(id,file){
 
-    if(!file) return;
+    if(!file)
+        return;
+
 
     try{
 
-        const logo = await readFile(file);
+        const logo =
+            await readFile(file);
+
 
         const {error} =
             await supabaseClient
@@ -879,45 +1041,70 @@ async function changeLogo(id,file){
             .update({logo})
             .eq("id",id);
 
+
         if(error){
 
             console.error(error);
-            alert("حدث خطأ أثناء رفع الشعار.");
+
+            alert(
+                "حدث خطأ أثناء رفع الشعار."
+            );
+
             return;
         }
 
-        alert("تم تحديث شعار الفريق ✅");
+
+        alert(
+            "تم تحديث شعار الفريق ✅"
+        );
+
 
         loadTeams();
 
     }catch(error){
 
         console.error(error);
-        alert("تعذر قراءة الصورة.");
+
+        alert(
+            "تعذر قراءة الصورة."
+        );
 
     }
+
 }
 
 
 async function deleteLogo(id){
 
-    if(!confirm("هل تريد حذف شعار الفريق؟"))
+    if(
+        !confirm(
+            "هل تريد حذف شعار الفريق؟"
+        )
+    )
         return;
+
 
     const {error} =
         await supabaseClient
         .from("teams")
-        .update({logo:null})
+        .update({
+            logo:null
+        })
         .eq("id",id);
+
 
     if(error){
 
         console.error(error);
+
         alert("حدث خطأ.");
+
         return;
     }
 
+
     loadTeams();
+
 }
 
 
@@ -928,22 +1115,40 @@ async function deleteLogo(id){
 async function addPlayer(){
 
     const name =
-        document.getElementById("playerName").value.trim();
+        document
+        .getElementById("playerName")
+        .value
+        .trim();
+
 
     const team =
-        document.getElementById("playerTeam").value;
+        document
+        .getElementById("playerTeam")
+        .value;
+
 
     const position =
-        document.getElementById("playerPosition").value.trim();
+        document
+        .getElementById("playerPosition")
+        .value
+        .trim();
+
 
     const numberValue =
-        document.getElementById("playerNumber").value;
+        document
+        .getElementById("playerNumber")
+        .value;
+
 
     const photoFile =
-        document.getElementById("playerPhoto").files[0];
+        document
+        .getElementById("playerPhoto")
+        .files[0];
+
 
     const message =
-        document.getElementById("playerMessage");
+        document
+        .getElementById("playerMessage");
 
 
     if(!name || !team){
@@ -965,7 +1170,8 @@ async function addPlayer(){
 
         try{
 
-            photo = await readFile(photoFile);
+            photo =
+                await readFile(photoFile);
 
         }catch(error){
 
@@ -977,6 +1183,7 @@ async function addPlayer(){
 
             return;
         }
+
     }
 
 
@@ -992,11 +1199,18 @@ async function addPlayer(){
         .insert({
 
             name,
+
             team,
-            position:position || null,
+
+            position:
+                position || null,
+
             number,
+
             photo,
+
             goals:0,
+
             assists:0
 
         });
@@ -1023,10 +1237,25 @@ async function addPlayer(){
     );
 
 
-    document.getElementById("playerName").value="";
-    document.getElementById("playerPosition").value="";
-    document.getElementById("playerNumber").value="";
-    document.getElementById("playerPhoto").value="";
+    document
+        .getElementById("playerName")
+        .value="";
+
+
+    document
+        .getElementById("playerPosition")
+        .value="";
+
+
+    document
+        .getElementById("playerNumber")
+        .value="";
+
+
+    document
+        .getElementById("playerPhoto")
+        .value="";
+
 
     loadPlayers();
 
@@ -1045,18 +1274,22 @@ async function loadPlayers(){
         .select("*")
         .order("id");
 
+
     if(error){
 
         console.error(error);
+
         return;
     }
 
 
-    allPlayers = data || [];
+    allPlayers =
+        data || [];
 
 
     const container =
-        document.getElementById("playersContainer");
+        document
+        .getElementById("playersContainer");
 
 
     if(!data.length){
@@ -1075,6 +1308,7 @@ async function loadPlayers(){
                 player.photo ||
                 "https://via.placeholder.com/70?text=PLAYER";
 
+
             return `
 
                 <div class="player-row">
@@ -1082,6 +1316,7 @@ async function loadPlayers(){
                     <img
                         class="player-photo"
                         src="${photo}"
+                        alt="${escapeHtml(player.name)}"
                     >
 
                     <strong>
@@ -1095,7 +1330,9 @@ async function loadPlayers(){
 
                     <div class="small">
                         المركز:
-                        ${escapeHtml(player.position || "-")}
+                        ${escapeHtml(
+                            player.position || "-"
+                        )}
                     </div>
 
                     <div class="small">
@@ -1105,7 +1342,9 @@ async function loadPlayers(){
 
                     <br>
 
-                    <label>⚽ الأهداف</label>
+                    <label>
+                        ⚽ الأهداف
+                    </label>
 
                     <input
                         id="goals-${player.id}"
@@ -1114,7 +1353,9 @@ async function loadPlayers(){
                         value="${player.goals || 0}"
                     >
 
-                    <label>🎯 الأسيستات</label>
+                    <label>
+                        🎯 الأسيستات
+                    </label>
 
                     <input
                         id="assists-${player.id}"
@@ -1157,21 +1398,43 @@ async function updatePlayer(id){
 
     const goals =
         Number(
-            document.getElementById(`goals-${id}`).value
+            document
+            .getElementById(`goals-${id}`)
+            .value
         );
+
 
     const assists =
         Number(
-            document.getElementById(`assists-${id}`).value
+            document
+            .getElementById(`assists-${id}`)
+            .value
         );
+
+
+    if(
+        !Number.isInteger(goals) ||
+        goals < 0 ||
+        !Number.isInteger(assists) ||
+        assists < 0
+    ){
+
+        alert(
+            "أدخل أرقامًا صحيحة للأهداف والأسيستات."
+        );
+
+        return;
+    }
 
 
     const {error} =
         await supabaseClient
         .from("players")
         .update({
+
             goals,
             assists
+
         })
         .eq("id",id);
 
@@ -1180,13 +1443,18 @@ async function updatePlayer(id){
 
         console.error(error);
 
-        alert("حدث خطأ أثناء حفظ الإحصائيات.");
+        alert(
+            "حدث خطأ أثناء حفظ الإحصائيات."
+        );
 
         return;
     }
 
 
-    alert("تم تحديث الإحصائيات ✅");
+    alert(
+        "تم تحديث الإحصائيات ✅"
+    );
+
 
     loadPlayers();
 
@@ -1199,7 +1467,11 @@ async function updatePlayer(id){
 
 async function deletePlayer(id){
 
-    if(!confirm("هل أنت متأكد من حذف هذا اللاعب؟"))
+    if(
+        !confirm(
+            "هل أنت متأكد من حذف هذا اللاعب؟"
+        )
+    )
         return;
 
 
@@ -1214,7 +1486,9 @@ async function deletePlayer(id){
 
         console.error(error);
 
-        alert("حدث خطأ أثناء حذف اللاعب.");
+        alert(
+            "حدث خطأ أثناء حذف اللاعب."
+        );
 
         return;
     }
@@ -1232,28 +1506,55 @@ async function deletePlayer(id){
 async function addMatch(){
 
     const home =
-        document.getElementById("homeTeam").value;
+        document
+        .getElementById("homeTeam")
+        .value;
+
 
     const away =
-        document.getElementById("awayTeam").value;
+        document
+        .getElementById("awayTeam")
+        .value;
+
 
     const homeGoals =
-        Number(document.getElementById("homeGoals").value);
+        Number(
+            document
+            .getElementById("homeGoals")
+            .value
+        );
+
 
     const awayGoals =
-        Number(document.getElementById("awayGoals").value);
+        Number(
+            document
+            .getElementById("awayGoals")
+            .value
+        );
+
 
     const round =
-        document.getElementById("round").value.trim();
+        document
+        .getElementById("round")
+        .value
+        .trim();
+
 
     const matchDate =
-        document.getElementById("matchDate").value;
+        document
+        .getElementById("matchDate")
+        .value;
+
 
     const matchTime =
-        document.getElementById("matchTime").value;
+        document
+        .getElementById("matchTime")
+        .value;
+
 
     const message =
-        document.getElementById("matchMessage");
+        document
+        .getElementById("matchMessage");
 
 
     if(!home || !away){
@@ -1280,22 +1581,50 @@ async function addMatch(){
     }
 
 
+    if(
+        !Number.isInteger(homeGoals) ||
+        homeGoals < 0 ||
+        !Number.isInteger(awayGoals) ||
+        awayGoals < 0
+    ){
+
+        showMessage(
+            message,
+            "أدخل أهدافًا صحيحة.",
+            false
+        );
+
+        return;
+    }
+
+
+    /*
+       المباراة الجديدة غير منتهية.
+       لذلك played = false
+       حتى لو كانت home_goals و away_goals = 0
+    */
+
     const {error} =
         await supabaseClient
         .from("matches")
         .insert({
 
             home,
+
             away,
 
             home_goals:homeGoals,
+
             away_goals:awayGoals,
 
-            round:round || null,
+            round:
+                round || null,
 
-            match_date:matchDate || null,
+            match_date:
+                matchDate || null,
 
-            match_time:matchTime || null,
+            match_time:
+                matchTime || null,
 
             played:false
 
@@ -1324,11 +1653,30 @@ async function addMatch(){
     );
 
 
-    document.getElementById("homeGoals").value=0;
-    document.getElementById("awayGoals").value=0;
-    document.getElementById("round").value="";
-    document.getElementById("matchDate").value="";
-    document.getElementById("matchTime").value="";
+    document
+        .getElementById("homeGoals")
+        .value=0;
+
+
+    document
+        .getElementById("awayGoals")
+        .value=0;
+
+
+    document
+        .getElementById("round")
+        .value="";
+
+
+    document
+        .getElementById("matchDate")
+        .value="";
+
+
+    document
+        .getElementById("matchTime")
+        .value="";
+
 
     loadMatches();
 
@@ -1344,12 +1692,27 @@ async function finishMatch(id){
     const match =
         allMatches.find(
             m =>
-            String(m.id) === String(id)
+            String(m.id) ===
+            String(id)
         );
+
 
     if(!match){
 
-        alert("المباراة غير موجودة.");
+        alert(
+            "المباراة غير موجودة."
+        );
+
+        return;
+    }
+
+
+    if(match.played){
+
+        alert(
+            "هذه المباراة منتهية بالفعل."
+        );
+
         return;
     }
 
@@ -1359,6 +1722,7 @@ async function finishMatch(id){
             `أهداف ${match.home}:`,
             match.home_goals ?? 0
         );
+
 
     if(homeGoals === null)
         return;
@@ -1370,12 +1734,14 @@ async function finishMatch(id){
             match.away_goals ?? 0
         );
 
+
     if(awayGoals === null)
         return;
 
 
     const homeScore =
         Number(homeGoals);
+
 
     const awayScore =
         Number(awayGoals);
@@ -1401,8 +1767,12 @@ async function finishMatch(id){
         .from("matches")
         .update({
 
-            home_goals:homeScore,
-            away_goals:awayScore,
+            home_goals:
+                homeScore,
+
+            away_goals:
+                awayScore,
+
             played:true
 
         })
@@ -1443,31 +1813,42 @@ async function loadMatches(){
         .select("*")
         .order(
             "match_date",
-            {ascending:false}
+            {
+                ascending:false
+            }
         );
+
 
     if(error){
 
         console.error(error);
+
         return;
     }
 
 
-    allMatches = data || [];
+    allMatches =
+        data || [];
 
 
     const container =
-        document.getElementById("matchesContainer");
+        document
+        .getElementById("matchesContainer");
+
 
     const lineupSelect =
-        document.getElementById("lineupMatch");
+        document
+        .getElementById("lineupMatch");
+
 
     const expectedSelect =
-        document.getElementById("expectedMatch");
+        document
+        .getElementById("expectedMatch");
 
 
     const oldLineupValue =
         lineupSelect.value;
+
 
     const oldExpectedValue =
         expectedSelect.value;
@@ -1475,6 +1856,7 @@ async function loadMatches(){
 
     lineupSelect.innerHTML =
         `<option value="">اختر المباراة</option>`;
+
 
     expectedSelect.innerHTML =
         `<option value="">اختر المباراة</option>`;
@@ -1487,11 +1869,17 @@ async function loadMatches(){
             ? `📅 ${match.match_date}`
             : "";
 
+
         const timeText =
             match.match_time
             ? ` 🕐 ${match.match_time}`
             : "";
 
+
+        /*
+           played هو الذي يحدد حالة المباراة.
+           لا نعتمد على التاريخ.
+        */
 
         const resultText =
             !match.played
@@ -1500,13 +1888,17 @@ async function loadMatches(){
 
 
         const lineupOption =
-            document.createElement("option");
+            document
+            .createElement("option");
+
 
         lineupOption.value =
             match.id;
 
+
         lineupOption.textContent =
             `${match.home} ${resultText} ${match.away} ${dateText} ${timeText}`;
+
 
         lineupSelect.appendChild(
             lineupOption
@@ -1514,13 +1906,17 @@ async function loadMatches(){
 
 
         const expectedOption =
-            document.createElement("option");
+            document
+            .createElement("option");
+
 
         expectedOption.value =
             match.id;
 
+
         expectedOption.textContent =
             `${match.home} ${resultText} ${match.away} ${dateText} ${timeText}`;
+
 
         expectedSelect.appendChild(
             expectedOption
@@ -1539,6 +1935,7 @@ async function loadMatches(){
 
         lineupSelect.value =
             oldLineupValue;
+
     }
 
 
@@ -1552,6 +1949,7 @@ async function loadMatches(){
 
         expectedSelect.value =
             oldExpectedValue;
+
     }
 
 
@@ -1579,11 +1977,15 @@ async function loadMatches(){
                         ${escapeHtml(match.home)}
                     </strong>
 
-                    <span style="margin:0 10px;">
+                    <span
+                        style="margin:0 10px;"
+                    >
 
                         ${
                             future
+
                             ? "⏳ لم تبدأ"
+
                             : `
                                 ${match.home_goals}
                                 -
@@ -1596,6 +1998,7 @@ async function loadMatches(){
                     <strong>
                         ${escapeHtml(match.away)}
                     </strong>
+
 
                     <div class="small">
 
@@ -1623,18 +2026,37 @@ async function loadMatches(){
 
                     <br>
 
+
                     ${
                         !match.played
+
                         ? `
+
                             <button
                                 class="finish"
                                 onclick="finishMatch(${match.id})"
                             >
                                 🏁 تسجيل النتيجة وإنهاء المباراة
                             </button>
+
                           `
-                        : ""
+
+                        : `
+
+                            <div
+                                class="small"
+                                style="
+                                    color:#15803d;
+                                    font-weight:bold;
+                                    margin:8px 0;
+                                "
+                            >
+                                ✅ المباراة منتهية
+                            </div>
+
+                          `
                     }
+
 
                     <button
                         onclick="openExpectedLineup(${match.id})"
@@ -1642,11 +2064,13 @@ async function loadMatches(){
                         🎯 تعديل التشكيلة المتوقعة
                     </button>
 
+
                     <button
                         onclick="openLineup(${match.id})"
                     >
                         ⚽ تعديل تشكيلة المباراة
                     </button>
+
 
                     <button
                         class="delete"
@@ -1671,15 +2095,21 @@ async function loadMatches(){
 function openExpectedLineup(id){
 
     const select =
-        document.getElementById("expectedMatch");
+        document
+        .getElementById("expectedMatch");
+
 
     select.value =
         String(id);
 
+
     loadExpectedLineupForm();
 
+
     document
-        .getElementById("expectedLineupEditor")
+        .getElementById(
+            "expectedLineupEditor"
+        )
         .scrollIntoView({
             behavior:"smooth"
         });
@@ -1694,10 +2124,16 @@ function openExpectedLineup(id){
 async function loadExpectedLineupForm(){
 
     const matchId =
-        document.getElementById("expectedMatch").value;
+        document
+        .getElementById("expectedMatch")
+        .value;
+
 
     const editor =
-        document.getElementById("expectedLineupEditor");
+        document
+        .getElementById(
+            "expectedLineupEditor"
+        );
 
 
     editor.innerHTML="";
@@ -1730,13 +2166,16 @@ async function loadExpectedLineupForm(){
 
         console.error(error);
 
+
         editor.innerHTML = `
+
             <div
                 class="message error"
                 style="display:block;"
             >
                 تعذر تحميل التشكيلة المتوقعة.
             </div>
+
         `;
 
         return;
@@ -1803,7 +2242,10 @@ async function loadExpectedLineupForm(){
                 🖱️ اسحب صورة أي لاعب وضعه في المكان الذي تريده.
             </div>
 
-            <div id="expectedPitch" class="pitch">
+            <div
+                id="expectedPitch"
+                class="pitch"
+            >
 
                 ${pitchHTML()}
 
@@ -1821,6 +2263,7 @@ async function loadExpectedLineupForm(){
         "expectedHomeLineup",
         saved
     );
+
 
     renderExpectedTeamLineup(
         match.away,
@@ -1848,7 +2291,10 @@ function renderExpectedTeamLineup(
 ){
 
     const container =
-        document.getElementById(containerId);
+        document.getElementById(
+            containerId
+        );
+
 
     const players =
         allPlayers.filter(
@@ -1894,6 +2340,7 @@ function renderExpectedTeamLineup(
                     لاعب ${i+1}
                 </div>
 
+
                 <select
                     class="expected-player-select"
                     onchange="refreshExpectedPitch()"
@@ -1903,12 +2350,14 @@ function renderExpectedTeamLineup(
                         اختر اللاعب
                     </option>
 
+
                     ${
                         players.map(
                             player => `
 
                             <option
                                 value="${player.id}"
+
                                 ${
                                     String(player.id) ===
                                     String(selectedId)
@@ -1916,12 +2365,16 @@ function renderExpectedTeamLineup(
                                     : ""
                                 }
                             >
+
                                 ${escapeHtml(player.name)}
+
                                 ${
                                     player.number
-                                    ? " #" + player.number
+                                    ? " #" +
+                                      player.number
                                     : ""
                                 }
+
                             </option>
 
                         `
@@ -1940,8 +2393,10 @@ function renderExpectedTeamLineup(
                         اختر المركز
                     </option>
 
+
                     <option
                         value="GK"
+
                         ${
                             savedPlayer?.position === "GK"
                             ? "selected"
@@ -1951,8 +2406,10 @@ function renderExpectedTeamLineup(
                         🧤 حارس مرمى
                     </option>
 
+
                     <option
                         value="DEF"
+
                         ${
                             savedPlayer?.position === "DEF"
                             ? "selected"
@@ -1962,8 +2419,10 @@ function renderExpectedTeamLineup(
                         🛡️ دفاع
                     </option>
 
+
                     <option
                         value="MID"
+
                         ${
                             savedPlayer?.position === "MID"
                             ? "selected"
@@ -1973,8 +2432,10 @@ function renderExpectedTeamLineup(
                         ⚙️ وسط
                     </option>
 
+
                     <option
                         value="ATT"
+
                         ${
                             savedPlayer?.position === "ATT"
                             ? "selected"
@@ -2015,24 +2476,51 @@ async function saveExpectedLineup(matchId){
 
     if(!match){
 
-        alert("المباراة غير موجودة.");
+        alert(
+            "المباراة غير موجودة."
+        );
+
+        return;
+    }
+
+
+    const homeContainer =
+        document.getElementById(
+            "expectedHomeLineup"
+        );
+
+
+    const awayContainer =
+        document.getElementById(
+            "expectedAwayLineup"
+        );
+
+
+    if(!homeContainer || !awayContainer){
+
+        alert(
+            "افتح التشكيلة المتوقعة أولًا."
+        );
+
         return;
     }
 
 
     const homeRows =
         [
-            ...document
-            .getElementById("expectedHomeLineup")
-            .querySelectorAll(".lineup-player")
+            ...homeContainer
+            .querySelectorAll(
+                ".lineup-player"
+            )
         ];
 
 
     const awayRows =
         [
-            ...document
-            .getElementById("expectedAwayLineup")
-            .querySelectorAll(".lineup-player")
+            ...awayContainer
+            .querySelectorAll(
+                ".lineup-player"
+            )
         ];
 
 
@@ -2101,6 +2589,7 @@ async function saveExpectedLineup(matchId){
             p => p.position === "GK"
         );
 
+
     const hasGKAway =
         awayData.some(
             p => p.position === "GK"
@@ -2126,13 +2615,21 @@ async function saveExpectedLineup(matchId){
     pitchPlayers.forEach(element => {
 
         const id =
-            String(element.dataset.playerId);
+            String(
+                element.dataset.playerId
+            );
+
 
         const x =
-            Number(element.dataset.x);
+            Number(
+                element.dataset.x
+            );
+
 
         const y =
-            Number(element.dataset.y);
+            Number(
+                element.dataset.y
+            );
 
 
         const found =
@@ -2163,8 +2660,11 @@ async function saveExpectedLineup(matchId){
 
         console.error(deleteError);
 
+
         showMessage(
-            document.getElementById("expectedLineupMessage"),
+            document.getElementById(
+                "expectedLineupMessage"
+            ),
             "حدث خطأ أثناء تحديث التشكيلة.",
             false
         );
@@ -2177,12 +2677,23 @@ async function saveExpectedLineup(matchId){
         allData.map(
             player => ({
 
-                match_id:Number(matchId),
-                player_id:Number(player.player_id),
-                team:player.team,
-                position:player.position,
-                x:player.x ?? 50,
-                y:player.y ?? 50
+                match_id:
+                    Number(matchId),
+
+                player_id:
+                    Number(player.player_id),
+
+                team:
+                    player.team,
+
+                position:
+                    player.position,
+
+                x:
+                    player.x ?? 50,
+
+                y:
+                    player.y ?? 50
 
             })
         );
@@ -2198,8 +2709,11 @@ async function saveExpectedLineup(matchId){
 
         console.error(insertError);
 
+
         showMessage(
-            document.getElementById("expectedLineupMessage"),
+            document.getElementById(
+                "expectedLineupMessage"
+            ),
             "حدث خطأ أثناء حفظ التشكيلة: " +
             insertError.message,
             false
@@ -2210,7 +2724,9 @@ async function saveExpectedLineup(matchId){
 
 
     showMessage(
-        document.getElementById("expectedLineupMessage"),
+        document.getElementById(
+            "expectedLineupMessage"
+        ),
         "تم حفظ التشكيلة المتوقعة وأماكن اللاعبين ✅",
         true
     );
@@ -2222,7 +2738,10 @@ async function saveExpectedLineup(matchId){
    COLLECT EXPECTED
 ===================================================== */
 
-function collectExpectedRows(rows,team){
+function collectExpectedRows(
+    rows,
+    team
+){
 
     const result=[];
 
@@ -2247,9 +2766,14 @@ function collectExpectedRows(rows,team){
 
         result.push({
 
-            player_id:playerId,
-            team:team,
-            position:position
+            player_id:
+                playerId,
+
+            team:
+                team,
+
+            position:
+                position
 
         });
 
@@ -2265,7 +2789,10 @@ function collectExpectedRows(rows,team){
    EXPECTED PITCH
 ===================================================== */
 
-function renderExpectedPitch(saved,match){
+function renderExpectedPitch(
+    saved,
+    match
+){
 
     const container =
         document.getElementById(
@@ -2278,17 +2805,24 @@ function renderExpectedPitch(saved,match){
 
 
     const selected =
-        saved.filter(p => p.player_id);
+        saved.filter(
+            p => p.player_id
+        );
 
 
     container.innerHTML =
         selected.map(
             row =>
-            createPitchPlayer(row,"expected")
+            createPitchPlayer(
+                row,
+                "expected"
+            )
         ).join("");
 
 
-    makePitchPlayersDraggable("expectedPitch");
+    makePitchPlayersDraggable(
+        "expectedPitch"
+    );
 
 }
 
@@ -2322,6 +2856,7 @@ function refreshExpectedPitch(){
                     ".expected-player-select"
                 ).value;
 
+
             const position =
                 row.querySelector(
                     ".expected-position-select"
@@ -2339,15 +2874,19 @@ function refreshExpectedPitch(){
 
                 rows.push({
 
-                    player_id:Number(playerId),
+                    player_id:
+                        Number(playerId),
 
                     team:
                         findPlayer(playerId)?.team || "",
 
                     position,
 
-                    x:old.x,
-                    y:old.y
+                    x:
+                        old.x,
+
+                    y:
+                        old.y
 
                 });
 
@@ -2361,11 +2900,16 @@ function refreshExpectedPitch(){
     pitch.innerHTML =
         rows.map(
             row =>
-            createPitchPlayer(row,"expected")
+            createPitchPlayer(
+                row,
+                "expected"
+            )
         ).join("");
 
 
-    makePitchPlayersDraggable("expectedPitch");
+    makePitchPlayersDraggable(
+        "expectedPitch"
+    );
 
 }
 
@@ -2377,12 +2921,17 @@ function refreshExpectedPitch(){
 function openLineup(id){
 
     const select =
-        document.getElementById("lineupMatch");
+        document.getElementById(
+            "lineupMatch"
+        );
+
 
     select.value =
         String(id);
 
+
     loadLineupForm();
+
 
     document
         .getElementById("lineupEditor")
@@ -2400,10 +2949,16 @@ function openLineup(id){
 async function loadLineupForm(){
 
     const matchId =
-        document.getElementById("lineupMatch").value;
+        document
+        .getElementById("lineupMatch")
+        .value;
+
 
     const editor =
-        document.getElementById("lineupEditor");
+        document
+        .getElementById(
+            "lineupEditor"
+        );
 
 
     editor.innerHTML="";
@@ -2436,20 +2991,24 @@ async function loadLineupForm(){
 
         console.error(error);
 
+
         editor.innerHTML = `
+
             <div
                 class="message error"
                 style="display:block;"
             >
                 تعذر تحميل التشكيلة.
             </div>
+
         `;
 
         return;
     }
 
 
-    const saved=data || [];
+    const saved =
+        data || [];
 
 
     editor.innerHTML = `
@@ -2508,7 +3067,10 @@ async function loadLineupForm(){
                 🖱️ اسحب صورة اللاعب وضعها في أي مكان على الملعب.
             </div>
 
-            <div id="actualPitch" class="pitch">
+            <div
+                id="actualPitch"
+                class="pitch"
+            >
 
                 ${pitchHTML()}
 
@@ -2547,10 +3109,16 @@ async function loadLineupForm(){
    ACTUAL TEAM
 ===================================================== */
 
-function renderTeamLineup(team,containerId,saved){
+function renderTeamLineup(
+    team,
+    containerId,
+    saved
+){
 
     const container =
-        document.getElementById(containerId);
+        document.getElementById(
+            containerId
+        );
 
 
     const players =
@@ -2607,12 +3175,14 @@ function renderTeamLineup(team,containerId,saved){
                         اختر اللاعب
                     </option>
 
+
                     ${
                         players.map(
                             player => `
 
                             <option
                                 value="${player.id}"
+
                                 ${
                                     String(player.id) ===
                                     String(selectedId)
@@ -2620,12 +3190,16 @@ function renderTeamLineup(team,containerId,saved){
                                     : ""
                                 }
                             >
+
                                 ${escapeHtml(player.name)}
+
                                 ${
                                     player.number
-                                    ? " #" + player.number
+                                    ? " #" +
+                                      player.number
                                     : ""
                                 }
+
                             </option>
 
                         `
@@ -2644,8 +3218,10 @@ function renderTeamLineup(team,containerId,saved){
                         اختر المركز
                     </option>
 
+
                     <option
                         value="GK"
+
                         ${
                             savedPlayer?.position === "GK"
                             ? "selected"
@@ -2655,8 +3231,10 @@ function renderTeamLineup(team,containerId,saved){
                         🧤 حارس مرمى
                     </option>
 
+
                     <option
                         value="DEF"
+
                         ${
                             savedPlayer?.position === "DEF"
                             ? "selected"
@@ -2666,8 +3244,10 @@ function renderTeamLineup(team,containerId,saved){
                         🛡️ دفاع
                     </option>
 
+
                     <option
                         value="MID"
+
                         ${
                             savedPlayer?.position === "MID"
                             ? "selected"
@@ -2677,8 +3257,10 @@ function renderTeamLineup(team,containerId,saved){
                         ⚙️ وسط
                     </option>
 
+
                     <option
                         value="ATT"
+
                         ${
                             savedPlayer?.position === "ATT"
                             ? "selected"
@@ -2703,6 +3285,7 @@ function renderTeamLineup(team,containerId,saved){
                         placeholder="⭐ التقييم"
                     >
 
+
                     <input
                         class="lineup-goals"
                         type="number"
@@ -2710,6 +3293,7 @@ function renderTeamLineup(team,containerId,saved){
                         value="${savedPlayer?.goals ?? 0}"
                         placeholder="⚽ أهداف"
                     >
+
 
                     <input
                         class="lineup-assists"
@@ -2728,7 +3312,8 @@ function renderTeamLineup(team,containerId,saved){
     }
 
 
-    container.innerHTML=html;
+    container.innerHTML =
+        html;
 
 }
 
@@ -2749,24 +3334,51 @@ async function saveLineup(matchId){
 
     if(!match){
 
-        alert("المباراة غير موجودة.");
+        alert(
+            "المباراة غير موجودة."
+        );
+
+        return;
+    }
+
+
+    const homeContainer =
+        document.getElementById(
+            "homeLineup"
+        );
+
+
+    const awayContainer =
+        document.getElementById(
+            "awayLineup"
+        );
+
+
+    if(!homeContainer || !awayContainer){
+
+        alert(
+            "افتح تشكيلة المباراة أولًا."
+        );
+
         return;
     }
 
 
     const homeRows =
         [
-            ...document
-            .getElementById("homeLineup")
-            .querySelectorAll(".lineup-player")
+            ...homeContainer
+            .querySelectorAll(
+                ".lineup-player"
+            )
         ];
 
 
     const awayRows =
         [
-            ...document
-            .getElementById("awayLineup")
-            .querySelectorAll(".lineup-player")
+            ...awayContainer
+            .querySelectorAll(
+                ".lineup-player"
+            )
         ];
 
 
@@ -2805,7 +3417,10 @@ async function saveLineup(matchId){
 
 
     const allData =
-        [...homeData,...awayData];
+        [
+            ...homeData,
+            ...awayData
+        ];
 
 
     const playerIds =
@@ -2858,13 +3473,21 @@ async function saveLineup(matchId){
     pitchPlayers.forEach(element => {
 
         const id =
-            String(element.dataset.playerId);
+            String(
+                element.dataset.playerId
+            );
+
 
         const x =
-            Number(element.dataset.x);
+            Number(
+                element.dataset.x
+            );
+
 
         const y =
-            Number(element.dataset.y);
+            Number(
+                element.dataset.y
+            );
 
 
         const found =
@@ -2895,8 +3518,11 @@ async function saveLineup(matchId){
 
         console.error(deleteError);
 
+
         showMessage(
-            document.getElementById("lineupMessage"),
+            document.getElementById(
+                "lineupMessage"
+            ),
             "حدث خطأ أثناء تحديث التشكيلة.",
             false
         );
@@ -2909,15 +3535,32 @@ async function saveLineup(matchId){
         allData.map(
             player => ({
 
-                match_id:Number(matchId),
-                player_id:Number(player.player_id),
-                team:player.team,
-                position:player.position,
-                rating:player.rating,
-                goals:player.goals,
-                assists:player.assists,
-                x:player.x ?? 50,
-                y:player.y ?? 50
+                match_id:
+                    Number(matchId),
+
+                player_id:
+                    Number(player.player_id),
+
+                team:
+                    player.team,
+
+                position:
+                    player.position,
+
+                rating:
+                    player.rating,
+
+                goals:
+                    player.goals,
+
+                assists:
+                    player.assists,
+
+                x:
+                    player.x ?? 50,
+
+                y:
+                    player.y ?? 50
 
             })
         );
@@ -2933,8 +3576,11 @@ async function saveLineup(matchId){
 
         console.error(insertError);
 
+
         showMessage(
-            document.getElementById("lineupMessage"),
+            document.getElementById(
+                "lineupMessage"
+            ),
             "حدث خطأ أثناء حفظ التشكيلة: " +
             insertError.message,
             false
@@ -2945,7 +3591,9 @@ async function saveLineup(matchId){
 
 
     showMessage(
-        document.getElementById("lineupMessage"),
+        document.getElementById(
+            "lineupMessage"
+        ),
         "تم حفظ تشكيلة المباراة وأماكن اللاعبين ✅",
         true
     );
@@ -2957,7 +3605,10 @@ async function saveLineup(matchId){
    COLLECT ACTUAL
 ===================================================== */
 
-function collectLineupRows(rows,team){
+function collectLineupRows(
+    rows,
+    team
+){
 
     const result=[];
 
@@ -3006,12 +3657,23 @@ function collectLineupRows(rows,team){
 
         result.push({
 
-            player_id:playerId,
-            team:team,
-            position:position,
-            rating:rating,
-            goals:goals,
-            assists:assists
+            player_id:
+                playerId,
+
+            team:
+                team,
+
+            position:
+                position,
+
+            rating:
+                rating,
+
+            goals:
+                goals,
+
+            assists:
+                assists
 
         });
 
@@ -3027,7 +3689,10 @@ function collectLineupRows(rows,team){
    ACTUAL PITCH
 ===================================================== */
 
-function renderActualPitch(saved,match){
+function renderActualPitch(
+    saved,
+    match
+){
 
     const container =
         document.getElementById(
@@ -3042,11 +3707,16 @@ function renderActualPitch(saved,match){
     container.innerHTML =
         saved.map(
             row =>
-            createPitchPlayer(row,"actual")
+            createPitchPlayer(
+                row,
+                "actual"
+            )
         ).join("");
 
 
-    makePitchPlayersDraggable("actualPitch");
+    makePitchPlayersDraggable(
+        "actualPitch"
+    );
 
 }
 
@@ -3080,6 +3750,7 @@ function refreshActualPitch(){
                     ".lineup-player-select"
                 ).value;
 
+
             const position =
                 row.querySelector(
                     ".lineup-position-select"
@@ -3097,15 +3768,19 @@ function refreshActualPitch(){
 
                 rows.push({
 
-                    player_id:Number(playerId),
+                    player_id:
+                        Number(playerId),
 
                     team:
                         findPlayer(playerId)?.team || "",
 
                     position,
 
-                    x:old.x,
-                    y:old.y
+                    x:
+                        old.x,
+
+                    y:
+                        old.y
 
                 });
 
@@ -3119,11 +3794,16 @@ function refreshActualPitch(){
     pitch.innerHTML =
         rows.map(
             row =>
-            createPitchPlayer(row,"actual")
+            createPitchPlayer(
+                row,
+                "actual"
+            )
         ).join("");
 
 
-    makePitchPlayersDraggable("actualPitch");
+    makePitchPlayersDraggable(
+        "actualPitch"
+    );
 
 }
 
@@ -3163,24 +3843,42 @@ function pitchHTML(){
    CREATE PITCH PLAYER
 ===================================================== */
 
-function createPitchPlayer(row,type){
+function createPitchPlayer(
+    row,
+    type
+){
 
     const player =
-        findPlayer(row.player_id);
+        findPlayer(
+            row.player_id
+        );
 
 
     if(!player)
         return "";
 
 
-    let x=Number(row.x);
-    let y=Number(row.y);
+    let x =
+        Number(row.x);
 
 
-    if(!x || x<1 || x>99)
+    let y =
+        Number(row.y);
+
+
+    if(
+        !Number.isFinite(x) ||
+        x < 1 ||
+        x > 99
+    )
         x=50;
 
-    if(!y || y<1 || y>99)
+
+    if(
+        !Number.isFinite(y) ||
+        y < 1 ||
+        y > 99
+    )
         y=50;
 
 
@@ -3196,8 +3894,11 @@ function createPitchPlayer(row,type){
     const positionText = {
 
         GK:"🧤",
+
         DEF:"🛡️",
+
         MID:"⚙️",
+
         ATT:"⚡"
 
     }[position] || "";
@@ -3207,10 +3908,15 @@ function createPitchPlayer(row,type){
 
         <div
             class="pitch-player"
+
             data-player-id="${player.id}"
+
             data-x="${x}"
+
             data-y="${y}"
+
             data-type="${type}"
+
             style="
                 left:${x}%;
                 top:${y}%;
@@ -3219,22 +3925,32 @@ function createPitchPlayer(row,type){
 
             ${
                 player.number
+
                 ? `
-                    <div class="pitch-player-number">
+
+                    <div
+                        class="pitch-player-number"
+                    >
                         ${player.number}
                     </div>
+
                   `
+
                 : ""
             }
+
 
             <img
                 src="${photo}"
                 draggable="false"
+                alt="${escapeHtml(player.name)}"
             >
+
 
             <div class="pitch-player-name">
                 ${escapeHtml(player.name)}
             </div>
+
 
             <div class="pitch-player-position">
                 ${positionText} ${position}
@@ -3251,10 +3967,14 @@ function createPitchPlayer(row,type){
    DRAG
 ===================================================== */
 
-function makePitchPlayersDraggable(pitchId){
+function makePitchPlayersDraggable(
+    pitchId
+){
 
     const pitch =
-        document.getElementById(pitchId);
+        document.getElementById(
+            pitchId
+        );
 
 
     if(!pitch)
@@ -3262,7 +3982,9 @@ function makePitchPlayersDraggable(pitchId){
 
 
     const players =
-        pitch.querySelectorAll(".pitch-player");
+        pitch.querySelectorAll(
+            ".pitch-player"
+        );
 
 
     players.forEach(player => {
@@ -3270,31 +3992,57 @@ function makePitchPlayersDraggable(pitchId){
         let dragging=false;
 
 
-        function movePlayer(clientX,clientY){
+        function movePlayer(
+            clientX,
+            clientY
+        ){
 
             const rect =
                 pitch.getBoundingClientRect();
 
 
             let x =
-                ((clientX-rect.left)/
-                rect.width)*100;
+                (
+                    (clientX - rect.left) /
+                    rect.width
+                ) * 100;
 
 
             let y =
-                ((clientY-rect.top)/
-                rect.height)*100;
+                (
+                    (clientY - rect.top) /
+                    rect.height
+                ) * 100;
 
 
-            x=Math.max(4,Math.min(96,x));
-            y=Math.max(5,Math.min(95,y));
+            x =
+                Math.max(
+                    4,
+                    Math.min(96,x)
+                );
 
 
-            player.style.left=x+"%";
-            player.style.top=y+"%";
+            y =
+                Math.max(
+                    5,
+                    Math.min(95,y)
+                );
 
-            player.dataset.x=x.toFixed(2);
-            player.dataset.y=y.toFixed(2);
+
+            player.style.left =
+                x + "%";
+
+
+            player.style.top =
+                y + "%";
+
+
+            player.dataset.x =
+                x.toFixed(2);
+
+
+            player.dataset.y =
+                y.toFixed(2);
 
         }
 
@@ -3305,9 +4053,15 @@ function makePitchPlayersDraggable(pitchId){
 
                 dragging=true;
 
-                player.setPointerCapture(
-                    event.pointerId
-                );
+
+                try{
+
+                    player.setPointerCapture(
+                        event.pointerId
+                    );
+
+                }catch(error){}
+
 
                 event.preventDefault();
 
@@ -3321,6 +4075,7 @@ function makePitchPlayersDraggable(pitchId){
 
                 if(!dragging)
                     return;
+
 
                 movePlayer(
                     event.clientX,
@@ -3374,11 +4129,16 @@ function findPlayer(id){
    POSITION MEMORY
 ===================================================== */
 
-function findSavedPitchPosition(playerId,type){
+function findSavedPitchPosition(
+    playerId,
+    type
+){
 
     const selector =
         type === "expected"
+
         ? "#expectedPitchPlayers .pitch-player"
+
         : "#actualPitchPlayers .pitch-player";
 
 
@@ -3392,8 +4152,15 @@ function findSavedPitchPosition(playerId,type){
 
         return {
 
-            x:Number(element.dataset.x)||50,
-            y:Number(element.dataset.y)||50
+            x:
+                Number(
+                    element.dataset.x
+                ) || 50,
+
+            y:
+                Number(
+                    element.dataset.y
+                ) || 50
 
         };
 
@@ -3401,22 +4168,31 @@ function findSavedPitchPosition(playerId,type){
 
 
     const existing =
-        document.querySelectorAll(selector).length;
+        document.querySelectorAll(
+            selector
+        ).length;
 
 
     const defaultX =
         20 +
-        ((existing%3)*30);
+        (
+            (existing % 3) *
+            30
+        );
 
 
     const defaultY =
         20 +
-        ((existing%4)*20);
+        (
+            (existing % 4) *
+            20
+        );
 
 
     return {
 
         x:defaultX,
+
         y:defaultY
 
     };
@@ -3430,7 +4206,11 @@ function findSavedPitchPosition(playerId,type){
 
 async function deleteMatch(id){
 
-    if(!confirm("هل تريد حذف هذه المباراة؟"))
+    if(
+        !confirm(
+            "هل تريد حذف هذه المباراة؟"
+        )
+    )
         return;
 
 
@@ -3445,7 +4225,9 @@ async function deleteMatch(id){
 
         console.error(error);
 
-        alert("حدث خطأ أثناء حذف المباراة.");
+        alert(
+            "حدث خطأ أثناء حذف المباراة."
+        );
 
         return;
     }
@@ -3468,14 +4250,21 @@ function readFile(file){
             const reader =
                 new FileReader();
 
+
             reader.onload =
                 () =>
-                resolve(reader.result);
+                resolve(
+                    reader.result
+                );
+
 
             reader.onerror =
                 reject;
 
-            reader.readAsDataURL(file);
+
+            reader.readAsDataURL(
+                file
+            );
 
         }
     );
@@ -3487,9 +4276,15 @@ function readFile(file){
    MESSAGE
 ===================================================== */
 
-function showMessage(element,text,success){
+function showMessage(
+    element,
+    text,
+    success
+){
 
-    element.textContent=text;
+    element.textContent =
+        text;
+
 
     element.className =
         "message " +
@@ -3499,7 +4294,9 @@ function showMessage(element,text,success){
             : "error"
         );
 
-    element.style.display="block";
+
+    element.style.display =
+        "block";
 
 }
 
@@ -3511,11 +4308,26 @@ function showMessage(element,text,success){
 function escapeHtml(value){
 
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -3528,9 +4340,13 @@ supabaseClient.auth.onAuthStateChange(
     (event,session) => {
 
         if(session){
+
             showAdmin();
+
         }else{
+
             showLogin();
+
         }
 
     }
