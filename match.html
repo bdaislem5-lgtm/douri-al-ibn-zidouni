@@ -5,17 +5,16 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>تفاصيل المباراة | دوري الابن الزيدوني</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
-/* =====================================================
-   GENERAL
-===================================================== */
 
 *{
     box-sizing:border-box;
@@ -24,147 +23,115 @@
 body{
     margin:0;
     font-family:Arial,Tahoma,sans-serif;
-    background:
-        linear-gradient(135deg,#eef2f7,#f8fafc);
+    background:#f1f5f9;
     color:#172033;
 }
 
 header{
-    background:
-        linear-gradient(135deg,#0f172a,#1e293b);
+    background:#111827;
     color:white;
     padding:25px 15px;
     text-align:center;
-    box-shadow:0 5px 20px rgba(0,0,0,.15);
 }
 
 header h1{
     margin:0;
-    font-size:28px;
 }
 
 .container{
-    max-width:1150px;
+    max-width:1100px;
     margin:30px auto;
     padding:15px;
 }
 
 .card{
     background:white;
-    border-radius:22px;
+    border-radius:20px;
     padding:25px;
     margin-bottom:25px;
-    box-shadow:
-        0 10px 30px rgba(15,23,42,.08);
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
 }
 
 
-/* =====================================================
-   MATCH HEADER
-===================================================== */
+/* ================= MATCH ================= */
 
 .match-header{
     text-align:center;
 }
 
 .match-round{
-    display:inline-block;
-    background:#f1f5f9;
-    color:#475569;
-    padding:7px 15px;
-    border-radius:20px;
-    margin-bottom:20px;
-    font-weight:bold;
+    color:#64748b;
+    margin-bottom:15px;
 }
 
 .teams{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:70px;
+    gap:40px;
 }
 
 .team{
-    min-width:190px;
+    min-width:180px;
     text-align:center;
 }
 
 .team-logo{
-    width:115px;
-    height:115px;
+    width:100px;
+    height:100px;
     object-fit:contain;
     display:block;
     margin:10px auto;
 }
 
 .team-name{
-    font-size:23px;
+    font-size:22px;
     font-weight:bold;
 }
 
 .score{
-    font-size:46px;
-    font-weight:900;
+    font-size:42px;
+    font-weight:bold;
     margin:10px;
 }
 
 .vs{
-    font-size:30px;
-    font-weight:900;
+    font-size:28px;
+    font-weight:bold;
     color:#64748b;
 }
 
 .not-started{
     background:#eff6ff;
     color:#1d4ed8;
-    padding:14px;
-    border-radius:13px;
-    margin-top:22px;
+    padding:15px;
+    border-radius:12px;
+    margin-top:20px;
     font-weight:bold;
 }
 
 .finished{
     background:#f0fdf4;
     color:#15803d;
-    padding:14px;
-    border-radius:13px;
-    margin-top:22px;
+    padding:12px;
+    border-radius:12px;
+    margin-top:20px;
     font-weight:bold;
 }
 
 .match-date{
-    margin-top:15px;
+    margin-top:12px;
     color:#475569;
-    font-weight:bold;
 }
 
 
 /* =====================================================
-   LINEUP TITLE
+   PITCH - NEW DESIGN ONLY
 ===================================================== */
 
 .pitch-title{
     text-align:center;
-    margin:5px 0 20px;
-    font-size:25px;
-}
-
-.pitch-subtitle{
-    text-align:center;
-    color:#64748b;
-    margin-top:-10px;
-    margin-bottom:20px;
-}
-
-
-/* =====================================================
-   FOOTBALL PITCH
-===================================================== */
-
-.pitch-wrapper{
-    width:100%;
-    display:flex;
-    justify-content:center;
+    margin-bottom:15px;
 }
 
 .pitch{
@@ -172,85 +139,92 @@ header h1{
     position:relative;
 
     width:100%;
-    max-width:650px;
+    max-width:850px;
 
     /*
-       ملعب عمودي
-       مثل ملاعب خطط FIFA
+       نفس نظام اللاعبين القديم
+       لكن الملعب أصبح أكثر احترافية
     */
-    aspect-ratio:0.68 / 1;
+    aspect-ratio:1.5 / 1;
 
     margin:20px auto;
 
-    background:
-        repeating-linear-gradient(
-            0deg,
-            #087f3e 0px,
-            #087f3e 65px,
-            #0b8f46 65px,
-            #0b8f46 130px
-        );
-
-    border:5px solid #ffffff;
-
-    border-radius:12px;
-
     overflow:hidden;
 
+    border:5px solid white;
+
+    border-radius:10px;
+
+    /*
+       عشب طبيعي + خطوط قص العشب
+    */
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #087f3f 0px,
+            #087f3f 55px,
+            #0d8c45 55px,
+            #0d8c45 110px
+        );
+
     box-shadow:
-        0 18px 45px rgba(0,0,0,.28);
+        0 12px 35px rgba(0,0,0,.28),
+        inset 0 0 30px rgba(0,0,0,.12);
 
 }
 
 
-/* خطوط خارجية */
+/* ================= OUTER LINE ================= */
 
 .pitch::before{
+
     content:"";
 
     position:absolute;
 
-    inset:0;
+    left:2%;
+    right:2%;
 
-    border:2px solid rgba(255,255,255,.95);
+    top:3%;
+    bottom:3%;
+
+    border:3px solid white;
 
     pointer-events:none;
 
 }
 
 
-/* =====================================================
-   MIDLINE
-===================================================== */
+/* ================= CENTER LINE ================= */
 
 .pitch-midline{
 
     position:absolute;
 
-    left:0;
-    right:0;
+    top:3%;
+    bottom:3%;
 
-    top:50%;
+    left:50%;
 
-    height:3px;
+    width:3px;
 
     background:white;
 
-    transform:translateY(-50%);
+    transform:translateX(-50%);
+
+    z-index:1;
 
 }
 
 
-/* =====================================================
-   CENTER CIRCLE
-===================================================== */
+/* ================= CENTER CIRCLE ================= */
 
 .pitch-center-circle{
 
     position:absolute;
 
-    width:145px;
-    height:145px;
+    width:125px;
+    height:125px;
 
     border:3px solid white;
 
@@ -262,17 +236,19 @@ header h1{
     transform:
         translate(-50%,-50%);
 
+    z-index:1;
+
 }
 
 
-/* CENTER DOT */
+/* ================= CENTER DOT ================= */
 
 .pitch-center-dot{
 
     position:absolute;
 
-    width:10px;
-    height:10px;
+    width:9px;
+    height:9px;
 
     background:white;
 
@@ -284,145 +260,139 @@ header h1{
     transform:
         translate(-50%,-50%);
 
+    z-index:2;
+
 }
 
 
-/* =====================================================
-   PENALTY AREAS
-===================================================== */
+/* ================= PENALTY AREA ================= */
 
 .pitch-penalty{
 
     position:absolute;
 
-    left:50%;
+    top:50%;
 
-    width:58%;
-    height:18%;
+    width:25%;
+    height:42%;
 
     border:3px solid white;
 
-    transform:
-        translateX(-50%);
+    transform:translateY(-50%);
+
+    z-index:1;
 
 }
 
 
-/* TOP */
+/* LEFT PENALTY */
 
 .pitch-penalty.top{
-    top:-3px;
 
-    border-top:none;
+    left:2%;
 
-    border-radius:
-        0 0 5px 5px;
 }
 
 
-/* BOTTOM */
+/* RIGHT PENALTY */
 
 .pitch-penalty.bottom{
-    bottom:-3px;
 
-    border-bottom:none;
+    right:2%;
 
-    border-radius:
-        5px 5px 0 0;
 }
 
 
-/* =====================================================
-   GOAL AREAS
-===================================================== */
+/* ================= GOAL AREA ================= */
 
 .pitch-goal-area{
 
     position:absolute;
 
-    left:50%;
+    top:50%;
 
-    width:32%;
-    height:8%;
+    width:11%;
+    height:21%;
 
     border:3px solid white;
 
-    transform:
-        translateX(-50%);
+    transform:translateY(-50%);
+
+    z-index:1;
 
 }
 
 
-/* TOP */
+/* LEFT GOAL AREA */
 
 .pitch-goal-area.top{
 
-    top:-3px;
-
-    border-top:none;
+    left:2%;
 
 }
 
 
-/* BOTTOM */
+/* RIGHT GOAL AREA */
 
 .pitch-goal-area.bottom{
 
-    bottom:-3px;
-
-    border-bottom:none;
+    right:2%;
 
 }
 
 
-/* =====================================================
-   GOALS
-===================================================== */
+/* ================= GOALS ================= */
 
 .pitch-goal{
 
     position:absolute;
 
-    left:50%;
+    top:50%;
 
-    width:25%;
-    height:2.5%;
+    width:3%;
+    height:13%;
 
-    border:
-        4px solid white;
+    border:3px solid white;
 
-    transform:
-        translateX(-50%);
+    transform:translateY(-50%);
 
     background:
-        rgba(255,255,255,.08);
+        repeating-linear-gradient(
+            45deg,
+            rgba(255,255,255,.18),
+            rgba(255,255,255,.18) 3px,
+            transparent 3px,
+            transparent 7px
+        );
+
+    z-index:2;
 
 }
 
 
-/* TOP */
+/* LEFT GOAL */
 
 .pitch-goal.top{
-    top:-2px;
+
+    left:0;
+
 }
 
 
-/* BOTTOM */
+/* RIGHT GOAL */
 
 .pitch-goal.bottom{
-    bottom:-2px;
+
+    right:0;
+
 }
 
 
-/* =====================================================
-   PENALTY SPOTS
-===================================================== */
+/* ================= PENALTY SPOTS ================= */
 
 .pitch-penalty-dot{
 
     position:absolute;
-
-    left:50%;
 
     width:8px;
     height:8px;
@@ -431,31 +401,133 @@ header h1{
 
     border-radius:50%;
 
-    transform:
-        translateX(-50%);
+    top:50%;
+
+    transform:translateY(-50%);
+
+    z-index:2;
 
 }
 
 
 .pitch-penalty-dot.top{
-    top:13%;
+
+    left:18%;
+
 }
 
 
 .pitch-penalty-dot.bottom{
-    bottom:13%;
+
+    right:18%;
+
 }
 
 
-/* =====================================================
-   PLAYERS
-===================================================== */
+/* ================= PENALTY ARCS ================= */
 
-.pitch-player{
+.pitch-penalty-arc{
 
     position:absolute;
 
     width:90px;
+    height:90px;
+
+    border:3px solid white;
+
+    border-radius:50%;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    z-index:1;
+
+}
+
+
+.pitch-penalty-arc.top{
+
+    left:13%;
+
+}
+
+
+.pitch-penalty-arc.bottom{
+
+    right:13%;
+
+}
+
+
+/* ================= CORNER ARCS ================= */
+
+.pitch-corner{
+
+    position:absolute;
+
+    width:30px;
+    height:30px;
+
+    border:3px solid white;
+
+    border-radius:50%;
+
+    z-index:2;
+
+}
+
+
+.pitch-corner.tl{
+
+    top:3%;
+    left:2%;
+
+    border-left-color:transparent;
+    border-top-color:transparent;
+
+}
+
+
+.pitch-corner.bl{
+
+    bottom:3%;
+    left:2%;
+
+    border-left-color:transparent;
+    border-bottom-color:transparent;
+
+}
+
+
+.pitch-corner.tr{
+
+    top:3%;
+    right:2%;
+
+    border-right-color:transparent;
+    border-top-color:transparent;
+
+}
+
+
+.pitch-corner.br{
+
+    bottom:3%;
+    right:2%;
+
+    border-right-color:transparent;
+    border-bottom-color:transparent;
+
+}
+
+
+/* ================= PLAYERS ================= */
+
+.pitch-player{
+    position:absolute;
+
+    width:82px;
 
     text-align:center;
 
@@ -463,182 +535,83 @@ header h1{
         translate(-50%,-50%);
 
     z-index:10;
-
-    transition:
-        transform .2s ease;
-
 }
-
-
-.pitch-player:hover{
-
-    transform:
-        translate(-50%,-50%)
-        scale(1.08);
-
-    z-index:30;
-
-}
-
-
-/* PLAYER IMAGE */
 
 .pitch-player img{
-
-    width:62px;
-    height:62px;
+    width:56px;
+    height:56px;
 
     object-fit:cover;
 
     border-radius:50%;
 
-    border:
-        3px solid white;
+    border:3px solid white;
 
     background:white;
 
     box-shadow:
-        0 5px 14px rgba(0,0,0,.45);
-
+        0 3px 10px rgba(0,0,0,.45);
 }
-
-
-/* PLAYER NUMBER */
-
-.pitch-player-number{
-
-    position:absolute;
-
-    top:-5px;
-    right:7px;
-
-    background:
-        linear-gradient(135deg,#111827,#334155);
-
-    color:white;
-
-    width:24px;
-    height:24px;
-
-    line-height:24px;
-
-    border-radius:50%;
-
-    font-size:11px;
-
-    font-weight:bold;
-
-    border:2px solid white;
-
-}
-
-
-/* PLAYER NAME */
 
 .pitch-player-name{
-
-    background:
-        rgba(15,23,42,.90);
+    background:rgba(0,0,0,.78);
 
     color:white;
 
-    border-radius:7px;
+    border-radius:6px;
 
-    padding:4px 7px;
+    padding:3px 5px;
 
-    margin-top:4px;
+    margin-top:3px;
 
     font-size:12px;
-
-    font-weight:bold;
 
     white-space:nowrap;
 
     overflow:hidden;
 
     text-overflow:ellipsis;
-
-    box-shadow:
-        0 3px 8px rgba(0,0,0,.25);
-
 }
 
-
-/* POSITION */
-
-.pitch-position{
-
-    color:white;
-
-    font-size:10px;
-
-    margin-top:3px;
-
-    font-weight:bold;
-
-    text-shadow:
-        0 1px 3px black;
-
-}
-
-
-/* =====================================================
-   TEAM LABELS ON PITCH
-===================================================== */
-
-.pitch-team-label{
-
+.pitch-player-number{
     position:absolute;
 
-    left:50%;
+    top:-4px;
+    right:6px;
 
-    transform:translateX(-50%);
-
-    background:
-        rgba(0,0,0,.45);
-
+    background:#111827;
     color:white;
 
-    padding:5px 14px;
+    width:22px;
+    height:22px;
 
-    border-radius:20px;
+    line-height:22px;
 
-    font-size:12px;
+    border-radius:50%;
 
+    font-size:11px;
     font-weight:bold;
-
-    z-index:5;
-
-    pointer-events:none;
-
 }
 
-.pitch-team-label.top{
-    top:8px;
-}
-
-.pitch-team-label.bottom{
-    bottom:8px;
+.pitch-position{
+    color:white;
+    font-size:10px;
+    margin-top:2px;
 }
 
 
-/* =====================================================
-   PLAYER RATINGS
-===================================================== */
+/* ================= PLAYER STATS ================= */
 
 .players-grid{
-
     display:grid;
 
     grid-template-columns:
         repeat(2,1fr);
 
     gap:15px;
-
 }
 
 .player-card{
-
     background:#f8fafc;
 
     border-radius:15px;
@@ -650,20 +623,15 @@ header h1{
     align-items:center;
 
     gap:12px;
-
-    border:1px solid #e2e8f0;
-
 }
 
 .player-card img{
-
     width:60px;
     height:60px;
 
     object-fit:cover;
 
     border-radius:50%;
-
 }
 
 .player-info{
@@ -694,28 +662,16 @@ header h1{
 }
 
 
-/* =====================================================
-   MOBILE
-===================================================== */
+/* ================= MOBILE ================= */
 
 @media(max-width:700px){
 
-    .container{
-        padding:10px;
-        margin-top:15px;
-    }
-
-    .card{
-        padding:16px;
-        border-radius:17px;
-    }
-
     .teams{
-        gap:8px;
+        gap:10px;
     }
 
     .team{
-        min-width:110px;
+        min-width:120px;
     }
 
     .team-logo{
@@ -731,12 +687,8 @@ header h1{
         font-size:30px;
     }
 
-    .vs{
-        font-size:22px;
-    }
-
-    .pitch{
-        max-width:430px;
+    .players-grid{
+        grid-template-columns:1fr;
     }
 
     .pitch-player{
@@ -744,63 +696,27 @@ header h1{
     }
 
     .pitch-player img{
-        width:46px;
-        height:46px;
+        width:45px;
+        height:45px;
     }
 
     .pitch-player-name{
-        font-size:9px;
-        padding:3px 4px;
-    }
-
-    .pitch-player-number{
-        width:20px;
-        height:20px;
-        line-height:20px;
-        font-size:9px;
+        font-size:10px;
     }
 
     .pitch-center-circle{
-        width:90px;
-        height:90px;
+        width:80px;
+        height:80px;
     }
 
-    .pitch-penalty-dot.top{
-        top:14%;
-    }
-
-    .pitch-penalty-dot.bottom{
-        bottom:14%;
-    }
-
-    .players-grid{
-        grid-template-columns:1fr;
-    }
-
-}
-
-
-/* =====================================================
-   VERY SMALL PHONES
-===================================================== */
-
-@media(max-width:400px){
-
-    .pitch-player{
+    .pitch-penalty-arc{
         width:55px;
+        height:55px;
     }
 
-    .pitch-player img{
-        width:40px;
-        height:40px;
-    }
-
-    .pitch-player-name{
-        font-size:8px;
-    }
-
-    .pitch-position{
-        font-size:8px;
+    .pitch-corner{
+        width:20px;
+        height:20px;
     }
 
 }
@@ -809,9 +725,7 @@ header h1{
 
 </head>
 
-
 <body>
-
 
 <header>
 
@@ -823,9 +737,7 @@ header h1{
 <div class="container">
 
 
-<!-- =====================================================
-     MATCH INFO
-===================================================== -->
+<!-- ================= MATCH INFO ================= -->
 
 <div
     id="matchInfo"
@@ -837,9 +749,7 @@ header h1{
 </div>
 
 
-<!-- =====================================================
-     EXPECTED LINEUP
-===================================================== -->
+<!-- ================= EXPECTED LINEUP ================= -->
 
 <div
     id="expectedSection"
@@ -851,54 +761,53 @@ header h1{
         🎯 التشكيلة المتوقعة
     </h2>
 
-    <p class="pitch-subtitle">
-        الخطة التي تم إعدادها قبل بداية المباراة
-    </p>
+    <div
+        id="expectedPitch"
+        class="pitch"
+    >
 
+        <div class="pitch-midline"></div>
 
-    <div class="pitch-wrapper">
+        <div class="pitch-center-circle"></div>
 
-        <div
-            id="expectedPitch"
-            class="pitch"
-        >
+        <div class="pitch-center-dot"></div>
 
-            <div class="pitch-midline"></div>
+        <div class="pitch-penalty top"></div>
 
-            <div class="pitch-center-circle"></div>
+        <div class="pitch-penalty bottom"></div>
 
-            <div class="pitch-center-dot"></div>
+        <div class="pitch-goal-area top"></div>
 
-            <div class="pitch-penalty-dot top"></div>
+        <div class="pitch-goal-area bottom"></div>
 
-            <div class="pitch-penalty-dot bottom"></div>
+        <div class="pitch-goal top"></div>
 
-            <div class="pitch-penalty top"></div>
+        <div class="pitch-goal bottom"></div>
 
-            <div class="pitch-penalty bottom"></div>
+        <div class="pitch-penalty-dot top"></div>
 
-            <div class="pitch-goal-area top"></div>
+        <div class="pitch-penalty-dot bottom"></div>
 
-            <div class="pitch-goal-area bottom"></div>
+        <div class="pitch-penalty-arc top"></div>
 
-            <div class="pitch-goal top"></div>
+        <div class="pitch-penalty-arc bottom"></div>
 
-            <div class="pitch-goal bottom"></div>
+        <div class="pitch-corner tl"></div>
 
-            <div
-                id="expectedPlayers"
-            ></div>
+        <div class="pitch-corner bl"></div>
 
-        </div>
+        <div class="pitch-corner tr"></div>
+
+        <div class="pitch-corner br"></div>
+
+        <div id="expectedPlayers"></div>
 
     </div>
 
 </div>
 
 
-<!-- =====================================================
-     ACTUAL LINEUP
-===================================================== -->
+<!-- ================= ACTUAL LINEUP ================= -->
 
 <div
     id="actualSection"
@@ -910,54 +819,53 @@ header h1{
         ⚽ تشكيلة المباراة
     </h2>
 
-    <p class="pitch-subtitle">
-        التشكيلة التي لعبت المباراة فعليًا
-    </p>
+    <div
+        id="actualPitch"
+        class="pitch"
+    >
 
+        <div class="pitch-midline"></div>
 
-    <div class="pitch-wrapper">
+        <div class="pitch-center-circle"></div>
 
-        <div
-            id="actualPitch"
-            class="pitch"
-        >
+        <div class="pitch-center-dot"></div>
 
-            <div class="pitch-midline"></div>
+        <div class="pitch-penalty top"></div>
 
-            <div class="pitch-center-circle"></div>
+        <div class="pitch-penalty bottom"></div>
 
-            <div class="pitch-center-dot"></div>
+        <div class="pitch-goal-area top"></div>
 
-            <div class="pitch-penalty-dot top"></div>
+        <div class="pitch-goal-area bottom"></div>
 
-            <div class="pitch-penalty-dot bottom"></div>
+        <div class="pitch-goal top"></div>
 
-            <div class="pitch-penalty top"></div>
+        <div class="pitch-goal bottom"></div>
 
-            <div class="pitch-penalty bottom"></div>
+        <div class="pitch-penalty-dot top"></div>
 
-            <div class="pitch-goal-area top"></div>
+        <div class="pitch-penalty-dot bottom"></div>
 
-            <div class="pitch-goal-area bottom"></div>
+        <div class="pitch-penalty-arc top"></div>
 
-            <div class="pitch-goal top"></div>
+        <div class="pitch-penalty-arc bottom"></div>
 
-            <div class="pitch-goal bottom"></div>
+        <div class="pitch-corner tl"></div>
 
-            <div
-                id="actualPlayers"
-            ></div>
+        <div class="pitch-corner bl"></div>
 
-        </div>
+        <div class="pitch-corner tr"></div>
+
+        <div class="pitch-corner br"></div>
+
+        <div id="actualPlayers"></div>
 
     </div>
 
 </div>
 
 
-<!-- =====================================================
-     PLAYER RATINGS
-===================================================== -->
+<!-- ================= PLAYER RATINGS ================= -->
 
 <div
     id="ratingsSection"
@@ -1105,6 +1013,12 @@ async function renderMatch(match){
         awayTeam?.logo || "";
 
 
+    /*
+       IMPORTANT:
+       The match state is controlled
+       by played, NOT by the date.
+    */
+
     const played =
         match.played === true;
 
@@ -1126,11 +1040,9 @@ async function renderMatch(match){
             ${
                 match.round
                 ? `
-
                     <div class="match-round">
                         الجولة ${escapeHtml(match.round)}
                     </div>
-
                   `
                 : ""
             }
@@ -1138,24 +1050,18 @@ async function renderMatch(match){
 
             <div class="teams">
 
-
-                <!-- HOME -->
-
                 <div class="team">
 
                     ${
                         homeLogo
                         ? `
-
                             <img
                                 class="team-logo"
                                 src="${homeLogo}"
                                 alt="${escapeHtml(match.home)}"
                             >
-
                           `
                         : `
-
                             <div
                                 class="team-logo"
                                 style="
@@ -1167,10 +1073,8 @@ async function renderMatch(match){
                             >
                                 ⚽
                             </div>
-
                           `
                     }
-
 
                     <div class="team-name">
                         ${escapeHtml(match.home)}
@@ -1179,52 +1083,41 @@ async function renderMatch(match){
                 </div>
 
 
-                <!-- SCORE -->
-
                 <div>
 
                     ${
                         played
 
                         ? `
-
                             <div class="score">
                                 ${homeGoals}
                                 -
                                 ${awayGoals}
                             </div>
-
                           `
 
                         : `
-
                             <div class="vs">
                                 VS
                             </div>
-
                           `
                     }
 
                 </div>
 
 
-                <!-- AWAY -->
-
                 <div class="team">
 
                     ${
                         awayLogo
                         ? `
-
                             <img
                                 class="team-logo"
                                 src="${awayLogo}"
                                 alt="${escapeHtml(match.away)}"
                             >
-
                           `
                         : `
-
                             <div
                                 class="team-logo"
                                 style="
@@ -1236,10 +1129,8 @@ async function renderMatch(match){
                             >
                                 ⚽
                             </div>
-
                           `
                     }
-
 
                     <div class="team-name">
                         ${escapeHtml(match.away)}
@@ -1254,19 +1145,15 @@ async function renderMatch(match){
                 played
 
                 ? `
-
                     <div class="finished">
                         ✅ انتهت المباراة
                     </div>
-
                   `
 
                 : `
-
                     <div class="not-started">
                         ⏳ لم تبدأ المباراة بعد
                     </div>
-
                   `
             }
 
@@ -1276,7 +1163,6 @@ async function renderMatch(match){
                 match.match_time
 
                 ? `
-
                     <div class="match-date">
 
                         ${
@@ -1294,7 +1180,6 @@ async function renderMatch(match){
                         }
 
                     </div>
-
                   `
                 : ""
             }
@@ -1304,19 +1189,18 @@ async function renderMatch(match){
     `;
 
 
-    /*
-       التشكيلة المتوقعة
-       تظهر لجميع المستخدمين
-    */
+    /* التشكيلة المتوقعة */
 
-    await loadExpectedLineup(match);
+    await loadExpectedLineup(
+        match
+    );
 
 
-    /*
-       التشكيلة الفعلية
-    */
+    /* التشكيلة الفعلية */
 
-    await loadActualLineup(match);
+    await loadActualLineup(
+        match
+    );
 
 }
 
@@ -1339,36 +1223,20 @@ async function loadExpectedLineup(match){
 
     if(error){
 
-        console.error(
-            "Expected lineup error:",
-            error
-        );
-
+        console.error(error);
         return;
     }
 
 
-    /*
-       لا توجد تشكيلة متوقعة
-    */
-
     if(!data || !data.length)
         return;
 
-
-    /*
-       إظهار الملعب
-    */
 
     document.getElementById(
         "expectedSection"
     ).style.display =
         "block";
 
-
-    /*
-       IDs اللاعبين
-    */
 
     const playerIds =
         data.map(
@@ -1377,11 +1245,7 @@ async function loadExpectedLineup(match){
         );
 
 
-    /*
-       جلب اللاعبين
-    */
-
-    const {data:players,error:playersError} =
+    const {data:players} =
         await supabaseClient
         .from("players")
         .select("*")
@@ -1389,17 +1253,6 @@ async function loadExpectedLineup(match){
             "id",
             playerIds
         );
-
-
-    if(playersError){
-
-        console.error(
-            "Players error:",
-            playersError
-        );
-
-        return;
-    }
 
 
     if(!players)
@@ -1412,20 +1265,8 @@ async function loadExpectedLineup(match){
         );
 
 
-    /*
-       ترتيب اللاعبين حسب موقعهم
-    */
-
-    const sortedData =
-        [...data].sort(
-            (a,b) =>
-                Number(a.y || 50) -
-                Number(b.y || 50)
-        );
-
-
     container.innerHTML =
-        sortedData.map(
+        data.map(
             row => {
 
                 const player =
@@ -1449,57 +1290,6 @@ async function loadExpectedLineup(match){
             }
         ).join("");
 
-
-    /*
-       أسماء الفريقين داخل الملعب
-    */
-
-    const homePlayers =
-        sortedData.filter(
-            row =>
-            row.team === match.home
-        );
-
-
-    const awayPlayers =
-        sortedData.filter(
-            row =>
-            row.team === match.away
-        );
-
-
-    /*
-       نضيف أسماء الفريقين
-       فقط إذا كان هناك لاعبين
-    */
-
-    if(homePlayers.length){
-
-        container.insertAdjacentHTML(
-            "beforeend",
-            `
-                <div class="pitch-team-label top">
-                    ${escapeHtml(match.home)}
-                </div>
-            `
-        );
-
-    }
-
-
-    if(awayPlayers.length){
-
-        container.insertAdjacentHTML(
-            "beforeend",
-            `
-                <div class="pitch-team-label bottom">
-                    ${escapeHtml(match.away)}
-                </div>
-            `
-        );
-
-    }
-
 }
 
 
@@ -1521,11 +1311,7 @@ async function loadActualLineup(match){
 
     if(error){
 
-        console.error(
-            "Actual lineup error:",
-            error
-        );
-
+        console.error(error);
         return;
     }
 
@@ -1547,7 +1333,7 @@ async function loadActualLineup(match){
         );
 
 
-    const {data:players,error:playersError} =
+    const {data:players} =
         await supabaseClient
         .from("players")
         .select("*")
@@ -1555,14 +1341,6 @@ async function loadActualLineup(match){
             "id",
             playerIds
         );
-
-
-    if(playersError){
-
-        console.error(playersError);
-
-        return;
-    }
 
 
     if(!players)
@@ -1620,23 +1398,10 @@ function createPitchPlayer(
 ){
 
     const x =
-        Math.max(
-            4,
-            Math.min(
-                96,
-                Number(row.x) || 50
-            )
-        );
-
+        Number(row.x) || 50;
 
     const y =
-        Math.max(
-            4,
-            Math.min(
-                96,
-                Number(row.y) || 50
-            )
-        );
+        Number(row.y) || 50;
 
 
     const photo =
@@ -1651,58 +1416,33 @@ function createPitchPlayer(
 
         MID:"⚙️",
 
-        ATT:"⚡",
-
-        CB:"🛡️",
-
-        LB:"🛡️",
-
-        RB:"🛡️",
-
-        CDM:"⚙️",
-
-        CM:"⚙️",
-
-        AMF:"🎯",
-
-        LW:"⚡",
-
-        RW:"⚡",
-
-        ST:"⚡"
+        ATT:"⚡"
 
     };
 
 
     const icon =
         positionIcons[
-            String(row.position || "").toUpperCase()
-        ] || "⚽";
+            row.position
+        ] || "";
 
 
     /*
-       Goals
+       Goals and assists are shown
+       only for actual match players.
     */
 
     const goalIcon =
         actual &&
         Number(row.goals) > 0
-
         ? ` ⚽ ${Number(row.goals)}`
-
         : "";
 
-
-    /*
-       Assists
-    */
 
     const assistIcon =
         actual &&
         Number(row.assists) > 0
-
         ? ` 👟 ${Number(row.assists)}`
-
         : "";
 
 
@@ -1716,15 +1456,12 @@ function createPitchPlayer(
             "
         >
 
-
             ${
                 player.number
                 ? `
-
                     <div class="pitch-player-number">
                         ${escapeHtml(player.number)}
                     </div>
-
                   `
                 : ""
             }
@@ -1732,23 +1469,17 @@ function createPitchPlayer(
 
             ${
                 photo
-
                 ? `
-
                     <img
                         src="${photo}"
                         alt="${escapeHtml(player.name)}"
-                        loading="lazy"
                     >
-
                   `
-
                 : `
-
                     <div
                         style="
-                            width:62px;
-                            height:62px;
+                            width:56px;
+                            height:56px;
                             border-radius:50%;
                             border:3px solid white;
                             background:#e5e7eb;
@@ -1756,12 +1487,10 @@ function createPitchPlayer(
                             align-items:center;
                             justify-content:center;
                             font-size:25px;
-                            box-shadow:0 5px 14px rgba(0,0,0,.45);
                         "
                     >
                         👤
                     </div>
-
                   `
             }
 
@@ -1784,7 +1513,6 @@ function createPitchPlayer(
                 ${escapeHtml(row.position || "")}
 
             </div>
-
 
         </div>
 
@@ -1818,16 +1546,13 @@ function renderRatings(
         "block";
 
 
-    const sorted =
-        [...rows].sort(
+    container.innerHTML =
+        rows
+        .sort(
             (a,b) =>
             Number(b.rating || 0) -
             Number(a.rating || 0)
-        );
-
-
-    container.innerHTML =
-        sorted
+        )
         .map(
             row => {
 
@@ -1851,22 +1576,15 @@ function renderRatings(
 
                     <div class="player-card">
 
-
                         ${
                             photo
-
                             ? `
-
                                 <img
                                     src="${photo}"
                                     alt="${escapeHtml(player.name)}"
-                                    loading="lazy"
                                 >
-
                               `
-
                             : `
-
                                 <div
                                     style="
                                         width:60px;
@@ -1881,13 +1599,11 @@ function renderRatings(
                                 >
                                     👤
                                 </div>
-
                               `
                         }
 
 
                         <div class="player-info">
-
 
                             <div class="player-name">
 
@@ -1909,42 +1625,30 @@ function renderRatings(
 
                             <div class="badges">
 
-
                                 ${
                                     Number(row.goals) > 0
-
                                     ? `
-
                                         <span class="goal-badge">
                                             ⚽ ${Number(row.goals)} هدف
                                         </span>
-
                                       `
-
                                     : ""
                                 }
 
 
                                 ${
                                     Number(row.assists) > 0
-
                                     ? `
-
                                         <span class="assist-badge">
                                             👟 ${Number(row.assists)} أسيست
                                         </span>
-
                                       `
-
                                     : ""
                                 }
 
-
                             </div>
 
-
                         </div>
-
 
                     </div>
 
@@ -1958,14 +1662,13 @@ function renderRatings(
 
 
 /* =====================================================
-   DATE
+   FORMAT DATE
 ===================================================== */
 
 function formatDate(date){
 
     if(!date)
         return "";
-
 
     const parts =
         String(date).split("-");
@@ -1981,7 +1684,7 @@ function formatDate(date){
 
 
 /* =====================================================
-   TIME
+   FORMAT TIME
 ===================================================== */
 
 function formatTime(time){
@@ -1989,14 +1692,13 @@ function formatTime(time){
     if(!time)
         return "";
 
-
     return String(time).slice(0,5);
 
 }
 
 
 /* =====================================================
-   ESCAPE HTML
+   ESCAPE
 ===================================================== */
 
 function escapeHtml(value){
