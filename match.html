@@ -52,6 +52,7 @@ header h1{
     box-shadow:0 8px 25px rgba(0,0,0,.08);
 }
 
+
 /* ================= MATCH ================= */
 
 .match-header{
@@ -109,10 +110,20 @@ header h1{
     font-weight:bold;
 }
 
+.finished{
+    background:#f0fdf4;
+    color:#15803d;
+    padding:12px;
+    border-radius:12px;
+    margin-top:20px;
+    font-weight:bold;
+}
+
 .match-date{
     margin-top:12px;
     color:#475569;
 }
+
 
 /* ================= PITCH ================= */
 
@@ -146,6 +157,7 @@ header h1{
         0 10px 30px rgba(0,0,0,.25);
 }
 
+
 /* منتصف الملعب */
 
 .pitch-midline{
@@ -157,6 +169,7 @@ header h1{
     background:white;
     transform:translateX(-50%);
 }
+
 
 /* دائرة المنتصف */
 
@@ -176,6 +189,7 @@ header h1{
         translate(-50%,-50%);
 }
 
+
 /* نقطة المنتصف */
 
 .pitch-center-dot{
@@ -193,6 +207,7 @@ header h1{
     transform:
         translate(-50%,-50%);
 }
+
 
 /* منطقة الجزاء */
 
@@ -218,6 +233,7 @@ header h1{
     bottom:-2px;
 }
 
+
 /* منطقة المرمى */
 
 .pitch-goal-area{
@@ -242,6 +258,7 @@ header h1{
     bottom:-2px;
 }
 
+
 /* المرمى */
 
 .pitch-goal{
@@ -265,6 +282,7 @@ header h1{
 .pitch-goal.bottom{
     bottom:0;
 }
+
 
 /* ================= PLAYERS ================= */
 
@@ -343,6 +361,7 @@ header h1{
     margin-top:2px;
 }
 
+
 /* ================= PLAYER STATS ================= */
 
 .players-grid{
@@ -397,11 +416,13 @@ header h1{
 
 .goal-badge{
     color:#15803d;
+    margin-left:8px;
 }
 
 .assist-badge{
     color:#2563eb;
 }
+
 
 /* ================= MOBILE ================= */
 
@@ -583,10 +604,12 @@ header h1{
 
 </div>
 
+
 </div>
 
 
 <script>
+
 
 /* =====================================================
    SUPABASE
@@ -677,10 +700,15 @@ async function loadMatch(){
 
 async function renderMatch(match){
 
-    const {data:teams} =
+    const {data:teams,error:teamsError} =
         await supabaseClient
         .from("teams")
         .select("*");
+
+
+    if(teamsError){
+        console.error(teamsError);
+    }
 
 
     const homeTeam =
@@ -698,17 +726,29 @@ async function renderMatch(match){
 
 
     const homeLogo =
-        homeTeam?.logo ||
-        "https://via.placeholder.com/100?text=HOME";
+        homeTeam?.logo || "";
 
 
     const awayLogo =
-        awayTeam?.logo ||
-        "https://via.placeholder.com/100?text=AWAY";
+        awayTeam?.logo || "";
 
 
-    const future =
-        isFutureMatch(match);
+    /*
+       IMPORTANT:
+       The match state is controlled
+       by played, NOT by the date.
+    */
+
+    const played =
+        match.played === true;
+
+
+    const homeGoals =
+        Number(match.home_goals) || 0;
+
+
+    const awayGoals =
+        Number(match.away_goals) || 0;
 
 
     document.getElementById(
@@ -721,7 +761,7 @@ async function renderMatch(match){
                 match.round
                 ? `
                     <div class="match-round">
-                        ${escapeHtml(match.round)}
+                        الجولة ${escapeHtml(match.round)}
                     </div>
                   `
                 : ""
@@ -732,10 +772,29 @@ async function renderMatch(match){
 
                 <div class="team">
 
-                    <img
-                        class="team-logo"
-                        src="${homeLogo}"
-                    >
+                    ${
+                        homeLogo
+                        ? `
+                            <img
+                                class="team-logo"
+                                src="${homeLogo}"
+                                alt="${escapeHtml(match.home)}"
+                            >
+                          `
+                        : `
+                            <div
+                                class="team-logo"
+                                style="
+                                    display:flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    font-size:50px;
+                                "
+                            >
+                                ⚽
+                            </div>
+                          `
+                    }
 
                     <div class="team-name">
                         ${escapeHtml(match.home)}
@@ -747,19 +806,19 @@ async function renderMatch(match){
                 <div>
 
                     ${
-                        future
+                        played
 
                         ? `
-                            <div class="vs">
-                                VS
+                            <div class="score">
+                                ${homeGoals}
+                                -
+                                ${awayGoals}
                             </div>
                           `
 
                         : `
-                            <div class="score">
-                                ${match.home_goals}
-                                -
-                                ${match.away_goals}
+                            <div class="vs">
+                                VS
                             </div>
                           `
                     }
@@ -769,10 +828,29 @@ async function renderMatch(match){
 
                 <div class="team">
 
-                    <img
-                        class="team-logo"
-                        src="${awayLogo}"
-                    >
+                    ${
+                        awayLogo
+                        ? `
+                            <img
+                                class="team-logo"
+                                src="${awayLogo}"
+                                alt="${escapeHtml(match.away)}"
+                            >
+                          `
+                        : `
+                            <div
+                                class="team-logo"
+                                style="
+                                    display:flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    font-size:50px;
+                                "
+                            >
+                                ⚽
+                            </div>
+                          `
+                    }
 
                     <div class="team-name">
                         ${escapeHtml(match.away)}
@@ -784,14 +862,19 @@ async function renderMatch(match){
 
 
             ${
-                future
+                played
 
                 ? `
+                    <div class="finished">
+                        ✅ انتهت المباراة
+                    </div>
+                  `
+
+                : `
                     <div class="not-started">
                         ⏳ لم تبدأ المباراة بعد
                     </div>
                   `
-                : ""
             }
 
 
@@ -805,14 +888,14 @@ async function renderMatch(match){
                         ${
                             match.match_date
                             ? "📅 " +
-                              match.match_date
+                              formatDate(match.match_date)
                             : ""
                         }
 
                         ${
                             match.match_time
                             ? " &nbsp; 🕐 " +
-                              match.match_time
+                              formatTime(match.match_time)
                             : ""
                         }
 
@@ -920,7 +1003,8 @@ async function loadExpectedLineup(match){
 
                 return createPitchPlayer(
                     player,
-                    row
+                    row,
+                    false
                 );
 
             }
@@ -1007,7 +1091,8 @@ async function loadActualLineup(match){
 
                 return createPitchPlayer(
                     player,
-                    row
+                    row,
+                    true
                 );
 
             }
@@ -1028,7 +1113,8 @@ async function loadActualLineup(match){
 
 function createPitchPlayer(
     player,
-    row
+    row,
+    actual
 ){
 
     const x =
@@ -1039,8 +1125,7 @@ function createPitchPlayer(
 
 
     const photo =
-        player.photo ||
-        "https://via.placeholder.com/55?text=PLAYER";
+        player.photo || "";
 
 
     const positionIcons = {
@@ -1062,15 +1147,22 @@ function createPitchPlayer(
         ] || "";
 
 
+    /*
+       Goals and assists are shown
+       only for actual match players.
+    */
+
     const goalIcon =
+        actual &&
         Number(row.goals) > 0
-        ? " ⚽"
+        ? ` ⚽ ${Number(row.goals)}`
         : "";
 
 
     const assistIcon =
+        actual &&
         Number(row.assists) > 0
-        ? " 👟"
+        ? ` 👟 ${Number(row.assists)}`
         : "";
 
 
@@ -1088,17 +1180,39 @@ function createPitchPlayer(
                 player.number
                 ? `
                     <div class="pitch-player-number">
-                        ${player.number}
+                        ${escapeHtml(player.number)}
                     </div>
                   `
                 : ""
             }
 
 
-            <img
-                src="${photo}"
-                alt="${escapeHtml(player.name)}"
-            >
+            ${
+                photo
+                ? `
+                    <img
+                        src="${photo}"
+                        alt="${escapeHtml(player.name)}"
+                    >
+                  `
+                : `
+                    <div
+                        style="
+                            width:56px;
+                            height:56px;
+                            border-radius:50%;
+                            border:3px solid white;
+                            background:#e5e7eb;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:25px;
+                        "
+                    >
+                        👤
+                    </div>
+                  `
+            }
 
 
             <div class="pitch-player-name">
@@ -1106,6 +1220,7 @@ function createPitchPlayer(
                 ${escapeHtml(player.name)}
 
                 ${goalIcon}
+
                 ${assistIcon}
 
             </div>
@@ -1114,7 +1229,8 @@ function createPitchPlayer(
             <div class="pitch-position">
 
                 ${icon}
-                ${row.position || ""}
+
+                ${escapeHtml(row.position || "")}
 
             </div>
 
@@ -1173,17 +1289,39 @@ function renderRatings(
 
 
                 const photo =
-                    player.photo ||
-                    "https://via.placeholder.com/60?text=P";
+                    player.photo || "";
 
 
                 return `
 
                     <div class="player-card">
 
-                        <img
-                            src="${photo}"
-                        >
+                        ${
+                            photo
+                            ? `
+                                <img
+                                    src="${photo}"
+                                    alt="${escapeHtml(player.name)}"
+                                >
+                              `
+                            : `
+                                <div
+                                    style="
+                                        width:60px;
+                                        height:60px;
+                                        border-radius:50%;
+                                        background:#e5e7eb;
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        font-size:25px;
+                                    "
+                                >
+                                    👤
+                                </div>
+                              `
+                        }
+
 
                         <div class="player-info">
 
@@ -1193,14 +1331,17 @@ function renderRatings(
 
                             </div>
 
+
                             <div class="player-stat">
 
                                 ⭐ التقييم:
+
                                 <strong>
                                     ${Number(row.rating || 0).toFixed(1)}
                                 </strong>
 
                             </div>
+
 
                             <div class="badges">
 
@@ -1208,17 +1349,18 @@ function renderRatings(
                                     Number(row.goals) > 0
                                     ? `
                                         <span class="goal-badge">
-                                            ⚽ ${row.goals} هدف
+                                            ⚽ ${Number(row.goals)} هدف
                                         </span>
                                       `
                                     : ""
                                 }
 
+
                                 ${
                                     Number(row.assists) > 0
                                     ? `
                                         <span class="assist-badge">
-                                            👟 ${row.assists} أسيست
+                                            👟 ${Number(row.assists)} أسيست
                                         </span>
                                       `
                                     : ""
@@ -1240,27 +1382,37 @@ function renderRatings(
 
 
 /* =====================================================
-   FUTURE
+   FORMAT DATE
 ===================================================== */
 
-function isFutureMatch(match){
+function formatDate(date){
 
-    if(!match.match_date)
-        return false;
+    if(!date)
+        return "";
 
-
-    const time =
-        match.match_time ||
-        "23:59";
+    const parts =
+        String(date).split("-");
 
 
-    const date =
-        new Date(
-            `${match.match_date}T${time}`
-        );
+    if(parts.length !== 3)
+        return escapeHtml(date);
 
 
-    return date > new Date();
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+}
+
+
+/* =====================================================
+   FORMAT TIME
+===================================================== */
+
+function formatTime(time){
+
+    if(!time)
+        return "";
+
+    return String(time).slice(0,5);
 
 }
 
@@ -1271,7 +1423,7 @@ function isFutureMatch(match){
 
 function escapeHtml(value){
 
-    return String(value)
+    return String(value ?? "")
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
         .replace(/>/g,"&gt;")
