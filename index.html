@@ -517,7 +517,7 @@ const SUPABASE_URL =
 "https://dtxexuaverridpntgwkj.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
+"sb_publishable_7lxTHAsOFz2Ljsq6pb4Mw_9a2xutP3";
 
 const supabaseClient =
 window.supabase.createClient(
@@ -533,6 +533,7 @@ window.supabase.createClient(
 let teams = [];
 let players = [];
 let matches = [];
+let matchPlayers = [];
 
 
 /* ==========================================
@@ -546,7 +547,8 @@ async function loadData(){
         const [
             teamsResult,
             playersResult,
-            matchesResult
+            matchesResult,
+            matchPlayersResult
         ] = await Promise.all([
 
             supabaseClient
@@ -564,7 +566,12 @@ async function loadData(){
                 .select("*")
                 .order("match_date", {
                     ascending:false
-                })
+                }),
+
+            supabaseClient
+                .from("match_players")
+                .select("*")
+                .order("id")
 
         ]);
 
@@ -578,6 +585,9 @@ async function loadData(){
         if(matchesResult.error)
             throw matchesResult.error;
 
+        if(matchPlayersResult.error)
+            throw matchPlayersResult.error;
+
 
         teams =
             teamsResult.data || [];
@@ -588,19 +598,16 @@ async function loadData(){
         matches =
             matchesResult.data || [];
 
+        matchPlayers =
+            matchPlayersResult.data || [];
+
 
         showTeams();
-
         createRanking();
-
         showMatches();
-
         showGoals();
-
         showAssists();
-
         showPlayers();
-
         showStats();
 
     }
@@ -681,7 +688,7 @@ function showTeams(){
         ? `
         <img
         src="${logo}"
-        alt="${team.name}"
+        alt="${escapeHTML(team.name)}"
         >
         `
 
@@ -703,7 +710,7 @@ function showTeams(){
 
         <h3>
 
-        ${team.name}
+        ${escapeHTML(team.name)}
 
         </h3>
 
@@ -731,6 +738,18 @@ function escapeAttribute(text){
     return String(text)
         .replace(/\\/g,"\\\\")
         .replace(/'/g,"\\'");
+
+}
+
+
+function escapeHTML(text){
+
+    return String(text ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 
 }
 
@@ -774,7 +793,17 @@ function createRanking(){
     });
 
 
+    /*
+       IMPORTANT:
+       Only completed matches are counted.
+       Scheduled matches with played=false
+       do NOT affect the table.
+    */
+
     matches.forEach(match => {
+
+        if(match.played !== true)
+            return;
 
         if(!data[match.home])
             return;
@@ -791,30 +820,20 @@ function createRanking(){
 
 
         data[match.home].played++;
-
         data[match.away].played++;
 
 
-        data[match.home].gf +=
-            homeGoals;
+        data[match.home].gf += homeGoals;
+        data[match.home].ga += awayGoals;
 
-        data[match.home].ga +=
-            awayGoals;
-
-
-        data[match.away].gf +=
-            awayGoals;
-
-        data[match.away].ga +=
-            homeGoals;
+        data[match.away].gf += awayGoals;
+        data[match.away].ga += homeGoals;
 
 
         if(homeGoals > awayGoals){
 
             data[match.home].wins++;
-
             data[match.home].points += 3;
-
             data[match.away].losses++;
 
         }
@@ -822,9 +841,7 @@ function createRanking(){
         else if(homeGoals < awayGoals){
 
             data[match.away].wins++;
-
             data[match.away].points += 3;
-
             data[match.home].losses++;
 
         }
@@ -832,11 +849,9 @@ function createRanking(){
         else{
 
             data[match.home].draws++;
-
             data[match.away].draws++;
 
             data[match.home].points++;
-
             data[match.away].points++;
 
         }
@@ -848,17 +863,12 @@ function createRanking(){
         Object.entries(data)
         .sort((a,b) => {
 
-            if(
-                b[1].points !==
-                a[1].points
-            ){
+            if(b[1].points !== a[1].points){
 
-                return
-                    b[1].points -
-                    a[1].points;
+                return b[1].points -
+                       a[1].points;
 
             }
-
 
             const gdA =
                 a[1].gf - a[1].ga;
@@ -871,7 +881,8 @@ function createRanking(){
                 return gdB - gdA;
 
 
-            return b[1].gf - a[1].gf;
+            return b[1].gf -
+                   a[1].gf;
 
         });
 
@@ -896,7 +907,10 @@ function createRanking(){
 
             table.innerHTML += `
 
-            <tr>
+            <tr
+            onclick="openTeam('${escapeAttribute(team)}')"
+            style="cursor:pointer"
+            >
 
             <td>
             ${index + 1}
@@ -904,7 +918,7 @@ function createRanking(){
 
             <td>
             <strong>
-            ${team}
+            ${escapeHTML(team)}
             </strong>
             </td>
 
@@ -979,7 +993,31 @@ function showMatches(){
     }
 
 
-    matches.forEach(match => {
+    /*
+       Put newest/nearest matches first.
+       Played matches are shown by date,
+       while upcoming matches stay visible.
+    */
+
+    const sortedMatches =
+        [...matches].sort((a,b) => {
+
+            const dateA =
+                new Date(
+                    `${a.match_date || "9999-12-31"}T${a.match_time || "00:00"}`
+                ).getTime();
+
+            const dateB =
+                new Date(
+                    `${b.match_date || "9999-12-31"}T${b.match_time || "00:00"}`
+                ).getTime();
+
+            return dateA - dateB;
+
+        });
+
+
+    sortedMatches.forEach(match => {
 
         const round =
             match.round
@@ -989,57 +1027,208 @@ function showMatches(){
 
         const date =
             match.match_date
-            ? `<br>${match.match_date}`
+            ? formatDate(match.match_date)
             : "";
+
+
+        const time =
+            match.match_time
+            ? " • " + formatTime(match.match_time)
+            : "";
+
+
+        const homeHTML =
+            getTeamLogo(match.home)
+
+            ? `
+                <img
+                src="${getTeamLogo(match.home)}"
+                style="
+                width:55px;
+                height:55px;
+                object-fit:contain;
+                display:block;
+                margin:auto auto 7px;
+                "
+                alt="${escapeHTML(match.home)}"
+                >
+                ${escapeHTML(match.home)}
+              `
+
+            : `⚽ ${escapeHTML(match.home)}`;
+
+
+        const awayHTML =
+            getTeamLogo(match.away)
+
+            ? `
+                <img
+                src="${getTeamLogo(match.away)}"
+                style="
+                width:55px;
+                height:55px;
+                object-fit:contain;
+                display:block;
+                margin:auto auto 7px;
+                "
+                alt="${escapeHTML(match.away)}"
+                >
+                ${escapeHTML(match.away)}
+              `
+
+            : `⚽ ${escapeHTML(match.away)}`;
+
+
+        let centerHTML;
+
+
+        if(match.played === true){
+
+            centerHTML = `
+
+                <div class="score">
+
+                    ${Number(match.home_goals) || 0}
+
+                    -
+
+                    ${Number(match.away_goals) || 0}
+
+                </div>
+
+                <div class="match-info">
+
+                    ${round}
+
+                    <br>
+
+                    ${date}${time}
+
+                    <br>
+
+                    <strong style="color:#16a34a">
+                        ✅ انتهت
+                    </strong>
+
+                </div>
+
+            `;
+
+        }
+
+        else{
+
+            centerHTML = `
+
+                <div
+                class="score"
+                style="
+                font-size:22px;
+                color:#2563eb
+                "
+                >
+
+                    VS
+
+                </div>
+
+                <div class="match-info">
+
+                    ${round}
+
+                    <br>
+
+                    ${date}${time}
+
+                    <br>
+
+                    <strong style="color:#f59e0b">
+                        ⏳ لم تبدأ المباراة بعد
+                    </strong>
+
+                </div>
+
+            `;
+
+        }
 
 
         box.innerHTML += `
 
-        <div class="card">
+            <div
+            class="card"
+            style="cursor:pointer"
+            onclick="openMatch(${Number(match.id)})"
+            >
 
-        <div class="match">
+                <div class="match">
 
-        <div class="team">
+                    <div class="team">
 
-        ${match.home}
+                        ${homeHTML}
 
-        </div>
-
-
-        <div>
-
-        <div class="score">
-
-        ${match.home_goals}
-        -
-        ${match.away_goals}
-
-        </div>
+                    </div>
 
 
-        <div class="match-info">
+                    <div>
 
-        ${round}
-        ${date}
+                        ${centerHTML}
 
-        </div>
-
-        </div>
+                    </div>
 
 
-        <div class="team">
+                    <div class="team">
 
-        ${match.away}
+                        ${awayHTML}
 
-        </div>
+                    </div>
 
-        </div>
+                </div>
 
-        </div>
+            </div>
 
         `;
 
     });
+
+}
+
+
+function openMatch(id){
+
+    window.location.href =
+        "match.html?id=" +
+        encodeURIComponent(id);
+
+}
+
+
+function formatDate(date){
+
+    if(!date)
+        return "";
+
+    const parts =
+        String(date).split("-");
+
+
+    if(parts.length !== 3)
+        return escapeHTML(date);
+
+
+    return `
+        ${parts[2]}/${parts[1]}/${parts[0]}
+    `;
+
+}
+
+
+function formatTime(time){
+
+    if(!time)
+        return "";
+
+    return String(time).slice(0,5);
 
 }
 
@@ -1057,7 +1246,7 @@ function getPlayerImage(player){
         <img
         class="rank-photo"
         src="${player.photo}"
-        alt="${player.name}"
+        alt="${escapeHTML(player.name)}"
         >
 
         `;
@@ -1086,6 +1275,83 @@ function getPlayerImage(player){
 
 
 /* ==========================================
+   GOALS + ASSISTS
+========================================== */
+
+function getPlayerStats(){
+
+    const totals = {};
+
+
+    players.forEach(player => {
+
+        totals[player.id] = {
+
+            goals:0,
+            assists:0
+
+        };
+
+    });
+
+
+    /*
+       Only statistics from completed matches
+       are counted.
+    */
+
+    const playedMatchIds =
+        new Set(
+
+            matches
+            .filter(match =>
+                match.played === true
+            )
+            .map(match =>
+                Number(match.id)
+            )
+
+        );
+
+
+    matchPlayers.forEach(row => {
+
+        if(
+            !playedMatchIds.has(
+                Number(row.match_id)
+            )
+        )
+            return;
+
+
+        if(!totals[row.player_id]){
+
+            totals[row.player_id] = {
+
+                goals:0,
+                assists:0
+
+            };
+
+        }
+
+
+        totals[row.player_id].goals +=
+            Number(row.goals) || 0;
+
+
+        totals[row.player_id].assists +=
+            Number(row.assists) || 0;
+
+    });
+
+
+    return totals;
+
+}
+
+
+/* ==========================================
    GOALS
 ========================================== */
 
@@ -1099,23 +1365,51 @@ function showGoals(){
     box.innerHTML = "";
 
 
+    const totals =
+        getPlayerStats();
+
+
     const sorted =
-        [...players].sort(
-            (a,b) =>
-                (Number(b.goals) || 0)
-                -
-                (Number(a.goals) || 0)
+        [...players]
+
+        .map(player => ({
+
+            ...player,
+
+            totalGoals:
+                totals[player.id]?.goals || 0
+
+        }))
+
+        .filter(player =>
+            player.totalGoals > 0
+        )
+
+        .sort((a,b) =>
+
+            b.totalGoals -
+            a.totalGoals ||
+
+            String(a.name)
+            .localeCompare(
+                String(b.name),
+                "ar"
+            )
+
         );
 
 
     if(sorted.length === 0){
 
         box.innerHTML = `
-        
-        <div class="card">
-        لا يوجد لاعبون حتى الآن.
-        </div>
-        
+
+            <div class="card">
+
+                لا توجد أهداف مسجلة
+                في المباريات المنتهية.
+
+            </div>
+
         `;
 
         return;
@@ -1130,38 +1424,53 @@ function showGoals(){
 
             <div
             class="card"
-            onclick="openPlayer(${player.id})"
+            onclick="openPlayer(${Number(player.id)})"
             style="cursor:pointer"
             >
 
-            <div class="rank">
+                <div class="rank">
 
-            <div class="rank-number">
-            ${index + 1}
-            </div>
+                    <div class="rank-number">
 
-            ${getPlayerImage(player)}
+                        ${index + 1}
 
-            <div class="rank-info">
+                    </div>
 
-            <strong>
-            ${player.name}
-            </strong>
 
-            <span>
-            ${player.team}
-            </span>
+                    ${getPlayerImage(player)}
 
-            </div>
 
-            <div class="rank-value">
+                    <div class="rank-info">
 
-            ${player.goals || 0}
-            ⚽
+                        <strong>
 
-            </div>
+                            ${escapeHTML(
+                                player.name
+                            )}
 
-            </div>
+                        </strong>
+
+
+                        <span>
+
+                            ${escapeHTML(
+                                player.team || ""
+                            )}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="rank-value">
+
+                        ${player.totalGoals}
+
+                        ⚽
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -1187,23 +1496,51 @@ function showAssists(){
     box.innerHTML = "";
 
 
+    const totals =
+        getPlayerStats();
+
+
     const sorted =
-        [...players].sort(
-            (a,b) =>
-                (Number(b.assists) || 0)
-                -
-                (Number(a.assists) || 0)
+        [...players]
+
+        .map(player => ({
+
+            ...player,
+
+            totalAssists:
+                totals[player.id]?.assists || 0
+
+        }))
+
+        .filter(player =>
+            player.totalAssists > 0
+        )
+
+        .sort((a,b) =>
+
+            b.totalAssists -
+            a.totalAssists ||
+
+            String(a.name)
+            .localeCompare(
+                String(b.name),
+                "ar"
+            )
+
         );
 
 
     if(sorted.length === 0){
 
         box.innerHTML = `
-        
-        <div class="card">
-        لا يوجد لاعبون حتى الآن.
-        </div>
-        
+
+            <div class="card">
+
+                لا توجد أسيستات مسجلة
+                في المباريات المنتهية.
+
+            </div>
+
         `;
 
         return;
@@ -1218,38 +1555,53 @@ function showAssists(){
 
             <div
             class="card"
-            onclick="openPlayer(${player.id})"
+            onclick="openPlayer(${Number(player.id)})"
             style="cursor:pointer"
             >
 
-            <div class="rank">
+                <div class="rank">
 
-            <div class="rank-number">
-            ${index + 1}
-            </div>
+                    <div class="rank-number">
 
-            ${getPlayerImage(player)}
+                        ${index + 1}
 
-            <div class="rank-info">
+                    </div>
 
-            <strong>
-            ${player.name}
-            </strong>
 
-            <span>
-            ${player.team}
-            </span>
+                    ${getPlayerImage(player)}
 
-            </div>
 
-            <div class="rank-value">
+                    <div class="rank-info">
 
-            ${player.assists || 0}
-            🎯
+                        <strong>
 
-            </div>
+                            ${escapeHTML(
+                                player.name
+                            )}
 
-            </div>
+                        </strong>
+
+
+                        <span>
+
+                            ${escapeHTML(
+                                player.team || ""
+                            )}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="rank-value">
+
+                        ${player.totalAssists}
+
+                        🎯
+
+                    </div>
+
+                </div>
 
             </div>
 
@@ -1308,7 +1660,7 @@ function showPlayers(){
             <img
             class="player-photo"
             src="${player.photo}"
-            alt="${player.name}"
+            alt="${escapeHTML(player.name)}"
             >
 
             `;
@@ -1341,21 +1693,30 @@ function showPlayers(){
 
         <div
         class="card player"
-        onclick="openPlayer(${player.id})"
+        onclick="openPlayer(${Number(player.id)})"
         >
 
         ${image}
 
         <div class="player-name">
-        ${player.name}
+
+        ${escapeHTML(player.name)}
+
         </div>
 
         <div class="player-team">
-        ${player.team}
+
+        ${escapeHTML(player.team || "")}
+
         </div>
 
         <div class="player-position">
-        ${player.position || "مركز غير محدد"}
+
+        ${escapeHTML(
+            player.position ||
+            "مركز غير محدد"
+        )}
+
         </div>
 
         <br>
@@ -1363,6 +1724,7 @@ function showPlayers(){
         <small>
 
         رقم القميص:
+
         ${player.number || "—"}
 
         </small>
@@ -1383,7 +1745,8 @@ function showPlayers(){
 function openPlayer(id){
 
     window.location.href =
-        "player.html?id=" + id;
+        "player.html?id=" +
+        encodeURIComponent(id);
 
 }
 
@@ -1400,64 +1763,135 @@ function showStats(){
         );
 
 
-    let totalGoals = 0;
+    const playedMatches =
+        matches.filter(
+            match =>
+                match.played === true
+        );
 
 
-    matches.forEach(match => {
+    const totals =
+        getPlayerStats();
 
-        totalGoals +=
-            Number(match.home_goals) || 0;
 
-        totalGoals +=
-            Number(match.away_goals) || 0;
+    const totalGoals =
+        playedMatches.reduce(
+            (sum,match) =>
 
-    });
+                sum +
+
+                (Number(
+                    match.home_goals
+                ) || 0) +
+
+                (Number(
+                    match.away_goals
+                ) || 0),
+
+            0
+        );
+
+
+    const totalAssists =
+        Object.values(totals).reduce(
+
+            (sum,player) =>
+
+                sum +
+                (Number(
+                    player.assists
+                ) || 0),
+
+            0
+
+        );
+
+
+    const scheduledMatches =
+        matches.filter(
+            match =>
+                match.played !== true
+        ).length;
 
 
     box.innerHTML = `
 
-    <div class="stat">
+        <div class="stat">
 
-    <h3>🏟️ المباريات</h3>
+            <h3>
+                🏟️ المباريات المنتهية
+            </h3>
 
-    <strong>
-    ${matches.length}
-    </strong>
+            <strong>
+                ${playedMatches.length}
+            </strong>
 
-    </div>
-
-
-    <div class="stat">
-
-    <h3>⚽ الأهداف</h3>
-
-    <strong>
-    ${totalGoals}
-    </strong>
-
-    </div>
+        </div>
 
 
-    <div class="stat">
+        <div class="stat">
 
-    <h3>👥 اللاعبون</h3>
+            <h3>
+                📅 المباريات القادمة
+            </h3>
 
-    <strong>
-    ${players.length}
-    </strong>
+            <strong>
+                ${scheduledMatches}
+            </strong>
 
-    </div>
+        </div>
 
 
-    <div class="stat">
+        <div class="stat">
 
-    <h3>🏆 الفرق</h3>
+            <h3>
+                ⚽ الأهداف
+            </h3>
 
-    <strong>
-    ${teams.length}
-    </strong>
+            <strong>
+                ${totalGoals}
+            </strong>
 
-    </div>
+        </div>
+
+
+        <div class="stat">
+
+            <h3>
+                🎯 الأسيستات
+            </h3>
+
+            <strong>
+                ${totalAssists}
+            </strong>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3>
+                👥 اللاعبون
+            </h3>
+
+            <strong>
+                ${players.length}
+            </strong>
+
+        </div>
+
+
+        <div class="stat">
+
+            <h3>
+                🏆 الفرق
+            </h3>
+
+            <strong>
+                ${teams.length}
+            </strong>
+
+        </div>
 
     `;
 
