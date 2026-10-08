@@ -592,48 +592,50 @@ let expectedLineups = [];
 
 async function loadData(){
 
-    // المرحلة 1: البيانات الأساسية فقط — تظهر الصفحة بدون انتظار التشكيلات
+    // تحميل البيانات الأساسية بشكل مستقل حتى لا يفشل الموقع كله
+    // إذا تأخر جدول واحد. لا نستخدم ORDER BY من قاعدة البيانات لتفادي
+    // عمليات فرز ثقيلة عند غياب index مناسب.
+    const loadQuery = async (table, columns, limit = 500) => {
+        const { data, error } = await supabaseClient
+            .from(table)
+            .select(columns)
+            .limit(limit);
+
+        if(error) throw new Error(table + ": " + error.message);
+        return data || [];
+    };
+
     try{
-
-        const [
-            teamsResult,
-            playersResult,
-            matchesResult
-        ] = await Promise.all([
-
-            supabaseClient
-                .from("teams")
-                .select("id,name,logo")
-                .order("id"),
-
-            supabaseClient
-                .from("players")
-                .select("id,name,team,position,number,photo,goals,assists")
-                .order("id"),
-
-            supabaseClient
-                .from("matches")
-                .select("id,home,away,home_goals,away_goals,round,match_date,match_time,played")
-                .order("match_date", {
-                    ascending:false
-                })
-
+        const results = await Promise.allSettled([
+            loadQuery("teams", "id,name,logo", 200),
+            loadQuery("players", "id,name,team,position,number,photo,goals,assists", 500),
+            loadQuery("matches", "id,home,away,home_goals,away_goals,round,match_date,match_time,played", 500)
         ]);
 
-        if(teamsResult.error)
-            throw teamsResult.error;
+        const teamsResult = results[0];
+        const playersResult = results[1];
+        const matchesResult = results[2];
 
-        if(playersResult.error)
-            throw playersResult.error;
+        if(teamsResult.status === "rejected")
+            throw teamsResult.reason;
+        if(playersResult.status === "rejected")
+            throw playersResult.reason;
+        if(matchesResult.status === "rejected")
+            throw matchesResult.reason;
 
-        if(matchesResult.error)
-            throw matchesResult.error;
+        teams = teamsResult.value;
+        players = playersResult.value;
+        matches = matchesResult.value;
 
-        teams = teamsResult.data || [];
-        players = playersResult.data || [];
-        matches = matchesResult.data || [];
+        // ترتيب محلي بدل ORDER BY في PostgreSQL
+        teams.sort((a,b) => Number(a.id) - Number(b.id));
+        players.sort((a,b) => Number(a.id) - Number(b.id));
+        matches.sort((a,b) => {
+            const da = new Date(`${a.match_date || "9999-12-31"}T${a.match_time || "00:00"}`).getTime();
+            const db = new Date(`${b.match_date || "9999-12-31"}T${b.match_time || "00:00"}`).getTime();
+            return db - da;
+        });
 
-        // عرض المحتوى الأساسي فورًا
         showTeams();
         createRanking();
         showMatches();
@@ -641,74 +643,41 @@ async function loadData(){
 
         document.getElementById("scorersList").innerHTML =
             '<div class="loading">جاري حساب الهدافين...</div>';
-
         document.getElementById("assistsList").innerHTML =
             '<div class="loading">جاري حساب الأسيستات...</div>';
 
-        // المرحلة 2: تحميل بيانات التشكيلات والإحصائيات بشكل منفصل
+        // التشكيلات اختيارية: لا تمنع الموقع من العمل إذا كان جدولها بطيئًا.
         const playedMatchIds = matches
             .filter(match => match.played === true)
             .map(match => Number(match.id));
-
         const allMatchIds = matches.map(match => Number(match.id));
 
-        const matchPlayersRequest = playedMatchIds.length
-            ? supabaseClient
-                .from("match_players")
-                .select("match_id,player_id,goals,assists")
-                .in("match_id", playedMatchIds)
-            : Promise.resolve({data:[],error:null});
-
-        const expectedLineupsRequest = allMatchIds.length
-            ? supabaseClient
-                .from("expected_lineups")
-                .select("match_id,player_id,x,y")
-                .in("match_id", allMatchIds)
-            : Promise.resolve({data:[],error:null});
-
-        const [
-            matchPlayersResult,
-            expectedLineupsResult
-        ] = await Promise.all([
-            matchPlayersRequest,
-            expectedLineupsRequest
+        const [mpResult, elResult] = await Promise.allSettled([
+            playedMatchIds.length
+                ? loadQuery("match_players", "match_id,player_id,goals,assists", 1000)
+                : Promise.resolve([]),
+            allMatchIds.length
+                ? loadQuery("expected_lineups", "match_id,player_id,x,y", 1000)
+                : Promise.resolve([])
         ]);
 
-        if(matchPlayersResult.error){
-            console.warn("match_players:", matchPlayersResult.error);
-            matchPlayers = [];
-        }else{
-            matchPlayers = matchPlayersResult.data || [];
-        }
+        matchPlayers = mpResult.status === "fulfilled" ? mpResult.value : [];
+        expectedLineups = elResult.status === "fulfilled" ? elResult.value : [];
 
-        if(expectedLineupsResult.error){
-            console.warn("expected_lineups:", expectedLineupsResult.error);
-            expectedLineups = [];
-        }else{
-            expectedLineups = expectedLineupsResult.data || [];
-        }
-
-        // الآن فقط نعرض الإحصائيات والتشكيلات المتوقعة
-        showMatches();
         showGoals();
         showAssists();
         showStats();
 
-    }
-    catch(error){
-
-        console.error(error);
+    }catch(error){
+        console.error("LOAD DATA ERROR:", error);
 
         document.getElementById("teams").innerHTML = `
-        <div class="error">
-            ❌ حدث خطأ أثناء تحميل البيانات الأساسية.
-            <br><br>
-            ${escapeHTML(error.message)}
-        </div>
+            <div class="error">
+                ❌ حدث خطأ أثناء تحميل البيانات الأساسية.<br><br>
+                ${escapeHTML(error.message || "خطأ غير معروف")}
+            </div>
         `;
-
     }
-
 }
 
 
