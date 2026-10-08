@@ -902,11 +902,12 @@ function showLogin(){
 
 async function loadData(){
 
-    await loadTeams();
-
-    await loadPlayers();
-
-    await loadMatches();
+    // تحميل الفرق واللاعبين والمباريات بالتوازي بدل الانتظار واحدًا بعد الآخر
+    await Promise.all([
+        loadTeams(),
+        loadPlayers(),
+        loadMatches()
+    ]);
 
 }
 
@@ -920,7 +921,7 @@ async function loadTeams(){
     const {data,error} =
         await supabaseClient
         .from("teams")
-        .select("*")
+        .select("id,name,logo")
         .order("id");
 
 
@@ -997,6 +998,8 @@ async function loadTeams(){
 
                     <img
                         class="team-logo"
+                        loading="lazy"
+                        decoding="async"
                         src="${logo}"
                         alt="${escapeHtml(team.name)}"
                     >
@@ -1277,7 +1280,7 @@ async function loadPlayers(){
     const {data,error} =
         await supabaseClient
         .from("players")
-        .select("*")
+        .select("id,name,team,position,number,photo,goals,assists")
         .order("id");
 
 
@@ -1321,6 +1324,8 @@ async function loadPlayers(){
 
                     <img
                         class="player-photo"
+                        loading="lazy"
+                        decoding="async"
                         src="${photo}"
                         alt="${escapeHtml(player.name)}"
                     >
@@ -1816,7 +1821,7 @@ async function loadMatches(){
     const {data,error} =
         await supabaseClient
         .from("matches")
-        .select("*")
+        .select("id,home,away,home_goals,away_goals,round,match_date,match_time,played")
         .order(
             "match_date",
             {
@@ -2164,7 +2169,7 @@ async function loadExpectedLineupForm(){
     const {data,error} =
         await supabaseClient
         .from("expected_lineups")
-        .select("*")
+        .select("player_id,team,position,x,y")
         .eq("match_id",matchId);
 
 
@@ -2903,7 +2908,7 @@ async function loadLineupForm(){
     const {data,error} =
         await supabaseClient
         .from("match_players")
-        .select("*")
+        .select("player_id,team,position,rating,goals,assists,x,y")
         .eq("match_id",matchId);
 
 
@@ -3856,6 +3861,8 @@ function createPitchPlayer(
 
 
             <img
+                loading="lazy"
+                decoding="async"
                 src="${photo}"
                 draggable="false"
                 alt="${escapeHtml(player.name)}"
