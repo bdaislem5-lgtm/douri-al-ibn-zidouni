@@ -592,45 +592,33 @@ let expectedLineups = [];
 
 async function loadData(){
 
+    // المرحلة 1: البيانات الأساسية فقط — تظهر الصفحة بدون انتظار التشكيلات
     try{
 
         const [
             teamsResult,
             playersResult,
-            matchesResult,
-            matchPlayersResult,
-            expectedLineupsResult
+            matchesResult
         ] = await Promise.all([
 
             supabaseClient
                 .from("teams")
-                .select("*")
+                .select("id,name,logo")
                 .order("id"),
 
             supabaseClient
                 .from("players")
-                .select("*")
+                .select("id,name,team,position,number,photo,goals,assists")
                 .order("id"),
 
             supabaseClient
                 .from("matches")
-                .select("*")
+                .select("id,home,away,home_goals,away_goals,round,match_date,match_time,played")
                 .order("match_date", {
                     ascending:false
-                }),
-
-            supabaseClient
-                .from("match_players")
-                .select("*")
-                .order("id"),
-
-            supabaseClient
-                .from("expected_lineups")
-                .select("*")
-                .order("id")
+                })
 
         ]);
-
 
         if(teamsResult.error)
             throw teamsResult.error;
@@ -641,55 +629,82 @@ async function loadData(){
         if(matchesResult.error)
             throw matchesResult.error;
 
-        if(matchPlayersResult.error)
-            throw matchPlayersResult.error;
+        teams = teamsResult.data || [];
+        players = playersResult.data || [];
+        matches = matchesResult.data || [];
 
-        if(expectedLineupsResult.error)
-            console.warn("expected_lineups:", expectedLineupsResult.error);
-
-
-        teams =
-            teamsResult.data || [];
-
-        players =
-            playersResult.data || [];
-
-        matches =
-            matchesResult.data || [];
-
-        matchPlayers =
-            matchPlayersResult.data || [];
-
-        expectedLineups =
-            expectedLineupsResult.data || [];
-
-
+        // عرض المحتوى الأساسي فورًا
         showTeams();
         createRanking();
         showMatches();
+        showPlayers();
+
+        document.getElementById("scorersList").innerHTML =
+            '<div class="loading">جاري حساب الهدافين...</div>';
+
+        document.getElementById("assistsList").innerHTML =
+            '<div class="loading">جاري حساب الأسيستات...</div>';
+
+        // المرحلة 2: تحميل بيانات التشكيلات والإحصائيات بشكل منفصل
+        const playedMatchIds = matches
+            .filter(match => match.played === true)
+            .map(match => Number(match.id));
+
+        const allMatchIds = matches.map(match => Number(match.id));
+
+        const matchPlayersRequest = playedMatchIds.length
+            ? supabaseClient
+                .from("match_players")
+                .select("match_id,player_id,goals,assists")
+                .in("match_id", playedMatchIds)
+            : Promise.resolve({data:[],error:null});
+
+        const expectedLineupsRequest = allMatchIds.length
+            ? supabaseClient
+                .from("expected_lineups")
+                .select("match_id,player_id,x,y")
+                .in("match_id", allMatchIds)
+            : Promise.resolve({data:[],error:null});
+
+        const [
+            matchPlayersResult,
+            expectedLineupsResult
+        ] = await Promise.all([
+            matchPlayersRequest,
+            expectedLineupsRequest
+        ]);
+
+        if(matchPlayersResult.error){
+            console.warn("match_players:", matchPlayersResult.error);
+            matchPlayers = [];
+        }else{
+            matchPlayers = matchPlayersResult.data || [];
+        }
+
+        if(expectedLineupsResult.error){
+            console.warn("expected_lineups:", expectedLineupsResult.error);
+            expectedLineups = [];
+        }else{
+            expectedLineups = expectedLineupsResult.data || [];
+        }
+
+        // الآن فقط نعرض الإحصائيات والتشكيلات المتوقعة
+        showMatches();
         showGoals();
         showAssists();
-        showPlayers();
         showStats();
 
     }
-
     catch(error){
 
         console.error(error);
 
         document.getElementById("teams").innerHTML = `
-        
         <div class="error">
-        
-        ❌ حدث خطأ أثناء الاتصال بقاعدة البيانات.
-        
-        <br><br>
-        
-        ${error.message}
-        
+            ❌ حدث خطأ أثناء تحميل البيانات الأساسية.
+            <br><br>
+            ${escapeHTML(error.message)}
         </div>
-        
         `;
 
     }
@@ -749,6 +764,8 @@ function showTeams(){
 
         ? `
         <img
+        loading="lazy"
+        decoding="async"
         src="${logo}"
         alt="${escapeHTML(team.name)}"
         >
@@ -1344,6 +1361,8 @@ function getPlayerImage(player){
         return `
 
         <img
+        loading="lazy"
+        decoding="async"
         class="rank-photo"
         src="${player.photo}"
         alt="${escapeHTML(player.name)}"
@@ -1719,128 +1738,62 @@ function showAssists(){
 
 function showPlayers(){
 
-    const box =
-        document.getElementById(
-            "playersList"
-        );
+    const html = players.map(player => {
 
-    box.innerHTML = "";
+        const image = player.photo
+            ? `
+                <img
+                loading="lazy"
+                decoding="async"
+                class="player-photo"
+                src="${player.photo}"
+                alt="${escapeHTML(player.name)}"
+                >
+              `
+            : `
+                <div
+                class="player-photo"
+                style="
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:50px;
+                ">
+                👤
+                </div>
+              `;
 
-
-    if(players.length === 0){
-
-        box.innerHTML = `
-        
-        <div class="card">
-        
-        لا يوجد لاعبون حتى الآن.
-        
-        <br><br>
-        
-        اذهب إلى الإدارة لإضافة اللاعبين.
-        
-        </div>
-        
-        `;
-
-        return;
-
-    }
-
-
-    players.forEach(player => {
-
-        let image;
-
-
-        if(player.photo){
-
-            image = `
-
-            <img
-            class="player-photo"
-            src="${player.photo}"
-            alt="${escapeHTML(player.name)}"
-            >
-
-            `;
-
-        }
-
-        else{
-
-            image = `
-
-            <div
-            class="player-photo"
-            style="
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:50px;
-            ">
-
-            👤
-
-            </div>
-
-            `;
-
-        }
-
-
-        box.innerHTML += `
-
+        return `
         <div
         class="card player"
         onclick="openPlayer(${Number(player.id)})"
         >
-
-        ${image}
-
-        <div class="player-name">
-
-        ${escapeHTML(player.name)}
-
+            ${image}
+            <div class="player-name">
+                ${escapeHTML(player.name)}
+            </div>
+            <div class="player-team">
+                ${escapeHTML(player.team || "")}
+            </div>
+            <div class="player-position">
+                ${escapeHTML(
+                    player.position ||
+                    "مركز غير محدد"
+                )}
+            </div>
+            <br>
+            <small>
+                رقم القميص:
+                ${player.number || "—"}
+            </small>
         </div>
-
-        <div class="player-team">
-
-        ${escapeHTML(player.team || "")}
-
-        </div>
-
-        <div class="player-position">
-
-        ${escapeHTML(
-            player.position ||
-            "مركز غير محدد"
-        )}
-
-        </div>
-
-        <br>
-
-        <small>
-
-        رقم القميص:
-
-        ${player.number || "—"}
-
-        </small>
-
-        </div>
-
         `;
 
-    });
+    }).join("");
+
+    box.innerHTML = html;
 
 }
-
-
-/* ==========================================
-   OPEN PLAYER
-========================================== */
 
 function openPlayer(id){
 
