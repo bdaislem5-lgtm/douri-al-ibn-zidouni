@@ -922,7 +922,7 @@ async function loadTeams(){
         await supabaseClient
         .from("teams")
         .select("id,name,logo")
-        .order("id");
+        .limit(200);
 
 
     if(error){
@@ -1281,7 +1281,7 @@ async function loadPlayers(){
         await supabaseClient
         .from("players")
         .select("id,name,team,position,number,photo,goals,assists")
-        .order("id");
+        .limit(500);
 
 
     if(error){
@@ -1822,12 +1822,7 @@ async function loadMatches(){
         await supabaseClient
         .from("matches")
         .select("id,home,away,home_goals,away_goals,round,match_date,match_time,played")
-        .order(
-            "match_date",
-            {
-                ascending:false
-            }
-        );
+        .limit(500);
 
 
     if(error){
