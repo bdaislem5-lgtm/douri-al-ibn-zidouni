@@ -314,179 +314,6 @@ tr:hover{
     text-align:center;
 }
 
-/* ==========================================
-   EXPECTED LINEUP
-========================================== */
-
-.expected-lineup{
-    margin-top:20px;
-    border-top:1px solid #e5e7eb;
-    padding-top:18px;
-}
-
-.expected-lineup-title{
-    text-align:center;
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:15px;
-}
-
-.lineup-teams{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:15px;
-}
-
-.lineup-team{
-    background:#f8fafc;
-    border-radius:12px;
-    padding:12px;
-}
-
-.lineup-team h4{
-    text-align:center;
-    margin-bottom:10px;
-    color:#2563eb;
-}
-
-.lineup-player{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    padding:7px;
-    background:white;
-    border-radius:8px;
-    margin-bottom:6px;
-    font-size:14px;
-}
-
-.lineup-player img{
-    width:35px;
-    height:35px;
-    border-radius:50%;
-    object-fit:cover;
-}
-
-.lineup-position{
-    color:#6b7280;
-    font-size:12px;
-}
-
-.no-lineup{
-    text-align:center;
-    color:#6b7280;
-    padding:10px;
-}
-
-.lineup-pitch{
-    position:relative;
-    width:100%;
-    max-width:700px;
-    aspect-ratio:1.5 / 1;
-    margin:20px auto;
-    background:
-        repeating-linear-gradient(
-            90deg,
-            #15803d 0px,
-            #15803d 70px,
-            #166534 70px,
-            #166534 140px
-        );
-    border:4px solid white;
-    border-radius:10px;
-    overflow:hidden;
-}
-
-.lineup-pitch::before{
-    content:"";
-    position:absolute;
-    left:0;
-    right:0;
-    top:50%;
-    height:3px;
-    background:white;
-    transform:translateY(-50%);
-}
-
-.lineup-pitch::after{
-    content:"";
-    position:absolute;
-    width:130px;
-    height:130px;
-    border:3px solid white;
-    border-radius:50%;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-}
-
-.pitch-player{
-    position:absolute;
-    transform:translate(-50%,-50%);
-    width:75px;
-    text-align:center;
-    z-index:5;
-}
-
-.pitch-player-photo{
-    width:48px;
-    height:48px;
-    border-radius:50%;
-    border:3px solid white;
-    object-fit:cover;
-    background:#e5e7eb;
-    display:block;
-    margin:auto;
-}
-
-.pitch-player-name{
-    margin-top:3px;
-    background:rgba(0,0,0,.75);
-    color:white;
-    border-radius:5px;
-    padding:3px 5px;
-    font-size:11px;
-    font-weight:bold;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.pitch-player-position{
-    color:white;
-    font-size:10px;
-    margin-top:2px;
-}
-
-@media(max-width:600px){
-
-    .lineup-teams{
-        grid-template-columns:1fr;
-    }
-
-    .lineup-pitch{
-        aspect-ratio:1.5 / 1;
-    }
-
-    .pitch-player{
-        width:60px;
-    }
-
-    .pitch-player-photo{
-        width:40px;
-        height:40px;
-    }
-
-    .pitch-player-name{
-        font-size:9px;
-    }
-
-}
-
-/* ==========================================
-   FOOTER
-========================================== */
-
 footer{
     background:#111827;
     color:white;
@@ -494,6 +321,55 @@ footer{
     padding:30px;
     margin-top:60px;
 }
+
+
+/* ==========================================
+   EXPECTED LINEUP PREVIEW — SAME PITCH AS ADMIN/MATCH
+========================================== */
+.expected-preview{
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px solid #e5e7eb;
+}
+.expected-preview-title{
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:8px;
+    color:#111827;
+}
+.expected-pitch{
+    position:relative;
+    width:100%;
+    max-width:850px;
+    aspect-ratio:1.5 / 1;
+    margin:12px auto 0;
+    background:repeating-linear-gradient(90deg,#16803a 0 55px,#1b8f43 55px 110px);
+    border:4px solid #fff;
+    border-radius:8px;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,.18);
+}
+.expected-pitch .midline{
+    position:absolute;left:50%;top:0;bottom:0;width:3px;background:#fff;transform:translateX(-50%);
+}
+.expected-pitch .circle{
+    position:absolute;width:120px;height:120px;border:3px solid #fff;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);
+}
+.expected-pitch .dot{
+    position:absolute;width:8px;height:8px;background:#fff;border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%);
+}
+.expected-pitch .penalty{position:absolute;top:50%;width:23%;height:34%;border:3px solid #fff;transform:translateY(-50%)}
+.expected-pitch .penalty.left{left:-2px}.expected-pitch .penalty.right{right:-2px}
+.expected-pitch .goalarea{position:absolute;top:50%;width:10%;height:16%;border:3px solid #fff;transform:translateY(-50%)}
+.expected-pitch .goalarea.left{left:-2px}.expected-pitch .goalarea.right{right:-2px}
+.expected-pitch .goal{position:absolute;top:50%;width:3%;height:12%;border:3px solid #fff;transform:translateY(-50%)}
+.expected-pitch .goal.left{left:-1px}.expected-pitch .goal.right{right:-1px}
+.expected-pitch-player{
+    position:absolute;width:70px;text-align:center;transform:translate(-50%,-50%);z-index:5;
+}
+.expected-pitch-player img{width:48px;height:48px;object-fit:cover;border-radius:50%;border:3px solid #fff;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.expected-pitch-player .name{background:rgba(0,0,0,.82);color:#fff;border-radius:5px;padding:2px 4px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.expected-pitch-player .num{position:absolute;top:-3px;right:4px;background:#111827;color:#fff;border-radius:50%;width:19px;height:19px;line-height:19px;font-size:9px;font-weight:bold}
 
 @media(max-width:700px){
 
@@ -522,7 +398,6 @@ footer{
     .score{
         padding:5px;
     }
-
 }
 
 </style>
@@ -553,7 +428,6 @@ footer{
 
 </header>
 
-
 <section class="hero" id="home">
 
 <h1>
@@ -566,13 +440,7 @@ footer{
 
 </section>
 
-
 <div class="container">
-
-
-<!-- ==========================================
-     TEAMS
-========================================== -->
 
 <section class="section">
 
@@ -581,19 +449,10 @@ footer{
 </div>
 
 <div class="grid" id="teams">
-
-<div class="loading">
-جاري تحميل الفرق...
-</div>
-
+<div class="loading">جاري تحميل الفرق...</div>
 </div>
 
 </section>
-
-
-<!-- ==========================================
-     RANKING
-========================================== -->
 
 <section class="section" id="ranking">
 
@@ -633,11 +492,6 @@ footer{
 
 </section>
 
-
-<!-- ==========================================
-     MATCHES
-========================================== -->
-
 <section class="section" id="matches">
 
 <div class="section-title">
@@ -645,19 +499,10 @@ footer{
 </div>
 
 <div class="grid" id="matchesList">
-
-<div class="loading">
-جاري تحميل المباريات...
-</div>
-
+<div class="loading">جاري تحميل المباريات...</div>
 </div>
 
 </section>
-
-
-<!-- ==========================================
-     SCORERS
-========================================== -->
 
 <section class="section" id="scorers">
 
@@ -666,19 +511,10 @@ footer{
 </div>
 
 <div class="grid" id="scorersList">
-
-<div class="loading">
-جاري تحميل الهدافين...
-</div>
-
+<div class="loading">جاري تحميل الهدافين...</div>
 </div>
 
 </section>
-
-
-<!-- ==========================================
-     ASSISTS
-========================================== -->
 
 <section class="section" id="assists">
 
@@ -687,19 +523,10 @@ footer{
 </div>
 
 <div class="grid" id="assistsList">
-
-<div class="loading">
-جاري تحميل الأسيستات...
-</div>
-
+<div class="loading">جاري تحميل الأسيستات...</div>
 </div>
 
 </section>
-
-
-<!-- ==========================================
-     PLAYERS
-========================================== -->
 
 <section class="section" id="players">
 
@@ -708,19 +535,10 @@ footer{
 </div>
 
 <div class="grid" id="playersList">
-
-<div class="loading">
-جاري تحميل اللاعبين...
-</div>
-
+<div class="loading">جاري تحميل اللاعبين...</div>
 </div>
 
 </section>
-
-
-<!-- ==========================================
-     STATS
-========================================== -->
 
 <section class="section">
 
@@ -732,14 +550,11 @@ footer{
 
 </section>
 
-
 </div>
-
 
 <footer>
 دوري الابن الزيدوني © 2026
 </footer>
-
 
 <script>
 
@@ -830,7 +645,7 @@ async function loadData(){
             throw matchPlayersResult.error;
 
         if(expectedLineupsResult.error)
-            throw expectedLineupsResult.error;
+            console.warn("expected_lineups:", expectedLineupsResult.error);
 
 
         teams =
@@ -871,7 +686,7 @@ async function loadData(){
         
         <br><br>
         
-        ${escapeHTML(error.message)}
+        ${error.message}
         
         </div>
         
@@ -889,9 +704,7 @@ async function loadData(){
 function getTeamLogo(team){
 
     const found =
-        teams.find(t =>
-            String(t.name) === String(team)
-        );
+        teams.find(t => t.name === team);
 
     return found?.logo || null;
 
@@ -984,7 +797,7 @@ function showTeams(){
 
 function escapeAttribute(text){
 
-    return String(text ?? "")
+    return String(text)
         .replace(/\\/g,"\\\\")
         .replace(/'/g,"\\'");
 
@@ -1042,16 +855,17 @@ function createRanking(){
     });
 
 
+    /*
+       IMPORTANT:
+       Only completed matches are counted.
+       Scheduled matches with played=false
+       do NOT affect the table.
+    */
+
     matches.forEach(match => {
 
-        if(
-            match.played !== true &&
-            match.played !== "true" &&
-            match.played !== 1 &&
-            match.played !== "1"
-        )
+        if(match.played !== true)
             return;
-
 
         if(!data[match.home])
             return;
@@ -1211,184 +1025,6 @@ function createRanking(){
 
 
 /* ==========================================
-   EXPECTED LINEUP
-========================================== */
-
-function getExpectedLineupHTML(match){
-
-    const rows =
-        expectedLineups.filter(row =>
-            Number(row.match_id) === Number(match.id)
-        );
-
-
-    if(rows.length === 0){
-
-        return `
-            <div class="expected-lineup">
-
-                <div class="expected-lineup-title">
-                    🎯 التشكيلة المتوقعة
-                </div>
-
-                <div class="no-lineup">
-                    لا توجد تشكيلة متوقعة محفوظة
-                </div>
-
-            </div>
-        `;
-
-    }
-
-
-    const homeRows =
-        rows.filter(row =>
-            String(row.team) === String(match.home)
-        );
-
-
-    const awayRows =
-        rows.filter(row =>
-            String(row.team) === String(match.away)
-        );
-
-
-    function renderTeam(title,teamRows){
-
-        return `
-            <div class="lineup-team">
-
-                <h4>
-                    ${escapeHTML(title)}
-                </h4>
-
-                ${
-                    teamRows.length === 0
-
-                    ? `
-                        <div class="no-lineup">
-                            لا توجد لاعبين
-                        </div>
-                      `
-
-                    : teamRows.map(row => {
-
-                        const player =
-                            players.find(p =>
-                                Number(p.id) ===
-                                Number(row.player_id)
-                            );
-
-
-                        if(!player)
-                            return "";
-
-
-                        let photoHTML;
-
-
-                        if(player.photo){
-
-                            photoHTML = `
-                                <img
-                                    src="${player.photo}"
-                                    alt="${escapeHTML(player.name)}"
-                                >
-                            `;
-
-                        }
-
-                        else{
-
-                            photoHTML = `
-                                <div
-                                    style="
-                                    width:35px;
-                                    height:35px;
-                                    border-radius:50%;
-                                    background:#e5e7eb;
-                                    display:flex;
-                                    align-items:center;
-                                    justify-content:center;
-                                    "
-                                >
-                                    👤
-                                </div>
-                            `;
-
-                        }
-
-
-                        return `
-                            <div class="lineup-player">
-
-                                ${photoHTML}
-
-                                <div style="flex:1">
-
-                                    <strong>
-                                        ${escapeHTML(player.name)}
-                                    </strong>
-
-                                    <div class="lineup-position">
-
-                                        ${escapeHTML(
-                                            row.position ||
-                                            player.position ||
-                                            "مركز غير محدد"
-                                        )}
-
-                                        ${
-                                            player.number
-                                            ? " • #" +
-                                              escapeHTML(player.number)
-                                            : ""
-                                        }
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-                        `;
-
-                    }).join("")
-                }
-
-            </div>
-        `;
-
-    }
-
-
-    return `
-        <div class="expected-lineup">
-
-            <div class="expected-lineup-title">
-                🎯 التشكيلة المتوقعة
-            </div>
-
-            <div class="lineup-teams">
-
-                ${renderTeam(
-                    match.home,
-                    homeRows
-                )}
-
-                ${renderTeam(
-                    match.away,
-                    awayRows
-                )}
-
-            </div>
-
-        </div>
-    `;
-
-}
-
-
-/* ==========================================
    SHOW MATCHES
 ========================================== */
 
@@ -1418,6 +1054,12 @@ function showMatches(){
 
     }
 
+
+    /*
+       Put newest/nearest matches first.
+       Played matches are shown by date,
+       while upcoming matches stay visible.
+    */
 
     const sortedMatches =
         [...matches].sort((a,b) => {
@@ -1457,20 +1099,12 @@ function showMatches(){
             : "";
 
 
-        const homeLogo =
-            getTeamLogo(match.home);
-
-
-        const awayLogo =
-            getTeamLogo(match.away);
-
-
         const homeHTML =
-            homeLogo
+            getTeamLogo(match.home)
 
             ? `
                 <img
-                src="${homeLogo}"
+                src="${getTeamLogo(match.home)}"
                 style="
                 width:55px;
                 height:55px;
@@ -1487,11 +1121,11 @@ function showMatches(){
 
 
         const awayHTML =
-            awayLogo
+            getTeamLogo(match.away)
 
             ? `
                 <img
-                src="${awayLogo}"
+                src="${getTeamLogo(match.away)}"
                 style="
                 width:55px;
                 height:55px;
@@ -1510,14 +1144,7 @@ function showMatches(){
         let centerHTML;
 
 
-        const isPlayed =
-            match.played === true ||
-            match.played === "true" ||
-            match.played === 1 ||
-            match.played === "1";
-
-
-        if(isPlayed){
+        if(match.played === true){
 
             centerHTML = `
 
@@ -1592,13 +1219,11 @@ function showMatches(){
 
             <div
             class="card"
+            style="cursor:pointer"
+            onclick="openMatch(${Number(match.id)})"
             >
 
-                <div
-                class="match"
-                style="cursor:pointer"
-                onclick="openMatch(${Number(match.id)})"
-                >
+                <div class="match">
 
                     <div class="team">
 
@@ -1622,8 +1247,7 @@ function showMatches(){
 
                 </div>
 
-
-                ${getExpectedLineupHTML(match)}
+                ${renderExpectedPreview(match.id)}
 
             </div>
 
@@ -1633,6 +1257,42 @@ function showMatches(){
 
 }
 
+
+
+function renderExpectedPreview(matchId){
+    const rows = expectedLineups.filter(r => Number(r.match_id) === Number(matchId));
+    if(!rows.length) return '';
+
+    const playersById = new Map(players.map(p => [String(p.id), p]));
+    const playerHTML = rows.map(row => {
+        const p = playersById.get(String(row.player_id));
+        if(!p) return '';
+        let x = Number(row.x), y = Number(row.y);
+        if(!Number.isFinite(x) || x < 1 || x > 99) x = 50;
+        if(!Number.isFinite(y) || y < 1 || y > 99) y = 50;
+        const photo = p.photo || '';
+        return `
+            <div class="expected-pitch-player" style="left:${x}%;top:${y}%">
+                ${p.number ? `<div class="num">${escapeHTML(p.number)}</div>` : ''}
+                ${photo ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(p.name)}">` : '<div style="width:48px;height:48px;border-radius:50%;border:3px solid #fff;background:#e5e7eb;margin:auto;display:flex;align-items:center;justify-content:center">👤</div>'}
+                <div class="name">${escapeHTML(p.name)}</div>
+            </div>`;
+    }).join('');
+
+    return `
+        <div class="expected-preview">
+            <div class="expected-preview-title">🎯 التشكيلة المتوقعة</div>
+            <div class="expected-pitch">
+                <div class="midline"></div>
+                <div class="circle"></div>
+                <div class="dot"></div>
+                <div class="penalty left"></div><div class="penalty right"></div>
+                <div class="goalarea left"></div><div class="goalarea right"></div>
+                <div class="goal left"></div><div class="goal right"></div>
+                ${playerHTML}
+            </div>
+        </div>`;
+}
 
 function openMatch(id){
 
@@ -1647,7 +1307,6 @@ function formatDate(date){
 
     if(!date)
         return "";
-
 
     const parts =
         String(date).split("-");
@@ -1668,7 +1327,6 @@ function formatTime(time){
 
     if(!time)
         return "";
-
 
     return String(time).slice(0,5);
 
@@ -1737,15 +1395,17 @@ function getPlayerStats(){
     });
 
 
+    /*
+       Only statistics from completed matches
+       are counted.
+    */
+
     const playedMatchIds =
         new Set(
 
             matches
             .filter(match =>
-                match.played === true ||
-                match.played === "true" ||
-                match.played === 1 ||
-                match.played === "1"
+                match.played === true
             )
             .map(match =>
                 Number(match.id)
@@ -2206,10 +1866,7 @@ function showStats(){
     const playedMatches =
         matches.filter(
             match =>
-                match.played === true ||
-                match.played === "true" ||
-                match.played === 1 ||
-                match.played === "1"
+                match.played === true
         );
 
 
@@ -2252,12 +1909,8 @@ function showStats(){
 
     const scheduledMatches =
         matches.filter(
-            match => !(
-                match.played === true ||
-                match.played === "true" ||
-                match.played === 1 ||
-                match.played === "1"
-            )
+            match =>
+                match.played !== true
         ).length;
 
 
