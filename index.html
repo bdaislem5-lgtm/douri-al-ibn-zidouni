@@ -1707,6 +1707,10 @@ function showAssists(){
 
 function showPlayers(){
 
+    const box = document.getElementById("playersList");
+
+    if(!box) return;
+
     const html = players.map(player => {
 
         const image = player.photo
