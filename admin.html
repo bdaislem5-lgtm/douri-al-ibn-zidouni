@@ -328,54 +328,39 @@ button.logout{
 
 .pitch-penalty{
     position:absolute;
-    left:50%;
-    width:34%;
-    height:23%;
+    top:50%;
+    width:23%;
+    height:34%;
     border:3px solid white;
-    transform:translateX(-50%);
+    transform:translateY(-50%);
 }
 
-.pitch-penalty.top{
-    top:-2px;
-}
-
-.pitch-penalty.bottom{
-    bottom:-2px;
-}
+.pitch-penalty.left{left:-2px}
+.pitch-penalty.right{right:-2px}
 
 .pitch-goal-area{
     position:absolute;
-    left:50%;
-    width:16%;
-    height:10%;
+    top:50%;
+    width:10%;
+    height:16%;
     border:3px solid white;
-    transform:translateX(-50%);
+    transform:translateY(-50%);
 }
 
-.pitch-goal-area.top{
-    top:-2px;
-}
-
-.pitch-goal-area.bottom{
-    bottom:-2px;
-}
+.pitch-goal-area.left{left:-2px}
+.pitch-goal-area.right{right:-2px}
 
 .pitch-goal{
     position:absolute;
-    left:50%;
-    width:12%;
-    height:3%;
+    top:50%;
+    width:3%;
+    height:12%;
     border:3px solid white;
-    transform:translateX(-50%);
+    transform:translateY(-50%);
 }
 
-.pitch-goal.top{
-    top:0;
-}
-
-.pitch-goal.bottom{
-    bottom:0;
-}
+.pitch-goal.left{left:-1px}
+.pitch-goal.right{right:-1px}
 
 .pitch-player{
     position:absolute;
@@ -3757,17 +3742,12 @@ function pitchHTML(){
 
         <div class="pitch-center-dot"></div>
 
-        <div class="pitch-penalty top"></div>
-
-        <div class="pitch-penalty bottom"></div>
-
-        <div class="pitch-goal-area top"></div>
-
-        <div class="pitch-goal-area bottom"></div>
-
-        <div class="pitch-goal top"></div>
-
-        <div class="pitch-goal bottom"></div>
+        <div class="pitch-penalty left"></div>
+        <div class="pitch-penalty right"></div>
+        <div class="pitch-goal-area left"></div>
+        <div class="pitch-goal-area right"></div>
+        <div class="pitch-goal left"></div>
+        <div class="pitch-goal right"></div>
 
     `;
 
