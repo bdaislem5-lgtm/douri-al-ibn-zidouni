@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,12 +10,14 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
     margin:0;
     font-family:Arial,Tahoma,sans-serif;
     background:#090d18;
     color:#f8fafc;
 }
+
 button{font-family:inherit}
 a{text-decoration:none;color:inherit}
 
@@ -30,6 +33,7 @@ a{text-decoration:none;color:inherit}
     border-bottom:1px solid #20283b;
     padding:22px 0 0;
 }
+
 .competition{
     width:max-content;
     max-width:90%;
@@ -41,6 +45,7 @@ a{text-decoration:none;color:inherit}
     font-weight:bold;
     font-size:17px;
 }
+
 .teams-head{
     display:grid;
     grid-template-columns:1fr 170px 1fr;
@@ -48,28 +53,32 @@ a{text-decoration:none;color:inherit}
     gap:18px;
     text-align:center;
 }
+
 .team-head{
     display:flex;
     flex-direction:column;
     align-items:center;
     gap:8px;
 }
+
 .team-head img{
     width:90px;
     height:90px;
     object-fit:contain;
 }
+
 .team-name{
     font-size:22px;
     font-weight:800;
 }
-.center-info{
-    text-align:center;
-}
+
+.center-info{text-align:center}
+
 .match-time{
     font-size:30px;
     font-weight:900;
 }
+
 .match-status{
     display:inline-block;
     margin-top:8px;
@@ -79,10 +88,12 @@ a{text-decoration:none;color:inherit}
     color:#e5e7eb;
     font-weight:bold;
 }
+
 .score{
     font-size:34px;
     font-weight:900;
 }
+
 .match-date{
     margin-top:7px;
     color:#9ca3af;
@@ -97,6 +108,7 @@ a{text-decoration:none;color:inherit}
     margin-top:28px;
     overflow-x:auto;
 }
+
 .tab{
     border:0;
     background:transparent;
@@ -107,6 +119,7 @@ a{text-decoration:none;color:inherit}
     border-bottom:3px solid transparent;
     white-space:nowrap;
 }
+
 .tab.active{
     color:#2dd4bf;
     border-bottom-color:#2dd4bf;
@@ -120,15 +133,18 @@ a{text-decoration:none;color:inherit}
     padding:18px;
     margin-top:18px;
 }
+
 .card-title{
     margin:0 0 16px;
     color:#e5e7eb;
 }
+
 .info-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:12px;
 }
+
 .info{
     background:#171d2c;
     border-radius:14px;
@@ -137,33 +153,37 @@ a{text-decoration:none;color:inherit}
     justify-content:space-between;
     gap:12px;
 }
+
 .info span:first-child{color:#9ca3af}
 .info strong{color:#f8fafc;text-align:left}
 
 .hidden{display:none}
+
 .loading,.error{
     text-align:center;
     padding:30px;
     color:#9ca3af;
 }
+
 .error{color:#fca5a5}
 
 /* PITCH */
-.pitch-wrap{
-    margin-top:18px;
-}
+.pitch-wrap{margin-top:18px}
+
 .pitch-title{
     text-align:center;
     font-size:20px;
     font-weight:bold;
     margin-bottom:8px;
 }
+
 .pitch-help{
     text-align:center;
     color:#9ca3af;
     font-size:13px;
     margin-bottom:14px;
 }
+
 .pitch{
     position:relative;
     width:100%;
@@ -195,6 +215,7 @@ a{text-decoration:none;color:inherit}
     transform:translateX(-50%);
     opacity:.95;
 }
+
 .pitch-center-circle{
     position:absolute;
     left:50%;
@@ -205,6 +226,7 @@ a{text-decoration:none;color:inherit}
     border-radius:50%;
     transform:translate(-50%,-50%);
 }
+
 .pitch-center-dot{
     position:absolute;
     left:50%;
@@ -215,6 +237,7 @@ a{text-decoration:none;color:inherit}
     background:white;
     transform:translate(-50%,-50%);
 }
+
 .pitch-penalty{
     position:absolute;
     top:50%;
@@ -223,6 +246,7 @@ a{text-decoration:none;color:inherit}
     border:2px solid white;
     transform:translateY(-50%);
 }
+
 .pitch-penalty.left{left:-2px}
 .pitch-penalty.right{right:-2px}
 
@@ -234,6 +258,7 @@ a{text-decoration:none;color:inherit}
     border:2px solid white;
     transform:translateY(-50%);
 }
+
 .pitch-goal-area.left{left:-2px}
 .pitch-goal-area.right{right:-2px}
 
@@ -245,6 +270,7 @@ a{text-decoration:none;color:inherit}
     border:3px solid white;
     transform:translateY(-50%);
 }
+
 .pitch-goal.left{left:-1px}
 .pitch-goal.right{right:-1px}
 
@@ -255,6 +281,7 @@ a{text-decoration:none;color:inherit}
     transform:translate(-50%,-50%);
     z-index:10;
 }
+
 .pitch-player img{
     width:55px;
     height:55px;
@@ -264,6 +291,7 @@ a{text-decoration:none;color:inherit}
     background:#fff;
     box-shadow:0 3px 10px rgba(0,0,0,.4);
 }
+
 .pitch-player-name{
     background:rgba(0,0,0,.82);
     color:white;
@@ -275,6 +303,23 @@ a{text-decoration:none;color:inherit}
     overflow:hidden;
     text-overflow:ellipsis;
 }
+
+/* PLAYER RATING /10 */
+.pitch-player-rating{
+    display:block;
+    width:max-content;
+    max-width:100%;
+    margin:4px auto 0;
+    padding:3px 7px;
+    border-radius:8px;
+    background:#facc15;
+    color:#111827;
+    font-size:11px;
+    font-weight:900;
+    white-space:nowrap;
+    box-shadow:0 2px 5px rgba(0,0,0,.2);
+}
+
 .pitch-player-number{
     position:absolute;
     top:-4px;
@@ -288,6 +333,7 @@ a{text-decoration:none;color:inherit}
     font-size:11px;
     font-weight:bold;
 }
+
 .pitch-player-position{
     font-size:10px;
     color:white;
@@ -303,9 +349,18 @@ a{text-decoration:none;color:inherit}
     color:#cbd5e1;
     margin-top:12px;
 }
-.legend span{display:flex;align-items:center;gap:7px}
+
+.legend span{
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
 .dot{
-    width:10px;height:10px;border-radius:50%;display:inline-block
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    display:inline-block;
 }
 
 /* EMPTY */
@@ -315,25 +370,63 @@ a{text-decoration:none;color:inherit}
     color:#9ca3af;
 }
 
+/* MOBILE */
 @media(max-width:700px){
-    .container{width:96%;padding-top:12px}
+    .container{
+        width:96%;
+        padding-top:12px;
+    }
+
     .teams-head{
         grid-template-columns:1fr 110px 1fr;
         gap:5px;
     }
-    .team-head img{width:65px;height:65px}
+
+    .team-head img{
+        width:65px;
+        height:65px;
+    }
+
     .team-name{font-size:16px}
     .match-time{font-size:23px}
     .score{font-size:27px}
-    .competition{font-size:14px;padding:9px 16px}
-    .tab{padding:12px 14px;font-size:14px}
+
+    .competition{
+        font-size:14px;
+        padding:9px 16px;
+    }
+
+    .tab{
+        padding:12px 14px;
+        font-size:14px;
+    }
+
     .info-grid{grid-template-columns:1fr}
     .info{font-size:14px}
+
     .pitch-player{width:62px}
-    .pitch-player img{width:43px;height:43px}
+
+    .pitch-player img{
+        width:43px;
+        height:43px;
+    }
+
     .pitch-player-name{font-size:9px}
+
+    .pitch-player-rating{
+        font-size:9px;
+        padding:2px 4px;
+        margin-top:3px;
+    }
+
     .pitch-player-position{font-size:8px}
-    .pitch-player-number{width:18px;height:18px;line-height:18px;font-size:9px}
+
+    .pitch-player-number{
+        width:18px;
+        height:18px;
+        line-height:18px;
+        font-size:9px;
+    }
 }
 </style>
 </head>
@@ -378,15 +471,47 @@ a{text-decoration:none;color:inherit}
     <section id="details" class="tab-content">
         <div class="card">
             <h2 class="card-title">معلومات اللقاء</h2>
+
             <div class="info-grid">
-                <div class="info"><span>البطولة</span><strong>الدوري الجزائري الابن الزيدوني</strong></div>
-                <div class="info"><span>الجولة</span><strong id="round">-</strong></div>
-                <div class="info"><span>ملعب المباراة</span><strong id="stadium">-</strong></div>
-                <div class="info"><span>القناة الناقلة</span><strong id="channel">-</strong></div>
-                <div class="info"><span>الحكم</span><strong id="referee">-</strong></div>
-                <div class="info"><span>وقت المباراة</span><strong id="timeInfo">-</strong></div>
-                <div class="info"><span>تاريخ المباراة</span><strong id="dateInfo">-</strong></div>
-                <div class="info"><span>الحالة</span><strong id="playedInfo">-</strong></div>
+                <div class="info">
+                    <span>البطولة</span>
+                    <strong>الدوري الجزائري الابن الزيدوني</strong>
+                </div>
+
+                <div class="info">
+                    <span>الجولة</span>
+                    <strong id="round">-</strong>
+                </div>
+
+                <div class="info">
+                    <span>ملعب المباراة</span>
+                    <strong id="stadium">-</strong>
+                </div>
+
+                <div class="info">
+                    <span>القناة الناقلة</span>
+                    <strong id="channel">-</strong>
+                </div>
+
+                <div class="info">
+                    <span>الحكم</span>
+                    <strong id="referee">-</strong>
+                </div>
+
+                <div class="info">
+                    <span>وقت المباراة</span>
+                    <strong id="timeInfo">-</strong>
+                </div>
+
+                <div class="info">
+                    <span>تاريخ المباراة</span>
+                    <strong id="dateInfo">-</strong>
+                </div>
+
+                <div class="info">
+                    <span>الحالة</span>
+                    <strong id="playedInfo">-</strong>
+                </div>
             </div>
         </div>
     </section>
@@ -394,14 +519,18 @@ a{text-decoration:none;color:inherit}
     <section id="expected" class="tab-content hidden">
         <div class="card">
             <h2 class="card-title">🎯 التشكيلة المتوقعة</h2>
-            <div id="expectedBox" class="loading">جاري تحميل التشكيلة...</div>
+            <div id="expectedBox" class="loading">
+                جاري تحميل التشكيلة...
+            </div>
         </div>
     </section>
 
     <section id="actual" class="tab-content hidden">
         <div class="card">
             <h2 class="card-title">⚽ تشكيلة المباراة الفعلية</h2>
-            <div id="actualBox" class="loading">جاري تحميل التشكيلة...</div>
+            <div id="actualBox" class="loading">
+                جاري تحميل التشكيلة...
+            </div>
         </div>
     </section>
 
@@ -410,7 +539,11 @@ a{text-decoration:none;color:inherit}
 <script>
 const SUPABASE_URL = "https://dtxexuaverridpntgwkj.supabase.co";
 const SUPABASE_KEY = "sb_publishable_7lxTHAsOFz2L2jsq6pb4Mw_9a2xutP3";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 const params = new URLSearchParams(location.search);
 const matchId = Number(params.get("id"));
@@ -419,9 +552,14 @@ let match = null;
 let players = [];
 let teams = [];
 
-const FALLBACK_LOGO = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="20" fill="#1f2937"/><text x="50" y="58" text-anchor="middle" font-size="42">⚽</text></svg>'
-);
+const FALLBACK_LOGO =
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">' +
+        '<rect width="100" height="100" rx="20" fill="#1f2937"/>' +
+        '<text x="50" y="58" text-anchor="middle" font-size="42">⚽</text>' +
+        '</svg>'
+    );
 
 function escapeHTML(value){
     return String(value ?? "")
@@ -434,34 +572,52 @@ function escapeHTML(value){
 
 function getTeamName(team){
     if(!team) return "";
+
     if(typeof team === "string") return team;
+
     return team.name || team.team_name || "";
 }
 
 function getTeamLogo(team){
     if(!team) return FALLBACK_LOGO;
-    return team.logo || team.logo_url || team.image || team.photo || FALLBACK_LOGO;
+
+    return team.logo ||
+           team.logo_url ||
+           team.image ||
+           team.photo ||
+           FALLBACK_LOGO;
 }
 
 function getPlayer(id){
-    return players.find(p => String(p.id) === String(id));
+    return players.find(
+        p => String(p.id) === String(id)
+    );
 }
 
 function formatDate(date){
     if(!date) return "-";
+
     const s = String(date);
     const parts = s.slice(0,10).split("-");
-    if(parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+    if(parts.length === 3){
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+
     return s;
 }
 
 function formatTime(time){
     if(!time) return "-";
+
     return String(time).slice(0,5);
 }
 
 function normalizePlayed(value){
-    return value === true || value === "true" || value === 1 || value === "1";
+    return value === true ||
+           value === "true" ||
+           value === 1 ||
+           value === "1";
 }
 
 function positionIcon(position){
@@ -474,8 +630,9 @@ function positionIcon(position){
 }
 
 async function loadMatch(){
-    if(!matchId){
-        document.body.innerHTML = '<div class="loading">معرّف المباراة غير موجود.</div>';
+    if(!matchId || !Number.isFinite(matchId)){
+        document.body.innerHTML =
+            '<div class="loading">معرّف المباراة غير موجود.</div>';
         return;
     }
 
@@ -487,7 +644,10 @@ async function loadMatch(){
 
     if(error || !data){
         console.error("match:", error);
-        document.body.innerHTML = '<div class="error">تعذر تحميل المباراة.</div>';
+
+        document.body.innerHTML =
+            '<div class="error">تعذر تحميل المباراة.</div>';
+
         return;
     }
 
@@ -501,18 +661,28 @@ async function loadMatch(){
         supabaseClient.from("teams").select("*")
     ]);
 
+    if(playersResult.error){
+        console.error("players:", playersResult.error);
+    }
+
+    if(teamsResult.error){
+        console.error("teams:", teamsResult.error);
+    }
+
     players = playersResult.data || [];
     teams = teamsResult.data || [];
 
     renderHeader();
     renderDetails();
+
     await loadExpected();
     await loadActual();
 }
 
 function findTeam(name){
     return teams.find(t =>
-        String(t.name || t.team_name || "").trim() === String(name || "").trim()
+        String(t.name || t.team_name || "").trim() ===
+        String(name || "").trim()
     );
 }
 
@@ -520,84 +690,156 @@ function renderHeader(){
     const homeTeam = findTeam(match.home);
     const awayTeam = findTeam(match.away);
 
-    document.getElementById("homeName").textContent = match.home || "-";
-    document.getElementById("awayName").textContent = match.away || "-";
+    document.getElementById("homeName").textContent =
+        match.home || "-";
+
+    document.getElementById("awayName").textContent =
+        match.away || "-";
 
     const homeLogo = document.getElementById("homeLogo");
     const awayLogo = document.getElementById("awayLogo");
 
     homeLogo.src = getTeamLogo(homeTeam);
     awayLogo.src = getTeamLogo(awayTeam);
-    homeLogo.onerror = () => homeLogo.src = FALLBACK_LOGO;
-    awayLogo.onerror = () => awayLogo.src = FALLBACK_LOGO;
+
+    homeLogo.onerror = () => {
+        homeLogo.src = FALLBACK_LOGO;
+    };
+
+    awayLogo.onerror = () => {
+        awayLogo.src = FALLBACK_LOGO;
+    };
 
     const played = normalizePlayed(match.played);
 
     if(played){
         document.getElementById("scoreOrTime").textContent =
             `${Number(match.home_goals ?? 0)} - ${Number(match.away_goals ?? 0)}`;
+
         document.getElementById("status").textContent = "انتهت";
     }else{
         document.getElementById("scoreOrTime").textContent =
             formatTime(match.time);
+
         document.getElementById("status").textContent = "لم تبدأ";
     }
 
-    document.getElementById("matchDate").textContent = formatDate(match.date);
+    document.getElementById("matchDate").textContent =
+        formatDate(match.date);
 }
 
 function renderDetails(){
-    document.getElementById("round").textContent = match.round || "-";
+    document.getElementById("round").textContent =
+        match.round || "-";
+
     document.getElementById("stadium").textContent =
         match.stadium || match.venue || "-";
+
     document.getElementById("channel").textContent =
         match.channel || match.broadcast || "-";
+
     document.getElementById("referee").textContent =
         match.referee || match.official || "-";
-    document.getElementById("timeInfo").textContent = formatTime(match.time);
-    document.getElementById("dateInfo").textContent = formatDate(match.date);
+
+    document.getElementById("timeInfo").textContent =
+        formatTime(match.time);
+
+    document.getElementById("dateInfo").textContent =
+        formatDate(match.date);
+
     document.getElementById("playedInfo").textContent =
-        normalizePlayed(match.played) ? "انتهت المباراة" : "لم تبدأ بعد";
+        normalizePlayed(match.played)
+            ? "انتهت المباراة"
+            : "لم تبدأ بعد";
 }
 
+/* BUILD PITCH AND DISPLAY PLAYER RATINGS */
 function buildPitch(rows){
     if(!rows || !rows.length){
         return '<div class="empty">لا توجد تشكيلة محفوظة لهذه المباراة.</div>';
     }
 
-    const html = rows
-        .map(row => {
-            const p = getPlayer(row.player_id);
-            if(!p) return "";
+    const html = rows.map(row => {
+        const p = getPlayer(row.player_id);
 
-            let x = Number(row.x);
-            let y = Number(row.y);
+        if(!p) return "";
 
-            if(!Number.isFinite(x) || x < 1 || x > 99) x = 50;
-            if(!Number.isFinite(y) || y < 1 || y > 99) y = 50;
+        let x = Number(row.x);
+        let y = Number(row.y);
 
-            const photo = p.photo || p.photo_url || FALLBACK_LOGO;
-            const position = row.position || "";
+        if(!Number.isFinite(x) || x < 1 || x > 99){
+            x = 50;
+        }
 
-            return `
-                <div class="pitch-player"
-                     style="left:${x}%;top:${y}%">
-                    <div class="pitch-player-number">${escapeHTML(p.number ?? "")}</div>
-                    <img src="${escapeHTML(photo)}" alt="">
-                    <div class="pitch-player-name">${escapeHTML(p.name || "لاعب")}</div>
-                    <div class="pitch-player-position">
-                        ${escapeHTML(position)} ${positionIcon(position)}
-                    </div>
+        if(!Number.isFinite(y) || y < 1 || y > 99){
+            y = 50;
+        }
+
+        const photo =
+            p.photo ||
+            p.photo_url ||
+            FALLBACK_LOGO;
+
+        const position = row.position || "";
+
+        /*
+          Read rating from the saved match_players row.
+          Do not invent a rating when it is missing.
+        */
+        const ratingValue = row.rating;
+
+        const ratingHTML =
+            ratingValue === null ||
+            ratingValue === undefined ||
+            ratingValue === "" ||
+            !Number.isFinite(Number(ratingValue))
+                ? "—"
+                : Number(ratingValue).toFixed(1) + "/10";
+
+        return `
+            <div class="pitch-player"
+                 style="left:${x}%;top:${y}%">
+
+                <div class="pitch-player-number">
+                    ${escapeHTML(p.number ?? "")}
                 </div>
-            `;
-        }).join("");
+
+                <img
+                    src="${escapeHTML(photo)}"
+                    alt="${escapeHTML(p.name || "لاعب")}"
+                    onerror="this.onerror=null;this.src='${FALLBACK_LOGO}'"
+                >
+
+                <div class="pitch-player-name">
+                    ${escapeHTML(p.name || "لاعب")}
+                </div>
+
+                <div class="pitch-player-rating">
+                    ⭐ ${ratingHTML}
+                </div>
+
+                <div class="pitch-player-position">
+                    ${escapeHTML(position)}
+                    ${positionIcon(position)}
+                </div>
+
+            </div>
+        `;
+    }).join("");
 
     return `
         <div class="pitch-wrap">
-            <div class="pitch-title">🟢 ملعب المباراة</div>
-            <div class="pitch-help">نفس أماكن اللاعبين المحفوظة من لوحة الإدارة</div>
+
+            <div class="pitch-title">
+                🟢 ملعب المباراة
+            </div>
+
+            <div class="pitch-help">
+                نفس أماكن اللاعبين المحفوظة من لوحة الإدارة
+            </div>
 
             <div class="pitch">
+
                 <div class="pitch-center-circle"></div>
                 <div class="pitch-center-dot"></div>
 
@@ -611,16 +853,26 @@ function buildPitch(rows){
                 <div class="pitch-goal right"></div>
 
                 ${html}
+
             </div>
 
             <div class="legend">
-                <span><i class="dot" style="background:#facc15"></i>${escapeHTML(match.home || "")}</span>
-                <span><i class="dot" style="background:#ef4444"></i>${escapeHTML(match.away || "")}</span>
+                <span>
+                    <i class="dot" style="background:#facc15"></i>
+                    ${escapeHTML(match.home || "")}
+                </span>
+
+                <span>
+                    <i class="dot" style="background:#ef4444"></i>
+                    ${escapeHTML(match.away || "")}
+                </span>
             </div>
+
         </div>
     `;
 }
 
+/* EXPECTED LINEUP */
 async function loadExpected(){
     const box = document.getElementById("expectedBox");
 
@@ -631,24 +883,30 @@ async function loadExpected(){
 
     if(error){
         console.error("expected_lineups:", error);
+
         box.innerHTML = `
             <div class="error">
                 تعذر تحميل التشكيلة المتوقعة.<br>
                 ${escapeHTML(error.message)}
-            </div>`;
+            </div>
+        `;
+
         return;
     }
 
     const rows = data || [];
 
     if(!rows.length){
-        box.innerHTML = '<div class="empty">لم يتم حفظ التشكيلة المتوقعة بعد.</div>';
+        box.innerHTML =
+            '<div class="empty">لم يتم حفظ التشكيلة المتوقعة بعد.</div>';
+
         return;
     }
 
     box.innerHTML = buildPitch(rows);
 }
 
+/* ACTUAL LINEUP AND SAVED RATINGS */
 async function loadActual(){
     const box = document.getElementById("actualBox");
 
@@ -659,35 +917,59 @@ async function loadActual(){
 
     if(error){
         console.error("match_players:", error);
+
         box.innerHTML = `
             <div class="error">
                 تعذر تحميل التشكيلة الفعلية.<br>
                 ${escapeHTML(error.message)}
-            </div>`;
+            </div>
+        `;
+
         return;
     }
 
     const rows = data || [];
 
     if(!rows.length){
-        box.innerHTML = '<div class="empty">لا توجد تشكيلة فعلية محفوظة لهذه المباراة بعد.</div>';
+        box.innerHTML =
+            '<div class="empty">لا توجد تشكيلة فعلية محفوظة لهذه المباراة بعد.</div>';
+
         return;
     }
 
+    /*
+      Each row includes the saved rating when available.
+      buildPitch() displays that rating under the player name.
+    */
     box.innerHTML = buildPitch(rows);
 }
 
+/* TAB SWITCHING */
 document.querySelectorAll(".tab").forEach(button => {
     button.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(b => b.classList.remove("active"));
-        document.querySelectorAll(".tab-content").forEach(s => s.classList.add("hidden"));
+        document.querySelectorAll(".tab").forEach(b => {
+            b.classList.remove("active");
+        });
+
+        document.querySelectorAll(".tab-content").forEach(section => {
+            section.classList.add("hidden");
+        });
 
         button.classList.add("active");
-        document.getElementById(button.dataset.tab).classList.remove("hidden");
+
+        document
+            .getElementById(button.dataset.tab)
+            .classList.remove("hidden");
     });
 });
 
-loadMatch();
+/* START */
+loadMatch().catch(error => {
+    console.error("loadMatch:", error);
+
+    document.getElementById("actualBox").innerHTML =
+        '<div class="error">حدث خطأ أثناء تحميل بيانات المباراة.</div>';
+});
 </script>
 
 </body>
