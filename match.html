@@ -456,7 +456,8 @@ function getTeamLogo(team){
 }
 
 function getPlayer(id){
-    return players.find(p => String(p.id) === String(id));
+    // IDs may arrive as numbers or strings from Supabase.
+    return players.find(p => String(p.id).trim() === String(id).trim());
 }
 
 function formatDate(date){
@@ -577,61 +578,46 @@ function buildPitch(rows, showRating = false){
         return '<div class="empty">لا توجد تشكيلة محفوظة لهذه المباراة.</div>';
     }
 
-    const html = rows
-        .map(row => {
-            const p = getPlayer(row.player_id);
-            if(!p) return "";
+    const html = rows.map((row, index) => {
+        const p = getPlayer(row.player_id);
+        // Do not silently hide a saved lineup row when its player record cannot be matched.
+        const playerName = p?.name || row.player_name || `لاعب #${row.player_id ?? index + 1}`;
+        let x = Number(row.x);
+        let y = Number(row.y);
+        if(!Number.isFinite(x) || x < 1 || x > 99) x = 12 + (index % 6) * 15;
+        if(!Number.isFinite(y) || y < 1 || y > 99) y = index < 6 ? 30 : 70;
+        const photo = p?.photo || p?.photo_url || FALLBACK_LOGO;
+        const position = row.position || p?.position || '';
+        const rating = row.rating === null || row.rating === undefined || String(row.rating).trim() === ''
+            ? '—' : escapeHTML(row.rating) + '/10';
 
-            let x = Number(row.x);
-            let y = Number(row.y);
-
-            if(!Number.isFinite(x) || x < 1 || x > 99) x = 50;
-            if(!Number.isFinite(y) || y < 1 || y > 99) y = 50;
-
-            const photo = p.photo || p.photo_url || FALLBACK_LOGO;
-            const position = row.position || "";
-
-            return `
-                <div class="pitch-player"
-                     style="left:${x}%;top:${y}%">
-                    <div class="pitch-player-number">${escapeHTML(p.number ?? "")}</div>
-                    <img src="${escapeHTML(photo)}" alt="">
-                    <div class="pitch-player-name">${escapeHTML(p.name || "لاعب")}</div>
-                    ${showRating ? `<div class="pitch-player-rating">⭐ ${row.rating === null || row.rating === undefined || row.rating === "" ? "—" : escapeHTML(row.rating) + "/10"}</div>` : ""}
-                    <div class="pitch-player-position">
-                        ${escapeHTML(position)} ${positionIcon(position)}
-                    </div>
-                </div>
-            `;
-        }).join("");
+        return `
+            <div class="pitch-player" style="left:${x}%;top:${y}%">
+                <div class="pitch-player-number">${escapeHTML(p?.number ?? '')}</div>
+                <img src="${escapeHTML(photo)}" alt="${escapeHTML(playerName)}" onerror="this.onerror=null;this.src='${FALLBACK_LOGO}'">
+                <div class="pitch-player-name">${escapeHTML(playerName)}</div>
+                ${showRating ? `<div class="pitch-player-rating">⭐ ${rating}</div>` : ''}
+                <div class="pitch-player-position">${escapeHTML(position)} ${positionIcon(position)}</div>
+            </div>`;
+    }).join('');
 
     return `
         <div class="pitch-wrap">
             <div class="pitch-title">🟢 ملعب المباراة</div>
             <div class="pitch-help">نفس أماكن اللاعبين المحفوظة من لوحة الإدارة</div>
-
             <div class="pitch">
                 <div class="pitch-center-circle"></div>
                 <div class="pitch-center-dot"></div>
-
-                <div class="pitch-penalty left"></div>
-                <div class="pitch-penalty right"></div>
-
-                <div class="pitch-goal-area left"></div>
-                <div class="pitch-goal-area right"></div>
-
-                <div class="pitch-goal left"></div>
-                <div class="pitch-goal right"></div>
-
+                <div class="pitch-penalty left"></div><div class="pitch-penalty right"></div>
+                <div class="pitch-goal-area left"></div><div class="pitch-goal-area right"></div>
+                <div class="pitch-goal left"></div><div class="pitch-goal right"></div>
                 ${html}
             </div>
-
             <div class="legend">
-                <span><i class="dot" style="background:#facc15"></i>${escapeHTML(match.home || "")}</span>
-                <span><i class="dot" style="background:#ef4444"></i>${escapeHTML(match.away || "")}</span>
+                <span><i class="dot" style="background:#facc15"></i>${escapeHTML(match.home || '')}</span>
+                <span><i class="dot" style="background:#ef4444"></i>${escapeHTML(match.away || '')}</span>
             </div>
-        </div>
-    `;
+        </div>`;
 }
 
 async function loadExpected(){
@@ -667,7 +653,7 @@ async function loadActual(){
 
     const {data, error} = await supabaseClient
         .from("match_players")
-        .select("*")
+        .select("match_id,player_id,team,position,rating,x,y")
         .eq("match_id", matchId);
 
     if(error){
