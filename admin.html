@@ -419,6 +419,18 @@ button.logout{
     margin-top:2px;
 }
 
+.pitch-player-rating{
+    display:inline-block;
+    margin-top:3px;
+    padding:2px 6px;
+    border-radius:5px;
+    background:#facc15;
+    color:#111827;
+    font-size:11px;
+    font-weight:800;
+    line-height:1.2;
+}
+
 .team-pitch-title{
     text-align:center;
     font-size:18px;
@@ -3726,6 +3738,10 @@ function createPitchPlayer(
             <div class="pitch-player-position">
                 ${positionText} ${position}
             </div>
+
+            ${type === "actual" ? `
+                <div class="pitch-player-rating">⭐ ${row.rating === null || row.rating === undefined || row.rating === "" ? "—" : escapeHtml(String(row.rating)) + "/10"}</div>
+            ` : ""}
 
         </div>
 
