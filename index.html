@@ -370,6 +370,10 @@ footer{
 .expected-pitch-player img{width:48px;height:48px;object-fit:cover;border-radius:50%;border:3px solid #fff;background:#fff;box-shadow:0 3px 8px rgba(0,0,0,.35)}
 .expected-pitch-player .name{background:rgba(0,0,0,.82);color:#fff;border-radius:5px;padding:2px 4px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .expected-pitch-player .num{position:absolute;top:-3px;right:4px;background:#111827;color:#fff;border-radius:50%;width:19px;height:19px;line-height:19px;font-size:9px;font-weight:bold}
+.actual-preview{margin-top:18px;padding-top:16px;border-top:1px solid #e5e7eb}
+.actual-preview-title{text-align:center;font-weight:bold;margin-bottom:8px;color:#166534}
+.actual-pitch-player .rating{display:inline-block;margin-top:3px;padding:2px 5px;border-radius:5px;background:#facc15;color:#111827;font-size:10px;font-weight:800;line-height:1.2}
+@media(max-width:700px){.expected-pitch-player{width:54px}.expected-pitch-player img{width:36px;height:36px}.actual-pitch-player .rating{font-size:9px}}
 
 @media(max-width:700px){
 
@@ -647,14 +651,11 @@ async function loadData(){
             '<div class="loading">جاري حساب الأسيستات...</div>';
 
         // التشكيلات اختيارية: لا تمنع الموقع من العمل إذا كان جدولها بطيئًا.
-        const playedMatchIds = matches
-            .filter(match => match.played === true)
-            .map(match => Number(match.id));
         const allMatchIds = matches.map(match => Number(match.id));
 
         const [mpResult, elResult] = await Promise.allSettled([
-            playedMatchIds.length
-                ? loadQuery("match_players", "match_id,player_id,goals,assists", 1000)
+            allMatchIds.length
+                ? loadQuery("match_players", "match_id,player_id,team,position,rating,goals,assists,x,y", 1000)
                 : Promise.resolve([]),
             allMatchIds.length
                 ? loadQuery("expected_lineups", "match_id,player_id,x,y", 1000)
@@ -664,6 +665,8 @@ async function loadData(){
         matchPlayers = mpResult.status === "fulfilled" ? mpResult.value : [];
         expectedLineups = elResult.status === "fulfilled" ? elResult.value : [];
 
+        // إعادة رسم بطاقات المباريات بعد وصول التشكيلات الفعلية والمتوقعة
+        showMatches();
         showGoals();
         showAssists();
         showStats();
@@ -1233,6 +1236,7 @@ function showMatches(){
 
                 </div>
 
+                ${renderActualPreview(match.id)}
                 ${renderExpectedPreview(match.id)}
 
             </div>
@@ -1244,6 +1248,43 @@ function showMatches(){
 }
 
 
+
+
+function renderActualPreview(matchId){
+    const rows = matchPlayers.filter(r => Number(r.match_id) === Number(matchId));
+    if(!rows.length) return '';
+
+    const playersById = new Map(players.map(p => [String(p.id), p]));
+    const playerHTML = rows.map(row => {
+        const p = playersById.get(String(row.player_id));
+        if(!p) return '';
+        let x = Number(row.x), y = Number(row.y);
+        if(!Number.isFinite(x) || x < 1 || x > 99) x = 50;
+        if(!Number.isFinite(y) || y < 1 || y > 99) y = 50;
+        const photo = p.photo || '';
+        const rating = row.rating === null || row.rating === undefined || row.rating === ''
+            ? '—' : escapeHTML(row.rating) + '/10';
+        return `
+            <div class="expected-pitch-player actual-pitch-player" style="left:${x}%;top:${y}%">
+                ${p.number ? `<div class="num">${escapeHTML(p.number)}</div>` : ''}
+                ${photo ? `<img loading="lazy" src="${escapeHTML(photo)}" alt="${escapeHTML(p.name)}">` : '<div style="width:48px;height:48px;border-radius:50%;border:3px solid #fff;background:#e5e7eb;margin:auto;display:flex;align-items:center;justify-content:center">👤</div>'}
+                <div class="name">${escapeHTML(p.name)}</div>
+                <div class="rating">⭐ ${rating}</div>
+            </div>`;
+    }).join('');
+
+    return `
+        <div class="actual-preview">
+            <div class="actual-preview-title">⚽ التشكيلة الفعلية — تقييم اللاعبين</div>
+            <div class="expected-pitch">
+                <div class="midline"></div><div class="circle"></div><div class="dot"></div>
+                <div class="penalty left"></div><div class="penalty right"></div>
+                <div class="goalarea left"></div><div class="goalarea right"></div>
+                <div class="goal left"></div><div class="goal right"></div>
+                ${playerHTML}
+            </div>
+        </div>`;
+}
 
 function renderExpectedPreview(matchId){
     const rows = expectedLineups.filter(r => Number(r.match_id) === Number(matchId));
