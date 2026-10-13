@@ -3243,283 +3243,141 @@ function renderTeamLineup(
 ===================================================== */
 
 async function saveLineup(matchId){
+    const message = document.getElementById("lineupMessage");
+    const saveButton = document.querySelector('#lineupEditor button.save');
 
-    const match =
-        allMatches.find(
-            m =>
-            String(m.id) ===
-            String(matchId)
-        );
-
-
+    const match = allMatches.find(m => String(m.id) === String(matchId));
     if(!match){
-
-        alert(
-            "المباراة غير موجودة."
-        );
-
+        showMessage(message, "المباراة غير موجودة.", false);
         return;
     }
 
-
-    const homeContainer =
-        document.getElementById(
-            "homeLineup"
-        );
-
-
-    const awayContainer =
-        document.getElementById(
-            "awayLineup"
-        );
-
-
+    const homeContainer = document.getElementById("homeLineup");
+    const awayContainer = document.getElementById("awayLineup");
     if(!homeContainer || !awayContainer){
-
-        alert(
-            "افتح تشكيلة المباراة أولًا."
-        );
-
+        showMessage(message, "افتح تشكيلة المباراة أولًا.", false);
         return;
     }
 
-
-    const homeRows =
-        [
-            ...homeContainer
-            .querySelectorAll(
-                ".lineup-player"
-            )
-        ];
-
-
-    const awayRows =
-        [
-            ...awayContainer
-            .querySelectorAll(
-                ".lineup-player"
-            )
-        ];
-
-
-    const homeData =
-        collectLineupRows(
-            homeRows,
-            match.home
-        );
-
-
-    const awayData =
-        collectLineupRows(
-            awayRows,
-            match.away
-        );
-
-
-    if(homeData.length !== 6){
-
-        alert(
-            `يجب اختيار 6 لاعبين لفريق ${match.home}.`
-        );
-
-        return;
-    }
-
-
-    if(awayData.length !== 6){
-
-        alert(
-            `يجب اختيار 6 لاعبين لفريق ${match.away}.`
-        );
-
-        return;
-    }
-
-
-    const allData =
-        [
-            ...homeData,
-            ...awayData
-        ];
-
-
-    const playerIds =
-        allData.map(
-            p => String(p.player_id)
-        );
-
-
-    if(
-        new Set(playerIds).size !==
-        playerIds.length
-    ){
-
-        alert(
-            "لا يمكنك اختيار نفس اللاعب أكثر من مرة."
-        );
-
-        return;
-    }
-
-
-    const hasGKHome =
-        homeData.some(
-            p => p.position === "GK"
-        );
-
-
-    const hasGKAway =
-        awayData.some(
-            p => p.position === "GK"
-        );
-
-
-    if(!hasGKHome || !hasGKAway){
-
-        alert(
-            "يجب أن يكون لكل فريق حارس مرمى 🧤."
-        );
-
-        return;
-    }
-
-
-    const pitchPlayers =
-        document.querySelectorAll(
-            "#actualPitchPlayers .pitch-player"
-        );
-
-
-    pitchPlayers.forEach(element => {
-
-        const id =
-            String(
-                element.dataset.playerId
-            );
-
-
-        const x =
-            Number(
-                element.dataset.x
-            );
-
-
-        const y =
-            Number(
-                element.dataset.y
-            );
-
-
-        const found =
-            allData.find(
-                p =>
-                String(p.player_id) === id
-            );
-
-
-        if(found){
-
-            found.x=x;
-            found.y=y;
-
-        }
-
-    });
-
-
-    const {error:deleteError} =
-        await supabaseClient
-        .from("match_players")
-        .delete()
-        .eq("match_id",matchId);
-
-
-    if(deleteError){
-
-        console.error(deleteError);
-
-
-        showMessage(
-            document.getElementById(
-                "lineupMessage"
-            ),
-            "حدث خطأ أثناء تحديث التشكيلة.",
-            false
-        );
-
-        return;
-    }
-
-
-    const rows =
-        allData.map(
-            player => ({
-
-                match_id:
-                    Number(matchId),
-
-                player_id:
-                    Number(player.player_id),
-
-                team:
-                    player.team,
-
-                position:
-                    player.position,
-
-                rating:
-                    player.rating,
-
-                goals:
-                    player.goals,
-
-                assists:
-                    player.assists,
-
-                x:
-                    player.x ?? 50,
-
-                y:
-                    player.y ?? 50
-
-            })
-        );
-
-
-    const {error:insertError} =
-        await supabaseClient
-        .from("match_players")
-        .insert(rows);
-
-
-    if(insertError){
-
-        console.error(insertError);
-
-
-        showMessage(
-            document.getElementById(
-                "lineupMessage"
-            ),
-            "حدث خطأ أثناء حفظ التشكيلة: " +
-            insertError.message,
-            false
-        );
-
-        return;
-    }
-
-
-    showMessage(
-        document.getElementById(
-            "lineupMessage"
-        ),
-        "تم حفظ تشكيلة المباراة وأماكن اللاعبين ✅",
-        true
+    const homeData = collectLineupRows(
+        [...homeContainer.querySelectorAll(".lineup-player")], match.home
+    );
+    const awayData = collectLineupRows(
+        [...awayContainer.querySelectorAll(".lineup-player")], match.away
     );
 
-}
+    if(homeData.length !== 6){
+        showMessage(message, `يجب اختيار 6 لاعبين مع المركز والتقييم الصحيح لفريق ${match.home}.`, false);
+        return;
+    }
+    if(awayData.length !== 6){
+        showMessage(message, `يجب اختيار 6 لاعبين مع المركز والتقييم الصحيح لفريق ${match.away}.`, false);
+        return;
+    }
 
+    const allData = [...homeData, ...awayData];
+    const playerIds = allData.map(p => String(p.player_id));
+    if(new Set(playerIds).size !== playerIds.length){
+        showMessage(message, "لا يمكنك اختيار نفس اللاعب أكثر من مرة.", false);
+        return;
+    }
+    if(!homeData.some(p => p.position === "GK") || !awayData.some(p => p.position === "GK")){
+        showMessage(message, "يجب أن يكون لكل فريق حارس مرمى 🧤.", false);
+        return;
+    }
+
+    // حفظ إحداثيات اللاعبين كما تظهر على الملعب.
+    document.querySelectorAll("#actualPitchPlayers .pitch-player").forEach(element => {
+        const found = allData.find(p => String(p.player_id) === String(element.dataset.playerId));
+        if(found){
+            const x = Number(element.dataset.x);
+            const y = Number(element.dataset.y);
+            found.x = Number.isFinite(x) ? x : 50;
+            found.y = Number.isFinite(y) ? y : 50;
+        }
+    });
+
+    const rows = allData.map(player => ({
+        match_id: Number(matchId),
+        player_id: Number(player.player_id),
+        team: player.team,
+        position: player.position,
+        rating: Number(player.rating),
+        goals: Number(player.goals),
+        assists: Number(player.assists),
+        x: Number.isFinite(Number(player.x)) ? Number(player.x) : 50,
+        y: Number.isFinite(Number(player.y)) ? Number(player.y) : 50
+    }));
+
+    if(rows.some(r => !Number.isFinite(r.rating) || r.rating < 0 || r.rating > 10)){
+        showMessage(message, "التقييم يجب أن يكون رقمًا بين 0 و10.", false);
+        return;
+    }
+
+    if(saveButton){ saveButton.disabled = true; saveButton.textContent = "جاري الحفظ..."; }
+    showMessage(message, "جاري حفظ التشكيلة والتقييمات...", true);
+
+    try {
+        // قراءة النسخة الحالية للاحتفاظ بها إذا فشل الإدخال الجديد.
+        const {data: oldRows, error: readOldError} = await supabaseClient
+            .from("match_players")
+            .select("match_id,player_id,team,position,rating,goals,assists,x,y")
+            .eq("match_id", Number(matchId));
+
+        if(readOldError){
+            throw new Error("تعذرت قراءة التشكيلة الحالية: " + readOldError.message);
+        }
+
+        const {error: deleteError} = await supabaseClient
+            .from("match_players")
+            .delete()
+            .eq("match_id", Number(matchId));
+
+        if(deleteError){
+            throw new Error("تعذر تحديث التشكيلة القديمة: " + deleteError.message);
+        }
+
+        const {error: insertError} = await supabaseClient
+            .from("match_players")
+            .insert(rows);
+
+        if(insertError){
+            console.error("INSERT match_players failed:", insertError);
+
+            // محاولة استعادة التشكيلة القديمة بدل ترك المباراة بلا تشكيلة.
+            if(oldRows && oldRows.length){
+                const {error: restoreError} = await supabaseClient
+                    .from("match_players")
+                    .insert(oldRows);
+                if(restoreError){
+                    console.error("RESTORE match_players failed:", restoreError);
+                }
+            }
+            throw new Error("فشل حفظ التقييمات: " + insertError.message);
+        }
+
+        // تحقق من أن التقييمات الـ12 وصلت فعلًا إلى قاعدة البيانات.
+        const {data: savedRows, error: verifyError} = await supabaseClient
+            .from("match_players")
+            .select("player_id,rating")
+            .eq("match_id", Number(matchId));
+
+        if(verifyError){
+            throw new Error("تم الإرسال لكن تعذر التحقق من الحفظ: " + verifyError.message);
+        }
+        if(!savedRows || savedRows.length !== 12){
+            throw new Error(`عدد اللاعبين المحفوظين ${savedRows ? savedRows.length : 0} بدل 12.`);
+        }
+
+        showMessage(message, "✅ تم حفظ التشكيلة والتقييمات بنجاح والتحقق منها في قاعدة البيانات.", true);
+        await loadLineupForm();
+    } catch(error){
+        console.error("saveLineup error:", error);
+        showMessage(message, error.message || "حدث خطأ غير معروف أثناء حفظ التقييمات.", false);
+    } finally {
+        if(saveButton){ saveButton.disabled = false; saveButton.textContent = "💾 حفظ تشكيلة المباراة"; }
+    }
+}
 
 /* =====================================================
    COLLECT ACTUAL
@@ -3547,12 +3405,8 @@ function collectLineupRows(
             ).value;
 
 
-        const rating =
-            Number(
-                row.querySelector(
-                    ".lineup-rating"
-                ).value || 6
-            );
+        const ratingInput = row.querySelector(".lineup-rating").value.trim();
+        const rating = ratingInput === "" ? 6 : Number(ratingInput);
 
 
         const goals =
